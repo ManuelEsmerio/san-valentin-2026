@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Heart, Lock, Trophy, Target, ChevronUp, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Progress } from "../ui/progress";
+import MapModal from "./MapModal";
 
 const GRID_SIZE = 20;
 const CANVAS_SIZE = 600;
@@ -24,10 +25,17 @@ export default function GameStage({ onSuccess }: GameStageProps) {
   const [highScore, setHighScore] = useState(0);
   const [gameState, setGameState] = useState<GameState>("idle");
   const gameLoopRef = useRef<number>();
+  const [isMapModalOpen, setMapModalOpen] = useState(false);
 
   const snakeRef = useRef([{ x: 10, y: 10 }]);
   const foodRef = useRef({ x: 15, y: 15 });
   const directionRef = useRef({ x: 0, y: -1 });
+
+  const coordinates = "19.4326° N, 99.1332° W";
+  const lat = "19.4326";
+  const long = "-99.1332";
+  const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${long}`;
+  const iframeUrl = `https://maps.google.com/maps?q=${lat},${long}&hl=es&z=14&output=embed`;
 
   const drawHeart = (
     ctx: CanvasRenderingContext2D,
@@ -295,10 +303,10 @@ export default function GameStage({ onSuccess }: GameStageProps) {
                   : "No te preocupes, ¡inténtalo de nuevo!"}
               </p>
               <Button
-                onClick={gameState === 'won' ? onSuccess : startGame}
+                onClick={gameState === 'won' ? () => setMapModalOpen(true) : startGame}
                 className="min-w-[200px] h-12 px-6 text-base font-bold tracking-wider"
               >
-                {gameState === 'won' ? 'Siguiente Pista' : 'Reintentar'}
+                {gameState === 'won' ? 'Ver Pista' : 'Reintentar'}
               </Button>
             </div>
           )}
@@ -372,16 +380,14 @@ export default function GameStage({ onSuccess }: GameStageProps) {
         </div>
       )}
 
-      {gameState === 'won' && (
-        <div className="w-full mt-2 p-6 bg-green-500/10 border border-dashed border-green-500/40 rounded-xl flex flex-col items-center gap-4 text-center animate-fade-in">
-           <h3 className="text-green-500 font-bold text-lg">
-              Pista 1: ¡Desbloqueada!
-            </h3>
-            <p className="text-foreground/80">Ve a estas coordenadas y busca tu sorpresa: <strong>19.4326° N, 99.1332° W</strong></p>
-        </div>
-      )}
+      <MapModal 
+        isOpen={isMapModalOpen}
+        onClose={() => setMapModalOpen(false)}
+        onSuccess={onSuccess}
+        coordinates={coordinates}
+        googleMapsUrl={googleMapsUrl}
+        iframeUrl={iframeUrl}
+      />
     </div>
   );
 }
-
-    
