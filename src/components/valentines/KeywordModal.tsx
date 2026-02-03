@@ -15,15 +15,32 @@ type KeywordModalProps = {
 
 const CORRECT_KEYWORD = "amor";
 
+const ERROR_MESSAGES = [
+  {
+    title: 'Hey… 😌',
+    description: 'Esto no se adivina, se descubre. Sigue jugando.',
+  },
+  {
+    title: 'Mmm… todavía no.',
+    description: 'La pista está afuera, no aquí 😉 Inténtalo otra vez.',
+  },
+  {
+    title: 'Casi… pero no 😅',
+    description: 'Ve por la pista y vuelve. Te espero aquí.',
+  },
+];
+
 export default function KeywordModal({ isOpen, onSuccess, onBack }: KeywordModalProps) {
   const [keyword, setKeyword] = useState('');
   const [isShowing, setIsShowing] = useState(false);
+  const [errorCount, setErrorCount] = useState(0);
   const { toast } = useToast();
 
   useEffect(() => {
     if (isOpen) {
       setIsShowing(true);
       setKeyword(''); // Reset keyword on open
+      setErrorCount(0); // Reset error count on open
     } else {
       const timer = setTimeout(() => setIsShowing(false), 300);
       return () => clearTimeout(timer);
@@ -34,11 +51,13 @@ export default function KeywordModal({ isOpen, onSuccess, onBack }: KeywordModal
     if (keyword.trim().toLowerCase() === CORRECT_KEYWORD) {
       onSuccess();
     } else {
+      const currentError = ERROR_MESSAGES[errorCount % ERROR_MESSAGES.length];
       toast({
         variant: 'destructive',
-        title: 'Palabra clave incorrecta',
-        description: 'Esa no es la palabra mágica. Inténtalo de nuevo, mi chula.',
+        title: currentError.title,
+        description: currentError.description,
       });
+      setErrorCount(prev => prev + 1);
     }
   };
 
