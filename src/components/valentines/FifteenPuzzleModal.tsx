@@ -57,6 +57,18 @@ type FifteenPuzzleModalProps = {
   onSuccess: () => void;
 };
 
+const VictoryHearts = () => (
+    <div className="relative mt-2 h-16 w-full pointer-events-none">
+        <span style={{ animationDelay: '0.2s', fontVariationSettings: "'FILL' 1" }} className="material-symbols-outlined text-primary/60 absolute left-1/2 -translate-x-[2.5rem] top-2 text-xl animate-heart-celebrate">favorite</span>
+        <span style={{ animationDelay: '0s', fontVariationSettings: "'FILL' 1" }} className="material-symbols-outlined text-primary/70 absolute left-1/2 -translate-x-1/2 text-2xl animate-heart-celebrate">favorite</span>
+        <span style={{ animationDelay: '0.2s', fontVariationSettings: "'FILL' 1" }} className="material-symbols-outlined text-primary/60 absolute left-1/2 translate-x-[1.5rem] top-2 text-xl animate-heart-celebrate">favorite</span>
+        
+        <span style={{ animationDelay: '0.4s', fontVariationSettings: "'FILL' 1" }} className="material-symbols-outlined text-primary/50 absolute left-1/2 -translate-x-[1.5rem] top-8 text-lg animate-heart-celebrate">favorite</span>
+        <span style={{ animationDelay: '0.4s', fontVariationSettings: "'FILL' 1" }} className="material-symbols-outlined text-primary/50 absolute left-1/2 translate-x-[0.5rem] top-8 text-lg animate-heart-celebrate">favorite</span>
+        <span style={{ animationDelay: '0.5s', fontVariationSettings: "'FILL' 1" }} className="material-symbols-outlined text-primary/40 absolute left-1/2 translate-x-[2.5rem] top-9 text-base animate-heart-celebrate">favorite</span>
+    </div>
+  );
+
 export default function FifteenPuzzleModal({ isOpen, onSuccess }: FifteenPuzzleModalProps) {
   const [isShowing, setIsShowing] = useState(false);
   const [gameStatus, setGameStatus] = useState<'playing' | 'solved' | 'lost'>('playing');
@@ -235,8 +247,10 @@ export default function FifteenPuzzleModal({ isOpen, onSuccess }: FifteenPuzzleM
             <p className="text-muted-foreground mb-4">
                 ¡Lo lograste! Has superado todos los desafíos. Tu recompensa final te espera en este lugar. Es hora de la gran sorpresa.
             </p>
+            
+            <VictoryHearts />
 
-            <div className="relative w-full aspect-video rounded-lg overflow-hidden shadow-lg bg-black/10 border border-border mb-4">
+            <div className="relative w-full aspect-video rounded-lg overflow-hidden shadow-lg bg-black/10 border border-border my-4">
                 <iframe
                     src={iframeUrl}
                     width="100%"

@@ -115,6 +115,11 @@ export default {
           '0%': { transform: 'translateY(-10%) rotate(0deg)', opacity: '1' },
           '100%': { transform: 'translateY(120%) rotate(360deg)', opacity: '0' },
         },
+        'heart-celebrate': {
+          '0%': { transform: 'translateY(10px) scale(0.7)', opacity: '0' },
+          '40%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+          '100%': { transform: 'translateY(-30px) scale(0.8)', opacity: '0' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -131,6 +136,7 @@ export default {
         'heart-fly-7': 'heart-fly-7 4s ease-out infinite',
         'heart-fly-8': 'heart-fly-8 4s ease-out infinite',
         'confetti-fall': 'confetti-fall 2s linear infinite',
+        'heart-celebrate': 'heart-celebrate 1.2s ease-out forwards',
       },
     },
   },
