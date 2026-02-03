@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
+import ThemeToggle from '@/components/valentines/theme-toggle';
 
 export const metadata: Metadata = {
   title: "Valentine's Challenge",
@@ -13,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className="light">
+    <html lang="es" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
@@ -49,9 +50,7 @@ export default function RootLayout({
               Valentine's Challenge
             </h2>
           </div>
-          <button className="h-10 w-10 flex items-center justify-center rounded-full hover:bg-card">
-            <span className="material-symbols-outlined text-primary text-2xl">dark_mode</span>
-          </button>
+          <ThemeToggle />
         </header>
         <main className="flex-1 flex flex-col items-center justify-center p-4 relative overflow-hidden">
           {children}
