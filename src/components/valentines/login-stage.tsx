@@ -27,12 +27,12 @@ const formSchema = z.object({
   }),
 });
 
-type LoginStageProps = {
-  onSuccess: () => void;
-};
-
 function CustomDay({ date, ...props }: DayProps) {
   if (props.modifiers.hidden) {
+    return <></>;
+  }
+
+  if (!date) {
     return <></>;
   }
 
@@ -54,7 +54,7 @@ function CustomDay({ date, ...props }: DayProps) {
           favorite
         </span>
         <span className="relative z-10 text-[10px] font-bold">
-          {format(date, 'd')}
+          {content}
         </span>
       </div>
     );
@@ -78,6 +78,7 @@ function CustomDay({ date, ...props }: DayProps) {
     </button>
   );
 }
+
 
 export default function LoginStage({ onSuccess }: LoginStageProps) {
   const { toast } = useToast();
