@@ -3,21 +3,30 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Map, MapPin, BarChart2, RotateCcw } from 'lucide-react';
+import { Map, MapPin, BarChart2, RotateCcw, ShieldQuestion } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 // Puzzle constants
 const GRID_SIZE = 4;
 const TILE_COUNT = GRID_SIZE * GRID_SIZE;
 const EMPTY_TILE = TILE_COUNT - 1; // The last tile (15) is our empty space
+const MOVE_LIMIT = 250;
 
-// Function to generate a solvable shuffled puzzle
-const shuffleTiles = () => {
+type Difficulty = 'normal' | 'easy' | 'very-easy';
+
+// Function to generate a solvable shuffled puzzle based on difficulty
+const shuffleTiles = (difficulty: Difficulty) => {
     let tiles = [...Array(TILE_COUNT).keys()];
     let emptyPos = tiles.indexOf(EMPTY_TILE);
 
+    const shuffleCount = {
+        'normal': 300,
+        'easy': 100,
+        'very-easy': 30,
+    }[difficulty];
+
     // Perform a large number of random moves from the solved state
-    for (let i = 0; i < 300; i++) {
+    for (let i = 0; i < shuffleCount; i++) {
         const neighbors = [];
         const row = Math.floor(emptyPos / GRID_SIZE);
         const col = emptyPos % GRID_SIZE;
@@ -34,13 +43,14 @@ const shuffleTiles = () => {
         emptyPos = neighborPos;
     }
     
-    // It could be solved by chance, if so, swap two tiles
+    // It could be solved by chance, if so, swap two tiles to ensure it's a puzzle
     if (tiles.every((tile, index) => tile === index)) {
         [tiles[0], tiles[1]] = [tiles[1], tiles[0]];
     }
 
     return tiles;
 };
+
 
 type FifteenPuzzleModalProps = {
   isOpen: boolean;
@@ -49,15 +59,25 @@ type FifteenPuzzleModalProps = {
 
 export default function FifteenPuzzleModal({ isOpen, onSuccess }: FifteenPuzzleModalProps) {
   const [isShowing, setIsShowing] = useState(false);
-  const [isSolved, setIsSolved] = useState(false);
+  const [gameStatus, setGameStatus] = useState<'playing' | 'solved' | 'lost'>('playing');
   const [tiles, setTiles] = useState<number[]>([]);
   const [moves, setMoves] = useState(0);
+  const [losses, setLosses] = useState(0);
+  const [difficulty, setDifficulty] = useState<Difficulty>('normal');
   const { toast } = useToast();
+  
+  const initializeGame = (currentDifficulty: Difficulty) => {
+    setTiles(shuffleTiles(currentDifficulty));
+    setMoves(0);
+    setGameStatus('playing');
+  };
   
   useEffect(() => {
     if (isOpen) {
       setIsShowing(true);
-      handleRestart();
+      setLosses(0);
+      setDifficulty('normal');
+      initializeGame('normal');
     } else {
       const timer = setTimeout(() => setIsShowing(false), 300);
       return () => clearTimeout(timer);
@@ -65,14 +85,11 @@ export default function FifteenPuzzleModal({ isOpen, onSuccess }: FifteenPuzzleM
   }, [isOpen]);
 
   const checkIfSolved = (currentTiles: number[]) => {
-    for (let i = 0; i < TILE_COUNT; i++) {
-        if (currentTiles[i] !== i) return false;
-    }
-    return true;
+    return currentTiles.every((tile, index) => tile === index);
   };
 
   const handleTileClick = (clickedIndex: number) => {
-    if (isSolved) return;
+    if (gameStatus !== 'playing') return;
 
     const emptyIndex = tiles.indexOf(EMPTY_TILE);
     
@@ -89,24 +106,32 @@ export default function FifteenPuzzleModal({ isOpen, onSuccess }: FifteenPuzzleM
       const newTiles = [...tiles];
       [newTiles[clickedIndex], newTiles[emptyIndex]] = [newTiles[emptyIndex], newTiles[clickedIndex]];
       setTiles(newTiles);
-      setMoves(prev => prev + 1);
+      
+      const newMoves = moves + 1;
+      setMoves(newMoves);
 
       if (checkIfSolved(newTiles)) {
         setTimeout(() => {
-            setIsSolved(true);
+            setGameStatus('solved');
+            setLosses(0);
+            setDifficulty('normal');
             toast({
                 title: "¡Rompecabezas Resuelto!",
                 description: "Has revelado la última pista. ¡Felicidades!",
             });
         }, 300);
+      } else if (newMoves >= MOVE_LIMIT) {
+          const newLosses = losses + 1;
+          setLosses(newLosses);
+          if (newLosses === 1) setDifficulty('easy');
+          if (newLosses >= 2) setDifficulty('very-easy');
+          setGameStatus('lost');
       }
     }
   };
 
   const handleRestart = () => {
-    setTiles(shuffleTiles());
-    setMoves(0);
-    setIsSolved(false);
+    initializeGame(difficulty);
   };
   
   const coordinates = "19.4173° N, 99.1652° W";
@@ -133,8 +158,8 @@ export default function FifteenPuzzleModal({ isOpen, onSuccess }: FifteenPuzzleM
         )}
         onClick={(e) => e.stopPropagation()}
       >
-        {!isSolved ? (
-            <div className="p-6 md:p-8 text-center">
+        {gameStatus === 'playing' && (
+            <div className="p-6 md:p-8 text-center animate-fade-in">
                 <div className="mb-8">
                     <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white mb-3">
                         Un último juego...
@@ -149,7 +174,7 @@ export default function FifteenPuzzleModal({ isOpen, onSuccess }: FifteenPuzzleM
                           const isEmpty = tileValue === EMPTY_TILE;
                           return (
                               <div
-                                  key={tileValue}
+                                  key={index}
                                   onClick={() => handleTileClick(index)}
                                   className={cn(
                                       "flex items-center justify-center rounded-lg md:rounded-xl text-xl font-bold transition-all duration-200 ease-in-out select-none",
@@ -167,7 +192,7 @@ export default function FifteenPuzzleModal({ isOpen, onSuccess }: FifteenPuzzleM
                 <div className="mt-8 flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-4">
                     <div className="flex items-center gap-2 text-gray-600 dark:text-zinc-400">
                         <BarChart2 className="text-primary h-5 w-5" />
-                        <span className="font-bold text-sm">{moves} Movimientos</span>
+                        <span className="font-bold text-sm">{moves} / {MOVE_LIMIT} Movimientos</span>
                     </div>
                     <Button 
                         onClick={handleRestart}
@@ -179,7 +204,28 @@ export default function FifteenPuzzleModal({ isOpen, onSuccess }: FifteenPuzzleM
                     </Button>
                 </div>
             </div>
-        ) : (
+        )}
+        {gameStatus === 'lost' && (
+            <div className="p-6 sm:p-8 text-center animate-fade-in">
+                 <ShieldQuestion className="text-destructive h-12 w-12 mx-auto mb-4" />
+                 <h2 className="text-2xl font-bold text-foreground mb-2">¡Casi lo logras!</h2>
+                 <p className="text-muted-foreground mb-6">
+                    Has superado el límite de movimientos. Pero no te preocupes, el próximo intento será un poco más fácil.
+                 </p>
+                 <div className="flex flex-col sm:flex-row gap-3">
+                    <Button onClick={handleRestart} className="w-full h-12 text-base font-bold">
+                        <RotateCcw className="mr-2 h-4 w-4" />
+                        Reintentar
+                    </Button>
+                    {losses >= 3 && (
+                        <Button onClick={onSuccess} variant="secondary" className="w-full h-12 text-base font-bold">
+                            Saltar Desafío
+                        </Button>
+                    )}
+                 </div>
+            </div>
+        )}
+        {gameStatus === 'solved' && (
           <div className="p-6 sm:p-8 text-center animate-fade-in">
             <div className="flex justify-center items-center gap-2 mb-4">
                 <MapPin className="text-primary h-8 w-8" />
