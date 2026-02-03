@@ -9,6 +9,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { Lightbulb, RotateCcw } from "lucide-react";
 import { Progress } from "../ui/progress";
+import RomanticLetterModal from "./RomanticLetterModal";
 
 type TriviaStageProps = {
   onSuccess: () => void;
@@ -48,6 +49,34 @@ const openEndedQuestions: OpenEndedQuestion[] = [
     { id: 12, type: "open-ended", question: "¿Qué es lo que más te gusta de nosotros como pareja?" },
 ];
 
+const LETTERS = {
+  1: {
+    title: 'Lo que más amo de ti…',
+    content: [
+      'Tu sonrisa, tu cariño y tu manera tan hermosa de querer hacen que cada día valga la pena. 💖',
+      'Aunque a veces no estemos de acuerdo y peleemos, yo te elijo a ti.',
+      'Gracias por tu paciencia, por entenderme cuando me cuesta explicarme, por quedarte incluso cuando no es fácil y por elegirnos una y otra vez.',
+      'A tu lado aprendí que el amor también es calma, apoyo y complicidad, y que también son pláticas incómodas, discusiones y peleas, pero siempre volver a escogernos.',
+    ],
+  },
+  2: {
+    title: 'Mi recuerdo más preciado…',
+    content: [
+      'Tal vez no fue perfecto, pero fue real.',
+      'Los días que me quedé en Lagos solo con tal de verte, cuando todavía no conocía nada, pero sí tenía claro que quería conocerte a ti.',
+      'Tanto, que dormí en el suelo en casa de Edgar, hicimos carne asada y fueron días muy bonitos que siempre voy a apreciar profundamente.',
+      'Desde ese momento supe que algo especial estaba empezando entre nosotros. ✨',
+    ],
+  },
+  3: {
+    title: 'Lo que quiero contigo…',
+    content: [
+      'Compartir risas, crear más recuerdos y seguir eligiéndonos todos los días,',
+      'en los días malos, cuando estemos cansados y sintamos que no podemos más, saber que estamos el uno para el otro, para apoyarnos y darnos la mano en esos momentos, sin importar lo que venga. 💕',
+    ],
+  },
+};
+
 const MIN_CORRECT_ANSWERS = 8;
 
 const shuffleArray = (array: any[]) => {
@@ -67,6 +96,9 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [stage, setStage] = useState<"playing" | "failed" | "finished">("playing");
   const { toast } = useToast();
+  
+  const [letterToShow, setLetterToShow] = useState<{ title: string; content: string[] } | null>(null);
+  const [shownLetters, setShownLetters] = useState<Record<number, boolean>>({});
 
   const setupTrivia = () => {
     const shuffledMcq = shuffleArray([...multipleChoiceQuestions]);
@@ -74,11 +106,30 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
     setCurrentQuestionIndex(0);
     setAnswers({});
     setStage("playing");
+    setShownLetters({});
   };
 
   useEffect(() => {
     setupTrivia();
   }, []);
+  
+  useEffect(() => {
+    if (stage !== "playing") return;
+
+    const score = multipleChoiceQuestions.reduce((acc, q) => 
+        answers[q.id] === q.correctAnswer ? acc + 1 : acc, 0);
+
+    if (score === 3 && !shownLetters[1]) {
+        setLetterToShow(LETTERS[1]);
+        setShownLetters(prev => ({ ...prev, 1: true }));
+    } else if (score === 6 && !shownLetters[2]) {
+        setLetterToShow(LETTERS[2]);
+        setShownLetters(prev => ({ ...prev, 2: true }));
+    } else if (score === 9 && !shownLetters[3]) {
+        setLetterToShow(LETTERS[3]);
+        setShownLetters(prev => ({ ...prev, 3: true }));
+    }
+  }, [answers, shownLetters, stage]);
 
   const currentQuestion = questions[currentQuestionIndex];
   const progress = (currentQuestionIndex / questions.length) * 100;
@@ -223,6 +274,11 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
             </Button>
           </div>
       </div>
+      <RomanticLetterModal
+          isOpen={!!letterToShow}
+          letter={letterToShow}
+          onClose={() => setLetterToShow(null)}
+        />
     </div>
   );
 }
