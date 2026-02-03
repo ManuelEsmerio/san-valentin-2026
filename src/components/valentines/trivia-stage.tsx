@@ -45,244 +45,184 @@ type AnswerStatus = "unanswered" | "correct" | "incorrect";
 const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
   {
     id: 1,
-    type: 'multiple-choice',
-    question: '¿Quién es más competitivo en juegos de mesa?',
-    options: ['Yo', 'Tú', 'Los dos', 'Ninguno'],
-    correctAnswer: 'Yo',
-    image: 'trivia-1',
-    hint: 'Siempre hay alguien que no quiere perder 🎲',
+    type: "multiple-choice",
+    question: "¿Quién es más competitivo en juegos de mesa?",
+    options: ["Yo", "Tú", "Los dos", "Ninguno"],
+    correctAnswer: "Yo",
+    image: "trivia-1",
+    hint: "Siempre hay alguien que no quiere perder 🎲",
   },
   {
     id: 2,
-    type: 'multiple-choice',
-    question: '¿Quién se roba más seguido la cobija?',
-    options: ['Yo', 'Tú', 'Ambos', 'Nadie'],
-    correctAnswer: 'Tú',
-    image: 'trivia-2',
-    hint: 'La lucha nocturna por sobrevivir al frío 🛏️',
+    type: "multiple-choice",
+    question: "¿Quién se roba más seguido la cobija?",
+    options: ["Yo", "Tú", "Ambos", "Nadie"],
+    correctAnswer: "Tú",
+    image: "trivia-2",
+    hint: "La lucha nocturna por sobrevivir al frío 🛏️",
   },
   {
     id: 3,
-    type: 'multiple-choice',
-    question: '¿Quién canta peor?',
-    options: ['Yo', 'Tú', 'Ambos desafinamos', 'Nadie, somos estrellas'],
-    correctAnswer: 'Ambos desafinamos',
-    image: 'trivia-3',
-    hint: 'El karaoke nunca miente 🎤',
+    type: "multiple-choice",
+    question: "¿Quién canta peor?",
+    options: ["Yo", "Tú", "Ambos desafinamos", "Nadie, somos estrellas"],
+    correctAnswer: "Ambos desafinamos",
+    image: "trivia-3",
+    hint: "El karaoke nunca miente 🎤",
   },
   {
     id: 4,
-    type: 'multiple-choice',
-    question: '¿Quién cocina mejor?',
-    options: ['Yo', 'Tú', 'Ambos', 'Nadie, pedimos comida'],
-    correctAnswer: 'Ambos',
-    image: 'trivia-4',
-    hint: 'El sazón nunca falla 🍳',
+    type: "multiple-choice",
+    question: "¿Quién cocina mejor?",
+    options: ["Yo", "Tú", "Ambos", "Nadie, pedimos comida"],
+    correctAnswer: "Ambos",
+    image: "trivia-4",
+    hint: "El sazón nunca falla 🍳",
   },
   {
     id: 6,
-    type: 'multiple-choice',
-    question: '¿Quién nunca lava el baño?',
-    options: ['Yo', 'Tú', 'Ambos lo evitamos', 'Siempre lo hace otro'],
-    correctAnswer: 'Tú',
-    image: 'trivia-6',
-    hint: 'La misión imposible del aseo 🚽',
+    type: "multiple-choice",
+    question: "¿Quién nunca lava el baño?",
+    options: ["Yo", "Tú", "Ambos lo evitamos", "Siempre lo hace otro"],
+    correctAnswer: "Tú",
+    image: "trivia-6",
+    hint: "La misión imposible del aseo 🚽",
   },
   {
     id: 7,
-    type: 'multiple-choice',
-    question: '¿Quién ronca más fuerte?',
-    options: ['Yo', 'Tú', 'Ambos', 'Nadie'],
-    correctAnswer: 'Tú',
-    image: 'trivia-7',
-    hint: 'El concierto nocturno 🎶😴',
+    type: "multiple-choice",
+    question: "¿Quién ronca más fuerte?",
+    options: ["Yo", "Tú", "Ambos", "Nadie"],
+    correctAnswer: "Tú",
+    image: "trivia-7",
+    hint: "El concierto nocturno 🎶😴",
   },
   {
     id: 8,
-    type: 'multiple-choice',
-    question: '¿Quién es más distraído?',
-    options: ['Yo', 'Tú', 'Ambos', 'Nadie'],
-    correctAnswer: 'Yo',
-    image: 'trivia-8',
-    hint: 'El clásico: ‘¿y mis llaves?’ 🔑',
+    type: "multiple-choice",
+    question: "¿Quién es más distraído?",
+    options: ["Yo", "Tú", "Ambos", "Nadie"],
+    correctAnswer: "Yo",
+    image: "trivia-8",
+    hint: "El clásico: ‘¿y mis llaves?’ 🔑",
   },
   {
     id: 9,
-    type: 'multiple-choice',
-    question: '¿Quién es más enojón?',
-    options: ['Yo', 'Tú', 'Ambos', 'Nadie'],
-    correctAnswer: 'Ambos',
-    image: 'trivia-9',
-    hint: 'El que hace más caras 😡',
+    type: "multiple-choice",
+    question: "¿Quién es más enojón?",
+    options: ["Yo", "Tú", "Ambos", "Nadie"],
+    correctAnswer: "Ambos",
+    image: "trivia-9",
+    hint: "El que hace más caras 😡",
   },
   {
     id: 11,
-    type: 'multiple-choice',
-    question: '¿Quién llora de la nada al ver videos de animalitos?',
-    options: ['Yo', 'Tú', 'Ambos', 'Nadie'],
-    correctAnswer: 'Tú',
-    image: 'trivia-11',
-    hint: 'Los animalitos siempre ganan 🐶🐱',
+    type: "multiple-choice",
+    question: "¿Quién llora de la nada al ver videos de animalitos?",
+    options: ["Yo", "Tú", "Ambos", "Nadie"],
+    correctAnswer: "Tú",
+    image: "trivia-11",
+    hint: "Los animalitos siempre ganan 🐶🐱",
   },
   {
     id: 12,
-    type: 'multiple-choice',
-    question: '¿Quién tiene una obsesión con las chichis del otro?',
-    options: ['Yo', 'Tú', 'Ambos', 'Nadie'],
-    correctAnswer: 'Ambos',
-    image: 'trivia-12',
-    hint: 'Una obsesión divertida 🤭',
+    type: "multiple-choice",
+    question: "¿Quién tiene una obsesión con las chichis del otro?",
+    options: ["Yo", "Tú", "Ambos", "Nadie"],
+    correctAnswer: "Ambos",
+    image: "trivia-12",
+    hint: "Una obsesión divertida 🤭",
   },
   {
     id: 13,
     type: "multiple-choice",
     question: "¿Qué es lo que más valoro de nuestra relación?",
-    options: [
-      "La confianza",
-      "La comunicación",
-      "Las acciones",
-      "Todo lo anterior"
-    ],
+    options: ["La confianza", "La comunicación", "Las acciones", "Todo lo anterior"],
     correctAnswer: "Todo lo anterior",
     image: "trivia-13",
-    hint: "Es la base de todo."
+    hint: "Es la base de todo.",
   },
   {
     id: 14,
     type: "multiple-choice",
     question: "¿Cómo describirías nuestra relación?",
-    options: [
-      "Divertida",
-      "Única",
-      "Auténtica",
-      "Todas las anteriores"
-    ],
-    correctAnswer: [
-      "Divertida",
-      "Única",
-      "Auténtica",
-      "Todas las anteriores"
-    ],
+    options: ["Divertida", "Única", "Auténtica", "Todas las anteriores"],
+    correctAnswer: ["Divertida", "Única", "Auténtica", "Todas las anteriores"],
     image: "trivia-14",
-    hint: "No hay respuesta incorrecta aquí."
+    hint: "No hay respuesta incorrecta aquí.",
   },
   {
     id: 16,
     type: "multiple-choice",
     question: "¿A quién le huelen más las patas?",
-    options: [
-      "Tú",
-      "Tú, también",
-      "Definitivamente tú",
-      "No hay duda: tú"
-    ],
-    correctAnswer: [
-      "Tú",
-      "Tú, también",
-      "Definitivamente tú",
-      "No hay duda: tú"
-    ],
+    options: ["Tú", "Tú, también", "Definitivamente tú", "No hay duda: tú"],
+    correctAnswer: ["Tú", "Tú, también", "Definitivamente tú", "No hay duda: tú"],
     image: "trivia-16",
-    hint: "Ni el aromatizante pudo contra eso 😂🦶"
+    hint: "Ni el aromatizante pudo contra eso 😂🦶",
   },
   {
     id: 17,
     type: "multiple-choice",
     question: "¿Quién dura más tiempo en el baño?",
-    options: [
-      "Tú",
-      "Tú (con el celular)",
-      "Tú, pero dices que ya sales",
-      "Todas las anteriores"
-    ],
+    options: ["Tú", "Tú (con el celular)", "Tú, pero dices que ya sales", "Todas las anteriores"],
     correctAnswer: "Todas las anteriores",
     image: "trivia-17",
-    hint: "Según tú: ‘ya casi’ 🚿📱"
+    hint: "Según tú: ‘ya casi’ 🚿📱",
   },
   {
     id: 18,
     type: "multiple-choice",
     question: "¿Quién es más pedorro?",
-    options: [
-      "Tú",
-      "Tú, pero lo niegas",
-      "Tú y luego te haces el sorprendido",
-      "Todas aplican"
-    ],
+    options: ["Tú", "Tú, pero lo niegas", "Tú y luego te haces el sorprendido", "Todas aplican"],
     correctAnswer: "Todas aplican",
     image: "trivia-18",
-    hint: "El amor todo lo soporta… incluso eso 💨😂"
+    hint: "El amor todo lo soporta… incluso eso 💨😂",
   },
   {
     id: 19,
     type: "multiple-choice",
     question: "¿Qué momento simple disfruto más contigo?",
-    options: [
-      "Platicar sin prisa",
-      "Reírnos de tonterías",
-      "Estar en silencio",
-      "Todo lo anterior"
-    ],
+    options: ["Platicar sin prisa", "Reírnos de tonterías", "Estar en silencio", "Todo lo anterior"],
     correctAnswer: "Todo lo anterior",
     image: "trivia-19",
-    hint: "Lo simple también es especial."
+    hint: "Lo simple también es especial.",
   },
   {
     id: 21,
     type: "multiple-choice",
     question: "¿Qué significa para mí compartir este juego contigo?",
-    options: [
-      "Un recuerdo",
-      "Un detalle",
-      "Un momento",
-      "Un poco de todo"
-    ],
+    options: ["Un recuerdo", "Un detalle", "Un momento", "Un poco de todo"],
     correctAnswer: "Un poco de todo",
     image: "trivia-21",
-    hint: "Nada aquí es casual."
+    hint: "Nada aquí es casual.",
   },
   {
     id: 22,
     type: "multiple-choice",
     question: "¿A quién le da más hueva bañarse?",
-    options: [
-      "Tú",
-      "Tú (pero dices que ahorita)",
-      "Tú, pero mañana seguro sí",
-      "Todas las anteriores 👀"
-    ],
+    options: ["Tú", "Tú (pero dices que ahorita)", "Tú, pero mañana seguro sí", "Todas las anteriores 👀"],
     correctAnswer: "Todas las anteriores 👀",
     image: "trivia-22",
-    hint: "El agua no muerde… pero parece que sí 😂🚿"
+    hint: "El agua no muerde… pero parece que sí 😂🚿",
   },
   {
     id: 23,
-    type: 'multiple-choice',
-    question: '¿Qué es lo que más nos gusta hacer juntos?',
-    options: ['Ver películas', 'Salir a comer', 'Viajar', 'Todo lo anterior'],
-    correctAnswer: 'Todo lo anterior',
-    image: 'trivia-23',
-    hint: 'La mejor compañía para cualquier plan 🍿',
+    type: "multiple-choice",
+    question: "¿Qué es lo que más nos gusta hacer juntos?",
+    options: ["Ver películas", "Salir a comer", "Viajar", "Todo lo anterior"],
+    correctAnswer: "Todo lo anterior",
+    image: "trivia-23",
+    hint: "La mejor compañía para cualquier plan 🍿",
   },
   {
     id: 24,
     type: "multiple-choice",
     question: "¿Cómo describirías nuestra relación?",
-    options: [
-      "Divertida",
-      "Única",
-      "Auténtica",
-      "Todas las anteriores"
-    ],
-    correctAnswer: [
-      "Divertida",
-      "Única",
-      "Auténtica",
-      "Todas las anteriores"
-    ],
+    options: ["Divertida", "Única", "Auténtica", "Todas las anteriores"],
+    correctAnswer: ["Divertida", "Única", "Auténtica", "Todas las anteriores"],
     image: "trivia-24",
-    hint: "No hay respuesta incorrecta aquí."
-  }
+    hint: "No hay respuesta incorrecta aquí.",
+  },
 ];
 
 
@@ -401,54 +341,34 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
     setupTrivia();
   }, []);
   
-  // Effect for letters based on score (5, 10, 15)
-  useEffect(() => {
-    if (stage !== "playing") return;
-
-    const letterTriggers: (keyof typeof LETTERS)[] = [5, 10, 15];
-    
-    letterTriggers.forEach(triggerScore => {
-      if (score >= triggerScore && !shownLetters[triggerScore]) {
-        const letterData = LETTERS[triggerScore];
-        const letterImages = letterData.imageIds
-          .map(id => PlaceHolderImages.find(img => img.id === id))
-          .filter((img): img is ImagePlaceholder => !!img);
-          
-        setLetterToShow({ ...letterData, images: letterImages });
-        setShownLetters(prev => ({ ...prev, [triggerScore]: true }));
-      }
-    });
-
-  }, [score, stage, shownLetters]);
-
-
-  const currentQuestion = questions[currentQuestionIndex];
-  const imagePlaceholder = PlaceHolderImages.find(img => img.id === currentQuestion?.image);
-
-
   const handleAnswerChange = (value: string) => {
     if (answerStatus !== 'unanswered') return;
      if (currentQuestion.type === 'open-ended' && flippedQuestions[currentQuestion.id]) return;
     setAnswers(prev => ({ ...prev, [currentQuestion.id]: value }));
   };
   
+  const showLetterIfNeeded = (trigger: keyof typeof LETTERS) => {
+    if (LETTERS[trigger] && !shownLetters[trigger]) {
+      const letterData = LETTERS[trigger];
+      const letterImages = letterData.imageIds
+        .map(id => PlaceHolderImages.find(img => img.id === id))
+        .filter((img): img is ImagePlaceholder => !!img);
+        
+      setLetterToShow({ ...letterData, images: letterImages });
+      setShownLetters(prev => ({ ...prev, [trigger]: true }));
+      return true; // Indicates a letter was shown
+    }
+    return false;
+  };
+
   const goToNextQuestion = () => {
     setAnswerStatus("unanswered");
 
-    // Special trigger for Letter 4 after the last multiple-choice question
     const isLastMcq = currentQuestion?.type === 'multiple-choice' && questions[currentQuestionIndex + 1]?.type === 'open-ended';
     if (isLastMcq) {
-      const letterData = LETTERS[20];
-      if (letterData && !shownLetters[20]) {
-        const letterImages = letterData.imageIds
-          .map(id => PlaceHolderImages.find(img => img.id === id))
-          .filter((img): img is ImagePlaceholder => !!img);
-          
-        setLetterToShow({ ...letterData, images: letterImages });
-        setShownLetters(prev => ({ ...prev, [20]: true }));
-      }
+      if(showLetterIfNeeded(20)) return; // Show letter and pause
     }
-
+    
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
@@ -496,13 +416,18 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
     }
     
     if (isCorrect) {
-        setScore(prev => prev + 1);
-        setAnswerStatus('correct');
+        const newScore = score + 1;
+        setScore(newScore);
+        
+        const wasLetterShown = (newScore === 5 || newScore === 10 || newScore === 15) ? showLetterIfNeeded(newScore as keyof typeof LETTERS) : false;
+
+        if (!wasLetterShown) {
+          setAnswerStatus('correct');
+        }
     } else {
         setAnswerStatus('incorrect');
     }
   };
-
 
   const handleRetry = () => {
     setupTrivia();
@@ -589,7 +514,7 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
               <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5">
                 <div className="relative w-full aspect-video rounded-t-xl overflow-hidden bg-black/20">
                   <Image
-                    src={`${imagePlaceholder.imageUrl}?v=1`}
+                    src={`${imagePlaceholder.imageUrl}?v=2`}
                     alt={imagePlaceholder.description}
                     data-ai-hint={imagePlaceholder.imageHint}
                     fill
@@ -771,7 +696,13 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
       <RomanticLetterModal
         isOpen={!!letterToShow}
         letter={letterToShow}
-        onClose={() => setLetterToShow(null)}
+        onClose={() => {
+          setLetterToShow(null);
+          // Special case for letter 20, move to next question after closing.
+          if (shownLetters[20]) {
+            goToNextQuestion();
+          }
+        }}
       />
 
       <FifteenPuzzleModal 
