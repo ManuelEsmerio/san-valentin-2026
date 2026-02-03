@@ -13,10 +13,10 @@ import RomanticLetterModal from "./RomanticLetterModal";
 import { PlaceHolderImages, type ImagePlaceholder } from "@/lib/placeholder-images";
 import { cn } from "@/lib/utils";
 import FifteenPuzzleModal from "./FifteenPuzzleModal";
+import CircularProgress from "./CircularProgress";
 
 type TriviaStageProps = {
   onSuccess: () => void;
-  onProgress: (progress: { current: number; total: number }) => void;
 };
 
 type MultipleChoiceQuestion = {
@@ -358,7 +358,7 @@ const shuffleArray = (array: any[]) => {
   return array;
 }
 
-export default function TriviaStage({ onSuccess, onProgress }: TriviaStageProps) {
+export default function TriviaStage({ onSuccess }: TriviaStageProps) {
   const [questions, setQuestions] = useState<TriviaQuestion[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
@@ -375,7 +375,8 @@ export default function TriviaStage({ onSuccess, onProgress }: TriviaStageProps)
 
   const setupTrivia = () => {
     const shuffledMcq = shuffleArray([...multipleChoiceQuestions]);
-    setQuestions([...shuffledMcq, ...openEndedQuestions]);
+    const allQuestions = [...shuffledMcq, ...openEndedQuestions];
+    setQuestions(allQuestions);
     setCurrentQuestionIndex(0);
     setAnswers({});
     setScore(0);
@@ -403,15 +404,6 @@ export default function TriviaStage({ onSuccess, onProgress }: TriviaStageProps)
         setShownLetters(prev => ({ ...prev, [score]: true }));
     }
   }, [score, shownLetters, stage]);
-
-  useEffect(() => {
-    if (stage === 'playing' && questions.length > 0) {
-      onProgress({
-        current: currentQuestionIndex + 1,
-        total: questions.length,
-      });
-    }
-  }, [currentQuestionIndex, questions, stage, onProgress]);
 
   const currentQuestion = questions[currentQuestionIndex];
   const imagePlaceholder = PlaceHolderImages.find(img => img.id === currentQuestion?.image);
@@ -549,12 +541,14 @@ export default function TriviaStage({ onSuccess, onProgress }: TriviaStageProps)
       )
   }
 
-  if (!currentQuestion || stage !== 'playing') {
+  if (!currentQuestion || stage !== 'playing' || !questions.length) {
     return null;
   }
 
   return (
     <div className="w-full flex flex-col gap-6 items-center">
+      <CircularProgress current={currentQuestionIndex + 1} total={questions.length} />
+
       <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5">
         {imagePlaceholder && (
           <div className="relative w-full aspect-[21/9] rounded-t-xl overflow-hidden bg-black/20">

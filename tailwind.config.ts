@@ -111,6 +111,10 @@ export default {
         'heart-fly-6': { '0%': { transform: 'translate(0, 0) scale(0.5)', opacity: '0' }, '1%': { opacity: '1' }, '25%': { transform: 'translate(-80px, 80px) scale(1.2)', opacity: '0' }, '100%': { opacity: '0' } },
         'heart-fly-7': { '0%': { transform: 'translate(0, 0) scale(0.5)', opacity: '0' }, '1%': { opacity: '1' }, '25%': { transform: 'translate(-120px, 0) scale(1.2)', opacity: '0' }, '100%': { opacity: '0' } },
         'heart-fly-8': { '0%': { transform: 'translate(0, 0) scale(0.5)', opacity: '0' }, '1%': { opacity: '1' }, '25%': { transform: 'translate(-80px, -80px) scale(1.2)', opacity: '0' }, '100%': { opacity: '0' } },
+        'confetti-fall': {
+          '0%': { transform: 'translateY(-10%) rotate(0deg)', opacity: '1' },
+          '100%': { transform: 'translateY(120%) rotate(360deg)', opacity: '0' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -126,6 +130,7 @@ export default {
         'heart-fly-6': 'heart-fly-6 4s ease-out infinite',
         'heart-fly-7': 'heart-fly-7 4s ease-out infinite',
         'heart-fly-8': 'heart-fly-8 4s ease-out infinite',
+        'confetti-fall': 'confetti-fall 2s linear infinite',
       },
     },
   },
