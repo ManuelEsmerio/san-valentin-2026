@@ -31,11 +31,12 @@ type MultipleChoiceQuestion = {
 };
 
 type OpenEndedQuestion = {
-  id: number;
-  type: "open-ended";
-  question: string;
-  image: string;
-  hint: string;
+    id: number;
+    type: 'open-ended';
+    question: string;
+    creatorAnswer: string;
+    image: string;
+    hint: string;
 };
 
 type TriviaQuestion = MultipleChoiceQuestion | OpenEndedQuestion;
@@ -55,8 +56,30 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
 ];
 
 const openEndedQuestions: OpenEndedQuestion[] = [
-    { id: 11, type: "open-ended", question: "¿Qué fue lo primero que te hizo sentir algo especial por mí?", image: 'open-ended-1', hint: "Piensa en nuestros inicios..." },
-    { id: 12, type: "open-ended", question: "¿Qué es lo que más te gusta de nosotros como pareja?", image: 'open-ended-2', hint: "Lo que nos hace... nosotros." },
+    {
+        id: 11,
+        type: 'open-ended',
+        question: '¿Qué es lo que más valoras cuando te sientes en calma conmigo?',
+        creatorAnswer: 'Valoro que, aun con malentendidos, conversaciones incómodas o silencios, sigamos eligiendo quedarnos un momento más y no salir corriendo cuando algo duele.',
+        image: 'open-ended-1',
+        hint: 'Piensa en lo que nos une en momentos de paz.'
+    },
+    {
+        id: 12,
+        type: 'open-ended',
+        question: '¿Qué sientes que nos ha costado más últimamente?',
+        creatorAnswer: 'Siento que nos ha costado escucharnos de verdad, sin sentir que tenemos que defendernos o estar a la defensiva todo el tiempo.',
+        image: 'open-ended-2',
+        hint: 'Una reflexión sobre nuestra comunicación.'
+    },
+    {
+        id: 13,
+        type: 'open-ended',
+        question: '¿Qué necesitarías hoy para sentirte tranquila, sin presión?',
+        creatorAnswer: 'Estar presente, apoyar en lo que esté en mis manos y respetar tu ritmo, sin exigencias ni promesas vacías.',
+        image: 'open-ended-3',
+        hint: 'Una pregunta sobre el presente y la paz.'
+    }
 ];
 
 const LETTERS = {
@@ -115,6 +138,8 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
   const [letterToShow, setLetterToShow] = useState<{ title: string; content: string[]; images: ImagePlaceholder[] } | null>(null);
   const [shownLetters, setShownLetters] = useState<Record<number, boolean>>({});
   const [showAdventureModal, setShowAdventureModal] = useState(false);
+  const [flippedQuestions, setFlippedQuestions] = useState<Record<number, boolean>>({});
+
 
   const setupTrivia = () => {
     const shuffledMcq = shuffleArray([...multipleChoiceQuestions]);
@@ -126,6 +151,7 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
     setStage("playing");
     setShownLetters({});
     setShowAdventureModal(false);
+    setFlippedQuestions({});
   };
 
   useEffect(() => {
@@ -153,39 +179,43 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
 
   const handleAnswerChange = (value: string) => {
     if (answerStatus !== 'unanswered') return;
+     if (currentQuestion.type === 'open-ended' && flippedQuestions[currentQuestion.id]) return;
     setAnswers(prev => ({ ...prev, [currentQuestion.id]: value }));
+  };
+  
+  const goToNextQuestion = () => {
+    setAnswerStatus("unanswered");
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+    } else {
+      if (score >= MIN_CORRECT_ANSWERS) {
+        setStage("finished");
+      } else {
+        setStage("failed");
+      }
+    }
   };
 
   const handleNext = () => {
-    // If we are showing feedback, move to the next question
     if (answerStatus !== 'unanswered') {
-      setAnswerStatus('unanswered');
-      if (currentQuestionIndex < questions.length - 1) {
-        setCurrentQuestionIndex(currentQuestionIndex + 1);
-      } else {
-        if (score >= MIN_CORRECT_ANSWERS) {
-          setStage("finished");
-        } else {
-          setStage("failed");
-        }
-      }
+      goToNextQuestion();
       return;
     }
 
-    // If it's an open-ended question, just move to the next one
     if (currentQuestion.type === 'open-ended') {
-      if (currentQuestionIndex < questions.length - 1) {
-        setCurrentQuestionIndex(currentQuestionIndex + 1);
+      if (flippedQuestions[currentQuestion.id]) {
+        goToNextQuestion();
       } else {
-         if (score >= MIN_CORRECT_ANSWERS) {
-          setStage("finished");
-        } else {
-          setStage("failed");
+        const currentAnswer = answers[currentQuestion.id];
+        if (!currentAnswer || currentAnswer.trim() === '') {
+            toast({ title: "Un momento...", description: "Por favor, comparte tus pensamientos antes de continuar." });
+            return;
         }
+        setFlippedQuestions(prev => ({ ...prev, [currentQuestion.id]: true }));
       }
       return;
     }
-
+    
     const currentAnswer = answers[currentQuestion.id];
     if (!currentAnswer) {
         toast({ title: "Espera un poquito", description: "Debes seleccionar una respuesta." });
@@ -208,6 +238,7 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
         setAnswerStatus('incorrect');
     }
   };
+
 
   const handleRetry = () => {
     setupTrivia();
@@ -308,19 +339,35 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
           )}
 
           {currentQuestion.type === 'open-ended' && (
-            <div className="pt-2">
-              <Textarea 
-                placeholder="Escribe tu respuesta aquí, mi chula..."
-                className="min-h-[120px] text-base"
-                value={answers[currentQuestion.id] || ""}
-                onChange={(e) => handleAnswerChange(e.target.value)}
-              />
+            <div className="pt-2 [perspective:1000px]">
+                <div
+                    className={cn(
+                        "relative w-full min-h-[160px] [transform-style:preserve-3d] transition-transform duration-1000",
+                        flippedQuestions[currentQuestion.id] && "[transform:rotateY(180deg)]"
+                    )}
+                >
+                    <div className="absolute w-full h-full [backface-visibility:hidden]">
+                        <Textarea
+                        placeholder="Escribe tu respuesta aquí, mi chula..."
+                        className="min-h-[160px] text-base"
+                        value={answers[currentQuestion.id] || ""}
+                        onChange={(e) => handleAnswerChange(e.target.value)}
+                        disabled={!!flippedQuestions[currentQuestion.id]}
+                        />
+                    </div>
+
+                    <div className="absolute w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] bg-primary/10 p-6 rounded-lg flex flex-col justify-center items-center text-center">
+                        <p className="text-foreground/80 italic text-lg">
+                            &ldquo;{(currentQuestion as OpenEndedQuestion).creatorAnswer}&rdquo;
+                        </p>
+                    </div>
+                </div>
             </div>
-          )}
+            )}
         </div>
       </div>
 
-      {answerStatus !== 'unanswered' && (
+      {answerStatus !== 'unanswered' ? (
         <div className={cn(
           "w-full p-4 rounded-lg flex items-center gap-4 animate-fade-in",
           answerStatus === 'correct' ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-300' : 'bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-300'
@@ -334,13 +381,19 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
             Siguiente <span className="material-symbols-outlined ml-2 text-base">arrow_forward</span>
           </Button>
         </div>
-      )}
-
-      {answerStatus === 'unanswered' && (
-        <Button onClick={handleNext} className="w-full max-w-sm h-12 text-lg font-bold">
-          Siguiente
+      ) : (
+        <Button 
+            onClick={handleNext} 
+            className="w-full max-w-sm h-12 text-lg font-bold"
+            disabled={currentQuestion.type === 'open-ended' && !answers[currentQuestion.id] && !flippedQuestions[currentQuestion.id]}
+        >
+          {currentQuestion.type === 'open-ended' 
+            ? (flippedQuestions[currentQuestion.id] ? 'Continuar' : 'Revelar mi respuesta')
+            : 'Siguiente'
+          }
         </Button>
       )}
+
 
       <RomanticLetterModal
         isOpen={!!letterToShow}

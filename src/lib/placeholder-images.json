@@ -122,15 +122,21 @@
     },
     {
       "id": "open-ended-1",
-      "description": "Imagen para la pregunta abierta #11: ¿Qué fue lo primero que te hizo sentir algo especial por mí?",
+      "description": "Imagen para la pregunta abierta #11: ¿Qué es lo que más valoras cuando te sientes en calma conmigo?",
       "imageUrl": "/image/open-ended-1.jpg",
       "imageHint": "special feeling"
     },
     {
       "id": "open-ended-2",
-      "description": "Imagen para la pregunta abierta #12: ¿Qué es lo que más te gusta de nosotros como pareja?",
+      "description": "Imagen para la pregunta abierta #12: ¿Qué sientes que nos ha costado más últimamente?",
       "imageUrl": "/image/open-ended-2.jpg",
       "imageHint": "happy couple"
+    },
+    {
+      "id": "open-ended-3",
+      "description": "Imagen para la pregunta abierta #13: ¿Qué necesitarías hoy para sentirte tranquila, sin presión?",
+      "imageUrl": "/image/open-ended-3.jpg",
+      "imageHint": "peaceful moment"
     },
     {
       "id": "adventure-modal-img",
