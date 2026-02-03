@@ -183,31 +183,35 @@ export default function LoginStage({ onSuccess }: LoginStageProps) {
                           IconRight: () => <ChevronRight className="h-6 w-6" />,
                           Day: ({ date, ...dayProps }: DayProps) => {
                             if (!date) {
-                                return <div className="h-8 w-8"></div>;
+                                return <td></td>;
                             }
                             const content = <>{format(date, 'd')}</>;
                             const commonClasses = 'h-8 w-8 flex items-center justify-center rounded-lg cursor-pointer';
 
                             if (dayProps.modifiers.selected) {
                                 return (
-                                    <button type="button" className={cn(commonClasses, "relative text-white")} onClick={() => field.onChange(date)}>
-                                        <span className="material-symbols-outlined text-primary text-3xl absolute z-0" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
-                                        <span className="relative z-10 text-[10px] font-bold">{content}</span>
-                                    </button>
+                                    <td>
+                                        <button type="button" className={cn(commonClasses, "relative text-white")} onClick={() => field.onChange(date)}>
+                                            <span className="material-symbols-outlined text-primary text-3xl absolute z-0" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
+                                            <span className="relative z-10 text-[10px] font-bold">{content}</span>
+                                        </button>
+                                    </td>
                                 );
                             }
                             if (dayProps.modifiers.outside) {
-                                return <div className={cn(commonClasses, 'text-stone-300 dark:text-stone-600')}>{content}</div>;
+                                return <td><div className={cn(commonClasses, 'text-stone-300 dark:text-stone-600')}>{content}</div></td>;
                             }
                             return (
-                                <button
-                                    type="button"
-                                    className={cn(commonClasses, !dayProps.modifiers.disabled && 'hover:bg-pink-50 dark:hover:bg-stone-700', dayProps.modifiers.disabled && 'opacity-50 cursor-not-allowed')}
-                                    disabled={dayProps.modifiers.disabled}
-                                    onClick={() => field.onChange(date)}
-                                >
-                                    {content}
-                                </button>
+                                <td>
+                                    <button
+                                        type="button"
+                                        className={cn(commonClasses, !dayProps.modifiers.disabled && 'hover:bg-pink-50 dark:hover:bg-stone-700', dayProps.modifiers.disabled && 'opacity-50 cursor-not-allowed')}
+                                        disabled={dayProps.modifiers.disabled}
+                                        onClick={() => field.onChange(date)}
+                                    >
+                                        {content}
+                                    </button>
+                                </td>
                             );
                           },
                         }}
