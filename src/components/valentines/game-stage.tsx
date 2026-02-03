@@ -1,5 +1,4 @@
-
-"use client";
+'use client';
 
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -305,12 +304,15 @@ export default function GameStage({ onSuccess }: GameStageProps) {
               <p className="text-muted-foreground text-xs mt-2 hidden md:block">
                 Usa las flechas del teclado para moverte.
               </p>
-              <Button
-                onClick={startGame}
-                className="min-w-[200px] h-12 px-6 text-base font-bold tracking-wider hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/30 z-10"
-              >
-                EMPEZAR JUEGO
-              </Button>
+              <div className="flex flex-col sm:flex-row items-center gap-4">
+                <Button
+                    onClick={startGame}
+                    className="min-w-[200px] h-12 px-6 text-base font-bold tracking-wider hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/30 z-10"
+                >
+                    EMPEZAR JUEGO
+                </Button>
+                <Button onClick={onSuccess} variant="outline">Saltar Desafío</Button>
+              </div>
             </div>
           )}
 
@@ -341,12 +343,17 @@ export default function GameStage({ onSuccess }: GameStageProps) {
                   ? "Has recolectado todos los corazones."
                   : `No te preocupes, ¡inténtalo de nuevo! La nueva meta es ${targetScore} corazones.`}
               </p>
-              <Button
-                onClick={gameState === 'won' ? () => setMapModalOpen(true) : startGame}
-                className="min-w-[200px] h-12 px-6 text-base font-bold tracking-wider"
-              >
-                {gameState === 'won' ? 'Ver Pista' : 'Reintentar'}
-              </Button>
+              <div className="flex flex-col sm:flex-row items-center gap-4">
+                <Button
+                    onClick={gameState === 'won' ? () => setMapModalOpen(true) : startGame}
+                    className="min-w-[200px] h-12 px-6 text-base font-bold tracking-wider"
+                >
+                    {gameState === 'won' ? 'Ver Pista' : 'Reintentar'}
+                </Button>
+                {gameState === 'lost' && (
+                    <Button onClick={onSuccess} variant="outline">Saltar Desafío</Button>
+                )}
+              </div>
               {gameState === "won" && <VictoryHearts />}
             </div>
           )}

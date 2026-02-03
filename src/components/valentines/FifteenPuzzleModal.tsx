@@ -212,14 +212,17 @@ export default function FifteenPuzzleModal({ isOpen, onSuccess }: FifteenPuzzleM
                           <BarChart2 className="text-primary h-5 w-5" />
                           <span className="font-bold text-sm">{moves} / {MOVE_LIMIT} Movimientos</span>
                       </div>
-                      <Button 
-                          onClick={handleRestart}
-                          variant="default"
-                          className="flex items-center gap-2 bg-primary text-white px-6 py-3 h-auto rounded-full font-bold hover:opacity-90 active:scale-95 transition-all shadow-lg shadow-pink-200 dark:shadow-none"
-                      >
-                          <RotateCcw className="h-4 w-4" />
-                          Reiniciar Juego
-                      </Button>
+                      <div className="flex items-center gap-4">
+                        <Button 
+                            onClick={handleRestart}
+                            variant="default"
+                            className="flex items-center gap-2 bg-primary text-white px-6 py-3 h-auto rounded-full font-bold hover:opacity-90 active:scale-95 transition-all shadow-lg shadow-pink-200 dark:shadow-none"
+                        >
+                            <RotateCcw className="h-4 w-4" />
+                            Reiniciar Juego
+                        </Button>
+                        <Button onClick={onSuccess} variant="outline">Saltar Desafío</Button>
+                      </div>
                   </div>
               </div>
           )}
@@ -235,11 +238,9 @@ export default function FifteenPuzzleModal({ isOpen, onSuccess }: FifteenPuzzleM
                           <RotateCcw className="mr-2 h-4 w-4" />
                           Reintentar
                       </Button>
-                      {losses >= 3 && (
-                          <Button onClick={onSuccess} variant="secondary" className="w-full h-12 text-base font-bold">
-                              Saltar Desafío
-                          </Button>
-                      )}
+                      <Button onClick={onSuccess} variant="secondary" className="w-full h-12 text-base font-bold">
+                          Saltar Desafío
+                      </Button>
                    </div>
               </div>
           )}

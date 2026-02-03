@@ -490,13 +490,16 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
             <p className="text-muted-foreground max-w-md">
                 Superaste el primer desafío y conseguiste la pista. Ahora, una trivia para demostrar cuánto nos conocemos. ¿Estás lista?
             </p>
-            <Button
-                onClick={() => setStage('playing')}
-                className="h-12 px-8 text-lg font-bold shadow-lg shadow-primary/20 mt-4"
-                size="lg"
-            >
-                ¡Estoy lista!
-            </Button>
+            <div className="flex flex-col sm:flex-row items-center gap-4 mt-4">
+                <Button
+                    onClick={() => setStage('playing')}
+                    className="h-12 px-8 text-lg font-bold shadow-lg shadow-primary/20"
+                    size="lg"
+                >
+                    ¡Estoy lista!
+                </Button>
+                <Button onClick={onSuccess} variant="outline">Saltar Desafío</Button>
+            </div>
         </div>
       </div>
     );
@@ -551,7 +554,7 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
       <div className="w-full flex flex-col items-center gap-6">
         {imagePlaceholder ? (
           // Layout WITH image
-          <div className="w-full flex flex-col md:flex-row items-center md:items-center gap-8">
+          <div className="w-full flex flex-col md:flex-row items-start md:items-center gap-8">
             <div className="w-full md:flex-1">
               <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5">
                 <div className="relative w-full aspect-video rounded-t-xl overflow-hidden bg-black/20">
@@ -734,6 +737,9 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
             }
           </Button>
         )}
+        <div className="w-full text-center">
+            <Button onClick={onSuccess} variant="link" className="text-muted-foreground text-xs">Saltar desafío (para pruebas)</Button>
+        </div>
       </div>
       
       <RomanticLetterModal
