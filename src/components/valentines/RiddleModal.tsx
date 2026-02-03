@@ -151,30 +151,33 @@ export default function RiddleModal({ isOpen, onSuccess, onBack }: RiddleModalPr
       case 'riddle':
         return (
           <div className="p-6 sm:p-8 text-center animate-fade-in">
-              <div className="flex justify-center items-center gap-2 mb-4">
-                  <Puzzle className="text-primary h-8 w-8" />
-                  <h2 className="text-2xl font-bold text-foreground">Acertijo Final</h2>
-              </div>
-              <p className="text-muted-foreground mb-6 whitespace-pre-line">
-                {RIDDLE_TEXT}
-              </p>
-              <div className="flex flex-col gap-3">
-                  <Input
-                    type="text"
-                    placeholder="Resuelve el acertijo"
-                    value={riddleValue}
-                    onKeyDown={(e) => e.key === 'Enter' && handleRiddleSubmit()}
-                    onChange={(e) => setRiddleValue(e.target.value)}
-                    className="h-12 text-center text-lg"
-                  />
-                  <Button onClick={handleRiddleSubmit} className="w-full h-12 text-lg font-bold">
-                      Resolver
-                  </Button>
-                   <Button variant="outline" onClick={onBack} className="w-full h-12 text-base font-bold">
-                      <ChevronLeft className="mr-2 h-4 w-4" />
-                      Volver al Mapa
-                  </Button>
-              </div>
+            <div className="flex justify-center items-center gap-2 mb-4">
+              <Puzzle className="text-primary h-8 w-8" />
+              <h2 className="text-2xl font-bold text-foreground">Acertijo Final</h2>
+            </div>
+            <p className="text-muted-foreground mb-4">
+              Ya estás en la parte final, solo un poco más. Tienes una llave en tus manos. Para descubrir qué abre, necesitas resolver este acertijo.
+            </p>
+            <p className="text-muted-foreground mb-6 whitespace-pre-line font-medium text-foreground/90">
+              {RIDDLE_TEXT}
+            </p>
+            <div className="flex flex-col gap-3">
+              <Input
+                type="text"
+                placeholder="¿Qué lugar es?"
+                value={riddleValue}
+                onKeyDown={(e) => e.key === 'Enter' && handleRiddleSubmit()}
+                onChange={(e) => setRiddleValue(e.target.value)}
+                className="h-12 text-center text-lg"
+              />
+              <Button onClick={handleRiddleSubmit} className="w-full h-12 text-lg font-bold">
+                Resolver
+              </Button>
+              <Button variant="outline" onClick={onBack} className="w-full h-12 text-base font-bold">
+                <ChevronLeft className="mr-2 h-4 w-4" />
+                Volver al Mapa
+              </Button>
+            </div>
           </div>
         );
       case 'success':
@@ -205,7 +208,7 @@ export default function RiddleModal({ isOpen, onSuccess, onBack }: RiddleModalPr
     >
       <div
         className={cn(
-          'relative w-full max-w-lg m-4 bg-card text-card-foreground rounded-2xl shadow-2xl shadow-primary/20 border border-primary/10 transition-all duration-300 dark:bg-zinc-900 dark:border-zinc-800',
+          'relative w-full max-w-2xl m-4 bg-card text-card-foreground rounded-2xl shadow-2xl shadow-primary/20 border border-primary/10 transition-all duration-300 dark:bg-zinc-900 dark:border-zinc-800',
           isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
         )}
         onClick={(e) => e.stopPropagation()}
