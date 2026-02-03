@@ -1,9 +1,15 @@
 'use client';
 
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
+import { Calendar as CalendarIcon } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
 import {
   Form,
   FormControl,
@@ -12,15 +18,24 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 
 const formSchema = z.object({
   nickname: z.string().min(1, 'Dime quién eres...'),
-  anniversary: z.string().min(1, 'Por favor, escribe nuestra fecha especial.'),
+  anniversary: z.string().min(1, 'Por favor, elige nuestra fecha especial.'),
 });
+
+const specialDate = new Date(2025, 3, 13); // April 13, 2025
 
 export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
   const { toast } = useToast();
+  const [month, setMonth] = useState(new Date(2025, 3));
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -33,8 +48,6 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
   function onSubmit(values: z.infer<typeof formSchema>) {
     const isNicknameCorrect =
       values.nickname.trim().toLowerCase() === 'mi chula';
-
-    // To allow continuing, we'll check for the string format
     const isDateCorrect = values.anniversary.trim() === '13/04/2025';
 
     if (isNicknameCorrect && isDateCorrect) {
@@ -108,22 +121,55 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
               control={form.control}
               name="anniversary"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="flex flex-col">
                   <label className="text-foreground text-base font-medium leading-normal pb-2">
-                    Nuestra fecha
+                    Nuestra fecha especial
                   </label>
-                  <FormControl>
-                    <div className="relative">
-                      <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary/50">
-                        calendar_month
-                      </span>
-                      <Input
-                        className="h-14 pl-12 pr-4 text-base bg-card focus:border-primary border-border"
-                        placeholder="DD/MM/YYYY"
-                        {...field}
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={'outline'}
+                          className={cn(
+                            'h-14 pl-3 text-left font-normal text-base relative',
+                            !field.value && 'text-muted-foreground'
+                          )}
+                        >
+                          <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary/50">
+                            calendar_month
+                          </span>
+                           <span className='pl-8'>
+                            {field.value ? (
+                                format(field.value, 'PPP', { locale: es })
+                            ) : (
+                                <span>Elige una fecha</span>
+                            )}
+                           </span>
+                          
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        locale={es}
+                        selected={field.value ? new Date(field.value.split('/').reverse().join('-') + 'T12:00:00') : undefined}
+                        onSelect={(date) =>
+                          field.onChange(date ? format(date, 'dd/MM/yyyy') : '')
+                        }
+                        month={month}
+                        onMonthChange={setMonth}
+                        modifiers={{ special_date: specialDate }}
+                        modifiersClassNames={{
+                          special_date: 'rdp-day_special_date',
+                        }}
+                        disabled={(date) =>
+                          date > new Date('2026-01-01') || date < new Date('2024-01-01')
+                        }
+                        initialFocus
                       />
-                    </div>
-                  </FormControl>
+                    </PopoverContent>
+                  </Popover>
                   <FormMessage />
                 </FormItem>
               )}
