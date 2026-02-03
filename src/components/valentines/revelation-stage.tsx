@@ -2,14 +2,57 @@
 
 import Image from "next/image";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
+import { cn } from "@/lib/utils";
+
+// New component for the firework effect
+const HeartFirework = ({ position, baseDelay = 0 }: { position: string, baseDelay?: number }) => {
+  const animations = [
+    'animate-heart-fly-1', 'animate-heart-fly-2', 'animate-heart-fly-3', 'animate-heart-fly-4',
+    'animate-heart-fly-5', 'animate-heart-fly-6', 'animate-heart-fly-7', 'animate-heart-fly-8'
+  ];
+
+  return (
+    <div className={cn("absolute", position)}>
+      {animations.map((anim, index) => (
+        <span
+          key={index}
+          className={cn(
+            'material-symbols-outlined text-primary absolute opacity-0 text-2xl',
+            anim
+          )}
+          // Stagger the animation of each particle in the burst
+          style={{ 
+            animationDelay: `${baseDelay + index * 75}ms`,
+            fontVariationSettings: "'FILL' 1"
+          }}
+        >
+          favorite
+        </span>
+      ))}
+    </div>
+  );
+};
 
 export default function RevelationStage() {
   const finalImage = PlaceHolderImages.find((img) => img.id === "couple-photo");
 
   return (
-    <div className="w-full bg-card dark:bg-stone-900 rounded-xl shadow-xl overflow-hidden border border-primary/5">
-      <div className="px-4 sm:px-8 pb-10 pt-6 flex flex-col items-center text-center gap-6">
-        <span className="material-symbols-outlined text-primary text-6xl animate-heart-beat">
+    <div className="w-full bg-card dark:bg-stone-900 rounded-xl shadow-xl overflow-hidden border border-primary/5 relative">
+      
+      {/* Container for fireworks to sit on top */}
+      <div className="absolute inset-0 w-full h-full pointer-events-none z-20 overflow-hidden rounded-xl">
+        <HeartFirework position="top-[20%] left-[15%]" baseDelay={300} />
+        <HeartFirework position="top-[30%] right-[20%]" baseDelay={600} />
+        <HeartFirework position="bottom-[35%] left-[25%]" baseDelay={900} />
+        <HeartFirework position="bottom-[25%] right-[10%]" baseDelay={1200} />
+      </div>
+
+      {/* Main content, with a lower z-index */}
+      <div className="px-4 sm:px-8 pb-10 pt-6 flex flex-col items-center text-center gap-6 z-10 relative">
+        <span 
+          className="material-symbols-outlined text-primary text-6xl animate-heart-beat"
+          style={{ fontVariationSettings: "'FILL' 1" }}
+        >
           favorite
         </span>
         <h2 className="text-foreground text-3xl font-bold leading-tight tracking-[-0.015em]">
