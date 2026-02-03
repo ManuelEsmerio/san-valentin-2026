@@ -2,35 +2,31 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import {
-  Gamepad2,
-  ArrowUp,
-  ArrowDown,
-  ArrowLeft,
-  ArrowRight,
-} from "lucide-react";
+import { Gamepad2, Heart, Lock } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Progress } from "../ui/progress";
 
 const GRID_SIZE = 20;
 const CANVAS_SIZE = 400;
 const TILE_SIZE = CANVAS_SIZE / GRID_SIZE;
-const TARGET_SCORE = 10;
+const TARGET_SCORE = 20;
 
 type GameStageProps = {
   onSuccess: () => void;
 };
 
+type GameState = "idle" | "playing" | "won" | "lost";
+
 export default function GameStage({ onSuccess }: GameStageProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [score, setScore] = useState(0);
-  const [gameOver, setGameOver] = useState(false);
-  const [gameWon, setGameWon] = useState(false);
+  const [highScore, setHighScore] = useState(0);
+  const [gameState, setGameState] = useState<GameState>("idle");
   const gameLoopRef = useRef<number>();
 
   const snakeRef = useRef([{ x: 10, y: 10 }]);
   const foodRef = useRef({ x: 15, y: 15 });
   const directionRef = useRef({ x: 0, y: -1 });
-  const scoreRef = useRef(0);
 
   const drawHeart = (
     ctx: CanvasRenderingContext2D,
@@ -64,6 +60,12 @@ export default function GameStage({ onSuccess }: GameStageProps) {
     ctx.bezierCurveTo(x + width / 2, y, x, y, x, y + topCurveHeight);
     ctx.closePath();
     ctx.fill();
+    ctx.globalCompositeOperation = "destination-over";
+  };
+
+  const startGame = () => {
+    resetGame();
+    setGameState("playing");
   };
 
   const resetGame = () => {
@@ -73,54 +75,17 @@ export default function GameStage({ onSuccess }: GameStageProps) {
       y: Math.floor(Math.random() * GRID_SIZE),
     };
     directionRef.current = { x: 0, y: -1 };
-    scoreRef.current = 0;
     setScore(0);
-    setGameOver(false);
-    setGameWon(false);
-  };
-
-  const handleDirectionChange = (
-    direction: "up" | "down" | "left" | "right"
-  ) => {
-    const newDirection = { ...directionRef.current };
-    switch (direction) {
-      case "up":
-        if (directionRef.current.y === 0) {
-          newDirection.y = -1;
-          newDirection.x = 0;
-        }
-        break;
-      case "down":
-        if (directionRef.current.y === 0) {
-          newDirection.y = 1;
-          newDirection.x = 0;
-        }
-        break;
-      case "left":
-        if (directionRef.current.x === 0) {
-          newDirection.x = -1;
-          newDirection.y = 0;
-        }
-        break;
-      case "right":
-        if (directionRef.current.x === 0) {
-          newDirection.x = 1;
-          newDirection.y = 0;
-        }
-        break;
-    }
-    directionRef.current = newDirection;
+    setGameState("idle");
   };
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas || gameState !== "playing") return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     const gameTick = () => {
-      if (gameOver || gameWon) return;
-
       const snake = snakeRef.current;
       const head = {
         x: snake[0].x + directionRef.current.x,
@@ -131,27 +96,23 @@ export default function GameStage({ onSuccess }: GameStageProps) {
         head.x < 0 ||
         head.x >= GRID_SIZE ||
         head.y < 0 ||
-        head.y >= GRID_SIZE
+        head.y >= GRID_SIZE ||
+        snake.some((segment) => segment.x === head.x && segment.y === head.y)
       ) {
-        setGameOver(true);
+        setGameState("lost");
+        if (score > highScore) setHighScore(score);
         return;
-      }
-
-      for (let i = 1; i < snake.length; i++) {
-        if (head.x === snake[i].x && head.y === snake[i].y) {
-          setGameOver(true);
-          return;
-        }
       }
 
       snake.unshift(head);
 
       if (head.x === foodRef.current.x && head.y === foodRef.current.y) {
-        scoreRef.current += 1;
-        setScore(scoreRef.current);
+        const newScore = score + 1;
+        setScore(newScore);
 
-        if (scoreRef.current >= TARGET_SCORE) {
-          setGameWon(true);
+        if (newScore >= TARGET_SCORE) {
+          setGameState("won");
+          if (newScore > highScore) setHighScore(newScore);
           return;
         }
 
@@ -174,14 +135,15 @@ export default function GameStage({ onSuccess }: GameStageProps) {
 
       ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
-      snake.forEach((segment) => {
+      snake.forEach((segment, index) => {
+        const opacity = Math.max(0.4, 1 - index * 0.1);
         drawHeart(
           ctx,
           segment.x * TILE_SIZE + TILE_SIZE / 2,
           segment.y * TILE_SIZE,
-          TILE_SIZE * 0.8,
-          TILE_SIZE * 0.8,
-          "#F08080"
+          TILE_SIZE * 0.9,
+          TILE_SIZE * 0.9,
+          `hsla(var(--primary), ${opacity})`
         );
       });
 
@@ -196,25 +158,28 @@ export default function GameStage({ onSuccess }: GameStageProps) {
     };
 
     const runGame = () => {
-      gameTick();
-      gameLoopRef.current = window.setTimeout(runGame, 150);
+      if (gameState === "playing") {
+        gameTick();
+        gameLoopRef.current = window.setTimeout(runGame, 150);
+      }
     };
 
     runGame();
 
     const handleKeyDown = (e: KeyboardEvent) => {
+      const dir = directionRef.current;
       switch (e.key) {
         case "ArrowUp":
-          handleDirectionChange("up");
+          if (dir.y === 0) directionRef.current = { x: 0, y: -1 };
           break;
         case "ArrowDown":
-          handleDirectionChange("down");
+          if (dir.y === 0) directionRef.current = { x: 0, y: 1 };
           break;
         case "ArrowLeft":
-          handleDirectionChange("left");
+          if (dir.x === 0) directionRef.current = { x: -1, y: 0 };
           break;
         case "ArrowRight":
-          handleDirectionChange("right");
+          if (dir.x === 0) directionRef.current = { x: 1, y: 0 };
           break;
       }
     };
@@ -225,107 +190,131 @@ export default function GameStage({ onSuccess }: GameStageProps) {
       window.removeEventListener("keydown", handleKeyDown);
       window.clearTimeout(gameLoopRef.current);
     };
-  }, [gameOver, gameWon]);
+  }, [gameState, score, highScore]);
 
-  useEffect(resetGame, []);
+  const heartsNeeded = TARGET_SCORE - score;
+  const hintProgress = (score / TARGET_SCORE) * 100;
 
   return (
-    <div className="w-full bg-card dark:bg-stone-900 rounded-xl shadow-xl overflow-hidden border border-primary/5">
-      <div className="p-4 sm:p-8 flex flex-col items-center gap-4">
-        <div className="flex justify-between w-full items-center px-4 py-2 bg-muted rounded-md">
-          <div className="font-body">
-            Puntuación: {score} / {TARGET_SCORE}
-          </div>
-          <div className="font-body flex items-center gap-2 text-sm">
-            <Gamepad2 className="w-4 h-4" /> Usa las flechas
-          </div>
+    <div className="w-full flex flex-col items-center gap-6">
+      <div className="flex flex-col items-center gap-2 rounded-xl p-6 border border-primary/20 bg-card shadow-sm w-64">
+        <div className="flex items-center gap-2 text-primary">
+          <Heart className="w-4 h-4" />
+          <p className="text-foreground text-base font-medium leading-normal">
+            Corazones Recolectados
+          </p>
         </div>
-        <canvas
-          ref={canvasRef}
-          width={CANVAS_SIZE}
-          height={CANVAS_SIZE}
-          className="rounded-lg border bg-card"
-          style={{ maxWidth: "100%", height: "auto" }}
-        />
-
-        <div className="mt-4 grid grid-cols-3 justify-items-center gap-2 md:hidden w-48">
-          <div />
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-16 w-16 rounded-full"
-            onClick={() => handleDirectionChange("up")}
-          >
-            <ArrowUp className="h-8 w-8" />
-          </Button>
-          <div />
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-16 w-16 rounded-full"
-            onClick={() => handleDirectionChange("left")}
-          >
-            <ArrowLeft className="h-8 w-8" />
-          </Button>
-          <div />
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-16 w-16 rounded-full"
-            onClick={() => handleDirectionChange("right")}
-          >
-            <ArrowRight className="h-8 w-8" />
-          </Button>
-          <div />
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-16 w-16 rounded-full"
-            onClick={() => handleDirectionChange("down")}
-          >
-            <ArrowDown className="h-8 w-8" />
-          </Button>
-          <div />
-        </div>
-
-        {gameWon && (
-          <Alert className="animate-fade-in">
-            <AlertTitle className="font-headline">
-              ¡Felicidades, lo lograste!
-            </AlertTitle>
-            <AlertDescription className="font-body space-y-4">
-              <p>
-                💌 Primera pista: Ve a estas coordenadas y busca tu sorpresa:{" "}
-                <strong>19.4326° N, 99.1332° W</strong>
-              </p>
-              <Button
-                onClick={onSuccess}
-                className="w-full h-12 text-lg font-bold"
-              >
-                Siguiente paso
-              </Button>
-            </AlertDescription>
-          </Alert>
-        )}
-        {gameOver && !gameWon && (
-          <Alert variant="destructive" className="animate-fade-in">
-            <AlertTitle className="font-headline">¡Oh no!</AlertTitle>
-            <AlertDescription className="font-body space-y-4">
-              <p>
-                No te preocupes, el amor no tiene 'game over'. ¡Inténtalo de
-                nuevo!
-              </p>
-              <Button
-                onClick={resetGame}
-                variant="destructive"
-                className="w-full h-12 text-lg font-bold"
-              >
-                Reintentar
-              </Button>
-            </AlertDescription>
-          </Alert>
+        <p className="text-primary tracking-light text-4xl font-bold leading-tight">
+          {score}
+        </p>
+        {score > 0 && score >= highScore && (
+          <p className="text-green-600 text-sm font-medium leading-normal">
+            ¡Nuevo récord personal!
+          </p>
         )}
       </div>
+
+      <div className="w-full p-2 rounded-xl border-2 border-primary/20 bg-card/80">
+        <div
+          className={cn(
+            "flex flex-col items-center gap-6 rounded-lg border-4 border-primary/30 bg-card/90 px-6 py-10 shadow-inner relative overflow-hidden min-h-[400px] justify-center",
+            "dark:bg-black/20"
+          )}
+        >
+          {gameState === "idle" && (
+            <div className="flex max-w-[480px] flex-col items-center gap-4 z-10 text-center animate-fade-in">
+              <div className="w-full h-48 bg-accent/30 dark:bg-accent/10 rounded-lg border border-primary/10 flex items-center justify-center relative overflow-hidden">
+                <div className="flex gap-1 absolute top-20 left-20">
+                  <Heart className="text-primary/80 fill-primary/80" />
+                  <Heart className="text-primary/60 fill-primary/60" />
+                  <Heart className="text-primary/40 fill-primary/40" />
+                </div>
+                <div className="absolute bottom-12 right-24 animate-pulse">
+                  <Heart className="text-primary fill-primary" />
+                </div>
+                <p className="text-foreground/20 font-bold uppercase tracking-widest text-xl">
+                  Heart Snake Board
+                </p>
+              </div>
+              <p className="text-foreground text-lg font-bold leading-tight tracking-[-0.015em]">
+                Ready to Play?
+              </p>
+              <p className="text-muted-foreground text-sm font-normal leading-normal max-w-xs">
+                Recoge {TARGET_SCORE} corazones para desbloquear la primera pista de
+                tu regalo de San Valentín.
+              </p>
+              <Button
+                onClick={startGame}
+                className="min-w-[200px] h-12 px-6 text-base font-bold tracking-wider hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/30 z-10"
+              >
+                EMPEZAR JUEGO
+              </Button>
+            </div>
+          )}
+
+          {(gameState === "playing" ||
+            gameState === "won" ||
+            gameState === "lost") && (
+            <canvas
+              ref={canvasRef}
+              width={CANVAS_SIZE}
+              height={CANVAS_SIZE}
+              className={cn(
+                "rounded-lg bg-accent/20",
+                (gameState === "lost" || gameState === "won") && "opacity-20"
+              )}
+              style={{ maxWidth: "100%", height: "auto" }}
+            />
+          )}
+
+          {(gameState === "won" || gameState === "lost") && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4 animate-fade-in z-20">
+              <h3 className="text-2xl font-bold text-foreground">
+                {gameState === "won"
+                  ? "¡Felicidades, lo lograste!"
+                  : "¡Oh no! Fin del juego"}
+              </h3>
+              <p className="text-muted-foreground mt-2 mb-6">
+                {gameState === "won"
+                  ? "Has recolectado todos los corazones."
+                  : "No te preocupes, ¡inténtalo de nuevo!"}
+              </p>
+              <Button
+                onClick={gameState === 'won' ? onSuccess : startGame}
+                className="min-w-[200px] h-12 px-6 text-base font-bold tracking-wider"
+              >
+                {gameState === 'won' ? 'Siguiente Pista' : 'Reintentar'}
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {gameState !== "won" && (
+        <div className="w-full mt-2 p-6 bg-primary/10 border border-dashed border-primary/40 rounded-xl flex flex-col items-center gap-4">
+          <div className="flex items-center gap-3">
+            <Lock className="text-primary" />
+            <h3 className="text-primary font-bold text-lg">
+              Pista 1: Bloqueada
+            </h3>
+          </div>
+          <p className="text-center text-sm text-foreground/70">
+            {score < TARGET_SCORE
+              ? `Necesitas ${heartsNeeded} corazones más para revelar la primera ubicación de nuestra cita especial.`
+              : "¡Pista desbloqueada! Completa el juego para verla."}
+          </p>
+          <Progress value={hintProgress} className="h-2 w-full" />
+        </div>
+      )}
+
+      {gameState === 'won' && (
+        <div className="w-full mt-2 p-6 bg-green-500/10 border border-dashed border-green-500/40 rounded-xl flex flex-col items-center gap-4 text-center animate-fade-in">
+           <h3 className="text-green-500 font-bold text-lg">
+              Pista 1: ¡Desbloqueada!
+            </h3>
+            <p className="text-foreground/80">Ve a estas coordenadas y busca tu sorpresa: <strong>19.4326° N, 99.1332° W</strong></p>
+        </div>
+      )}
     </div>
   );
 }

@@ -22,7 +22,7 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@400;500;600;700&display=swap"
           rel="stylesheet"
         />
         <link
@@ -31,6 +31,7 @@ export default function RootLayout({
         />
       </head>
       <body className="font-body antialiased bg-background text-foreground">
+        <div className="fixed inset-0 heart-pattern pointer-events-none -z-10"></div>
         <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/10 bg-card/50 backdrop-blur-sm px-4 sm:px-10 py-3 sticky top-0 z-50">
           <div className="flex items-center gap-4 text-primary">
             <span className="material-symbols-outlined text-3xl">favorite</span>
@@ -40,17 +41,6 @@ export default function RootLayout({
           </div>
         </header>
         <main className="flex-1 flex flex-col items-center justify-center p-4 relative overflow-hidden">
-          <div className="absolute top-20 left-10 text-primary/20 select-none -z-10">
-            <span className="material-symbols-outlined text-6xl">favorite</span>
-          </div>
-          <div className="absolute bottom-20 right-10 text-primary/10 select-none -z-10">
-            <span className="material-symbols-outlined text-[120px]">
-              favorite
-            </span>
-          </div>
-          <div className="absolute top-1/2 left-20 text-primary/15 select-none -z-10">
-            <span className="material-symbols-outlined text-4xl">favorite</span>
-          </div>
           <div className="w-full max-w-[960px] flex flex-col items-center">
             {children}
           </div>

@@ -6,6 +6,7 @@ import WelcomeStage from '@/components/valentines/welcome-stage';
 import GameStage from '@/components/valentines/game-stage';
 import TriviaStage from '@/components/valentines/trivia-stage';
 import RevelationStage from '@/components/valentines/revelation-stage';
+import { Progress } from '@/components/ui/progress';
 
 type Stage = 'login' | 'welcome' | 'game' | 'trivia' | 'revelation';
 
@@ -22,6 +23,7 @@ export default function Home() {
 
   const currentStep = stageInfo[stage]?.step;
   const currentTitle = stageInfo[stage]?.title;
+  const progress = Math.max(0, currentStep - 1) / 3 * 100;
 
   const renderStage = () => {
     switch (stage) {
@@ -44,40 +46,35 @@ export default function Home() {
 
   return (
     <>
-      <div className="text-center mb-8">
+      <div className="w-full max-w-lg text-center mb-6">
         {stage !== 'welcome' && stage !== 'revelation' && (
           <>
-            <h1 className="text-primary tracking-light text-[24px] sm:text-[32px] font-bold leading-tight px-4 pb-1">
-              Paso {currentStep} de 3
+            <h1 className="text-foreground tracking-light text-[24px] sm:text-[40px] font-bold leading-tight px-4 pb-1">
+              Step {currentStep}: {currentTitle}
             </h1>
-            <p className="text-muted-foreground text-lg font-medium">
-              {currentTitle}
+            <p className="text-primary text-lg font-medium">
+              {stage === 'game' ? 'Usa las flechas del teclado para recolectar corazones' : 'Demuestra cuánto nos conocemos'}
             </p>
           </>
         )}
       </div>
 
-      <div className="w-full max-w-lg">{renderStage()}</div>
-
-      {stage !== 'welcome' && stage !== 'revelation' && (
-        <div className="mt-12 flex gap-2">
-          <div
-            className={`h-2 w-2 rounded-full transition-all ${
-              currentStep === 1 ? 'w-8 bg-primary' : 'bg-primary/20'
-            }`}
-          ></div>
-          <div
-            className={`h-2 w-2 rounded-full transition-all ${
-              currentStep === 2 ? 'w-8 bg-primary' : 'bg-primary/20'
-            }`}
-          ></div>
-          <div
-            className={`h-2 w-2 rounded-full transition-all ${
-              currentStep === 3 ? 'w-8 bg-primary' : 'bg-primary/20'
-            }`}
-          ></div>
+      {stage !== 'welcome' && stage !== 'revelation' && stage !== 'login' && (
+        <div className="w-full max-w-lg flex flex-col gap-3 p-4 bg-card/50 rounded-xl mb-6 border border-border">
+          <div className="flex gap-6 justify-between">
+            <p className="text-foreground/90 text-base font-medium leading-normal">
+              Progreso del Desafío
+            </p>
+            <p className="text-primary text-sm font-bold leading-normal">
+              {currentStep-1} de 3 Completados
+            </p>
+          </div>
+          <Progress value={progress} className="h-3"/>
         </div>
       )}
+
+
+      <div className="w-full max-w-lg">{renderStage()}</div>
     </>
   );
 }
