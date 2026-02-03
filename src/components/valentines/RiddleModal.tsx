@@ -13,17 +13,27 @@ type RiddleModalProps = {
   onBack: () => void;
 };
 
-const CORRECT_ANSWERS = ["su cuarto", "el cuarto"];
-const HINTS = [
-  "Pista #1: Es un lugar cotidiano, pero no cualquiera entra sin permiso.",
-  "Pista #2: Ahí terminan sus días y comienzan sus sueños.",
-  "Pista #3: Tiene una puerta, una cama y hoy guarda tu regalo.",
+const CORRECT_KEYWORD = "comunicacion";
+const ERROR_MESSAGES = [
+  {
+    title: 'Hey… 😌',
+    description: 'Esto no se adivina, se descubre. La pista está en el lugar físico.',
+  },
+  {
+    title: 'Mmm… todavía no.',
+    description: 'La palabra clave es importante. Asegúrate de tener la correcta.',
+  },
+  {
+    title: 'Casi… pero no 😅',
+    description: 'Ve por la pista y vuelve. Te espero aquí.',
+  },
 ];
+
 
 export default function RiddleModal({ isOpen, onSuccess, onBack }: RiddleModalProps) {
   const [inputValue, setInputValue] = useState('');
   const [isShowing, setIsShowing] = useState(false);
-  const [wrongAttempts, setWrongAttempts] = useState(0);
+  const [errorCount, setErrorCount] = useState(0);
   const [isSolved, setIsSolved] = useState(false);
   const { toast } = useToast();
 
@@ -32,7 +42,7 @@ export default function RiddleModal({ isOpen, onSuccess, onBack }: RiddleModalPr
       setIsShowing(true);
       // Reset state when modal opens
       setInputValue('');
-      setWrongAttempts(0);
+      setErrorCount(0);
       setIsSolved(false);
     } else {
       const timer = setTimeout(() => setIsShowing(false), 300);
@@ -42,24 +52,17 @@ export default function RiddleModal({ isOpen, onSuccess, onBack }: RiddleModalPr
 
   const handleSubmit = () => {
     const cleanedAnswer = inputValue.trim().toLowerCase();
-    if (CORRECT_ANSWERS.includes(cleanedAnswer)) {
+    if (cleanedAnswer === CORRECT_KEYWORD) {
       setIsSolved(true);
     } else {
       setInputValue(''); // Clear input on wrong answer
-      if (wrongAttempts < HINTS.length) {
-        toast({
-          variant: 'destructive',
-          title: 'Respuesta incorrecta. ¡Aquí tienes una pista!',
-          description: HINTS[wrongAttempts],
-        });
-      } else {
-        toast({
-            variant: 'destructive',
-            title: 'Intenta de nuevo',
-            description: 'Lee las pistas con atención. ¡Tú puedes!',
-        });
-      }
-      setWrongAttempts(prev => prev + 1);
+      const currentError = ERROR_MESSAGES[errorCount % ERROR_MESSAGES.length];
+      toast({
+        variant: 'destructive',
+        title: currentError.title,
+        description: currentError.description,
+      });
+      setErrorCount(prev => prev + 1);
     }
   };
 
@@ -85,27 +88,24 @@ export default function RiddleModal({ isOpen, onSuccess, onBack }: RiddleModalPr
             <div className="p-6 sm:p-8 text-center">
                 <div className="flex justify-center items-center gap-2 mb-4">
                     <KeyRound className="text-primary h-8 w-8" />
-                    <h2 className="text-2xl font-bold text-foreground">El Acertijo Final</h2>
+                    <h2 className="text-2xl font-bold text-foreground">Palabra Clave Final</h2>
                 </div>
                 
-                <blockquote className="text-muted-foreground mb-6 italic space-y-2 border-l-2 border-border pl-4 text-left">
-                    <p>No es un lugar público, solo unos pocos entran.</p>
-                    <p>Ahí descansa, sueña y guarda lo que más importa.</p>
-                    <p>No se abre con palabras, pero hoy una llave te guiará.</p>
-                    <p className="font-bold text-foreground not-italic pt-2">¿Qué lugar es?</p>
-                </blockquote>
+                <p className="text-muted-foreground mb-6">
+                  Para el último paso, necesitas la palabra que recibiste junto con la llave. Ingrésala para descubrir dónde usarla.
+                </p>
 
                 <div className="flex flex-col gap-3">
                     <Input
                     type="text"
-                    placeholder="Escribe tu respuesta"
+                    placeholder="Escribe la palabra clave"
                     value={inputValue}
                     onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
                     onChange={(e) => setInputValue(e.target.value)}
                     className="h-12 text-center text-lg"
                     />
                     <Button onClick={handleSubmit} className="w-full h-12 text-lg font-bold">
-                        Comprobar
+                        Desbloquear
                     </Button>
                     <Button variant="outline" onClick={onBack} className="w-full h-12 text-base font-bold">
                         <ChevronLeft className="mr-2 h-4 w-4" />
@@ -116,9 +116,9 @@ export default function RiddleModal({ isOpen, onSuccess, onBack }: RiddleModalPr
         ) : (
             <div className="p-6 sm:p-8 text-center animate-fade-in">
                 <Gift className="text-primary h-12 w-12 mx-auto mb-4 animate-heart-beat" />
-                <h2 className="text-2xl font-bold text-foreground mb-2">¡Correcto! Es tu cuarto.</h2>
+                <h2 className="text-2xl font-bold text-foreground mb-2">¡Palabra Correcta!</h2>
                 <p className="text-muted-foreground mb-6">
-                    La llave que te dieron abre la puerta a tu sorpresa final. Tu regalo te está esperando adentro. ¡Ve a descubrirlo!
+                    La llave que te dieron abre la puerta a tu sorpresa final. Es la llave de **tu cuarto**, donde te espera tu regalo. ¡Ve a descubrirlo!
                 </p>
                 <Button onClick={onSuccess} className="w-full h-12 text-lg font-bold">
                     <DoorOpen className="mr-2 h-5 w-5" />
