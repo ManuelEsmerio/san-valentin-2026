@@ -34,15 +34,6 @@ export default function RootLayout({
         />
       </head>
       <body className="font-body antialiased bg-background text-foreground">
-        <div className="fixed inset-0 pointer-events-none -z-10">
-            <span className="material-symbols-outlined text-primary/10 absolute top-[15%] left-[10%] text-7xl opacity-50">favorite</span>
-            <span className="material-symbols-outlined text-primary/10 absolute top-[25%] right-[5%] text-5xl opacity-50">favorite</span>
-            <span className="material-symbols-outlined text-primary/10 absolute bottom-[15%] left-[20%] text-6xl opacity-50">favorite</span>
-            <span className="material-symbols-outlined text-primary/10 absolute bottom-[25%] right-[15%] text-8xl opacity-50">favorite</span>
-            <span className="material-symbols-outlined text-primary/10 absolute top-[20%] left-[40%] text-2xl animate-pulse">favorite</span>
-            <span className="material-symbols-outlined text-primary/10 absolute top-[60%] right-[30%] text-xl animate-pulse">favorite</span>
-            <span className="material-symbols-outlined text-primary/10 absolute bottom-[30%] left-[50%] text-3xl animate-pulse">favorite</span>
-        </div>
         <header className="flex items-center justify-between px-4 sm:px-10 py-6 w-full">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-primary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>

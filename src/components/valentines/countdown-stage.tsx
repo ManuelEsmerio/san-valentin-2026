@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Heart, BookOpen, Image, MessageSquare } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
@@ -175,29 +175,6 @@ export default function CountdownStage({ onComplete }: CountdownStageProps) {
             Nuestra Galería
           </Button>
         </div>
-      </div>
-      
-      <div 
-        className="relative z-10 mt-auto mb-8"
-        onClick={!isTimeUp ? handleDisabledClick : undefined}
-      >
-         <div className={cn(
-            "flex items-center gap-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full py-2 px-6",
-            !isTimeUp && "opacity-50 cursor-not-allowed"
-         )}>
-            <div className="flex flex-col items-center gap-2">
-                <BookOpen className="h-5 w-5 text-white/70"/>
-                <span className="text-xs text-white/50 font-medium">NUESTRA HISTORIA</span>
-            </div>
-             <div className="flex flex-col items-center gap-2">
-                <Image className="h-5 w-5 text-white/70"/>
-                <span className="text-xs text-white/50 font-medium">RECUERDOS</span>
-            </div>
-             <div className="flex flex-col items-center gap-2">
-                <MessageSquare className="h-5 w-5 text-white/70"/>
-                <span className="text-xs text-white/50 font-medium">NOTAS DE AMOR</span>
-            </div>
-         </div>
       </div>
     </div>
   );
