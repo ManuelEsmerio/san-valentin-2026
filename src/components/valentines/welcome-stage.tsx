@@ -16,11 +16,12 @@ export default function WelcomeStage({ onSuccess }: WelcomeStageProps) {
           </span>
         </div>
         <h2 className="text-foreground text-3xl font-bold leading-tight tracking-[-0.015em] mb-4 text-center">
-          ¡Bienvenida al desafío más dulce de todos! <span role="img" aria-label="sparkling heart">💖</span>
+          Bienvenida. <span role="img" aria-label="sparkling heart">💖</span>
         </h2>
-        <p className="text-muted-foreground text-center mb-8 max-w-sm">
-          Prepárate para jugar, reír y recordar momentos increíbles juntos. Tu sorpresa final te espera al final del camino...
-        </p>
+        <div className="text-muted-foreground text-center mb-8 max-w-sm space-y-4">
+            <p>Este juego está hecho con tiempo, recuerdos y un poco de nosotros.</p>
+            <p>No hay respuestas correctas ni incorrectas. Solo sigue avanzando.</p>
+        </div>
         <Button
           onClick={onSuccess}
           className="h-14 px-8 text-lg font-bold shadow-lg shadow-primary/30 rounded-md"
@@ -32,7 +33,7 @@ export default function WelcomeStage({ onSuccess }: WelcomeStageProps) {
           ¡Empecemos!
         </Button>
         <p className="text-primary/70 text-sm mt-6">
-          Solo para corazones enamorados ✨
+          Al final, hay algo esperándote.
         </p>
       </div>
     </div>
