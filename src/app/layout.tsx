@@ -31,14 +31,27 @@ export default function RootLayout({
         />
       </head>
       <body className="font-body antialiased bg-background text-foreground">
-        <div className="fixed inset-0 heart-pattern pointer-events-none -z-10"></div>
-        <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/10 bg-card/50 backdrop-blur-sm px-4 sm:px-10 py-3 sticky top-0 z-50">
-          <div className="flex items-center gap-4 text-primary">
-            <span className="material-symbols-outlined text-3xl">favorite</span>
-            <h2 className="text-foreground text-lg font-bold leading-tight tracking-[-0.015em]">
+        <div className="fixed inset-0 pointer-events-none -z-10">
+            <span className="material-symbols-outlined text-primary/10 absolute top-[15%] left-[10%] text-7xl opacity-50">favorite</span>
+            <span className="material-symbols-outlined text-primary/10 absolute top-[25%] right-[5%] text-5xl opacity-50">favorite</span>
+            <span className="material-symbols-outlined text-primary/10 absolute bottom-[15%] left-[20%] text-6xl opacity-50">favorite</span>
+            <span className="material-symbols-outlined text-primary/10 absolute bottom-[25%] right-[15%] text-8xl opacity-50">favorite</span>
+            <span className="text-yellow-400/50 absolute top-[20%] left-[40%] text-2xl animate-pulse">✨</span>
+            <span className="text-yellow-400/50 absolute top-[60%] right-[30%] text-xl animate-pulse">✨</span>
+            <span className="text-yellow-400/50 absolute bottom-[30%] left-[50%] text-3xl animate-pulse">✨</span>
+        </div>
+        <header className="flex items-center justify-between px-4 sm:px-10 py-6 w-full">
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined text-primary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>
+                favorite
+            </span>
+            <h2 className="text-primary text-xl font-bold">
               Valentine's Challenge
             </h2>
           </div>
+          <button className="h-10 w-10 flex items-center justify-center rounded-full hover:bg-card">
+            <span className="material-symbols-outlined text-primary text-2xl">dark_mode</span>
+          </button>
         </header>
         <main className="flex-1 flex flex-col items-center justify-center p-4 relative overflow-hidden">
           {children}

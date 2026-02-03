@@ -8,25 +8,32 @@ type WelcomeStageProps = {
 
 export default function WelcomeStage({ onSuccess }: WelcomeStageProps) {
   return (
-    <div className="w-full bg-card dark:bg-stone-900 rounded-xl shadow-xl overflow-hidden border border-primary/5">
-      <div className="px-4 sm:px-8 py-10 text-center">
-        <div className="flex justify-center mb-4">
-          <span className="material-symbols-outlined text-primary text-6xl animate-heart-beat">
+    <div className="w-full bg-gradient-to-br from-card to-card/70 dark:from-stone-900 dark:to-stone-950 rounded-2xl shadow-2xl shadow-primary/10 overflow-hidden border border-primary/5 max-w-md mx-auto">
+      <div className="px-4 sm:px-8 py-10 text-center flex flex-col items-center">
+        <div className="mb-6 h-20 w-20 rounded-full bg-white dark:bg-stone-800/50 flex items-center justify-center shadow-md">
+          <span className="material-symbols-outlined text-primary text-5xl animate-heart-beat" style={{ fontVariationSettings: "'FILL' 1" }}>
             favorite
           </span>
         </div>
-        <h2 className="text-foreground text-3xl font-bold leading-tight tracking-[-0.015em] mb-2 text-center">
-          ¡Bienvenida, mi chula! 💖
+        <h2 className="text-foreground text-3xl font-bold leading-tight tracking-[-0.015em] mb-4 text-center">
+          ¡Bienvenida al desafío más dulce de todos! <span role="img" aria-label="sparkling heart">💖</span>
         </h2>
-        <p className="text-muted-foreground text-center mb-8 text-lg">
-          Estás a punto de comenzar un desafío muy especial…
+        <p className="text-muted-foreground text-center mb-8 max-w-sm">
+          Prepárate para jugar, reír y recordar momentos increíbles juntos. Tu sorpresa final te espera al final del camino...
         </p>
         <Button
           onClick={onSuccess}
-          className="h-14 px-8 text-lg font-bold shadow-lg shadow-primary/20"
+          className="h-14 px-8 text-lg font-bold shadow-lg shadow-primary/30 rounded-md"
+          size="lg"
         >
-          Comenzar el desafío
+          <span className="material-symbols-outlined mr-2">
+            play_circle
+          </span>
+          ¡Empecemos!
         </Button>
+        <p className="text-primary/70 text-sm mt-6">
+          Solo para corazones enamorados ✨
+        </p>
       </div>
     </div>
   );
