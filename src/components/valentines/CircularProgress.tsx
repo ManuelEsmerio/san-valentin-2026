@@ -29,7 +29,7 @@ const getEmotionalState = (questionNumber: number): EmotionalState => {
 
 const HeartConfetti = () => {
     return (
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none">
         {Array.from({ length: 12 }).map((_, i) => (
           <div
             key={i}
@@ -81,7 +81,7 @@ export default function CircularProgress({ current, total }: CircularProgressPro
 
   return (
     <div className="relative flex flex-col items-center justify-center gap-4">
-      <div className="relative w-52 h-52">
+      <div className="relative w-44 h-44">
         <svg
           height="100%"
           width="100%"
@@ -93,8 +93,8 @@ export default function CircularProgress({ current, total }: CircularProgressPro
             fill="transparent"
             strokeWidth={stroke}
             r={normalizedRadius}
-            cx={radius + stroke / 2}
-            cy={radius + stroke / 2}
+            cx="100"
+            cy="100"
           />
           <circle
             stroke="hsl(var(--primary))"
@@ -104,14 +104,14 @@ export default function CircularProgress({ current, total }: CircularProgressPro
             style={{ strokeDashoffset, transition: 'stroke-dashoffset 0.5s ease-out' }}
             strokeLinecap="round"
             r={normalizedRadius}
-            cx={radius + stroke / 2}
-            cy={radius + stroke / 2}
+            cx="100"
+            cy="100"
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
             <div
                 className={cn(
-                    'text-6xl transition-all duration-300 ease-in-out transform',
+                    'text-5xl transition-all duration-300 ease-in-out transform',
                     isAnimating ? 'opacity-0 scale-50' : 'opacity-100 scale-100'
                 )}
             >

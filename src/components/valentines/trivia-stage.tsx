@@ -295,7 +295,7 @@ const openEndedQuestions: OpenEndedQuestion[] = [
         question: '¿Qué es lo que más valoras cuando te sientes en calma conmigo?',
         creatorAnswer: 'Valoro que, aun con malentendidos, conversaciones incómodas o silencios, sigamos eligiendo quedarnos un momento más y no salir corriendo cuando algo duele.',
         image: 'open-ended-1',
-        hint: 'Piensa en lo que nos une en momentos de paz.'
+        hint: 'Una pregunta sobre el presente y la paz.'
     },
     {
         id: 21,
@@ -551,10 +551,10 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
       <div className="w-full flex flex-col items-center gap-6">
         {imagePlaceholder ? (
           // Layout WITH image
-          <div className="w-full flex flex-col-reverse md:flex-row items-center md:items-center gap-8">
+          <div className="w-full flex flex-col md:flex-row items-center md:items-center gap-8">
             <div className="w-full md:flex-1">
               <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5">
-                <div className="relative w-full aspect-[21/9] rounded-t-xl overflow-hidden bg-black/20">
+                <div className="relative w-full aspect-video rounded-t-xl overflow-hidden bg-black/20">
                   <Image
                     src={imagePlaceholder.imageUrl}
                     alt={imagePlaceholder.description}
