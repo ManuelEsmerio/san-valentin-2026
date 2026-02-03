@@ -11,7 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { CheckCircle2, Heart, Lightbulb, RotateCcw, XCircle } from "lucide-react";
 import { Progress } from "../ui/progress";
 import RomanticLetterModal from "./RomanticLetterModal";
-import { PlaceHolderImages } from "@/lib/placeholder-images";
+import { PlaceHolderImages, type ImagePlaceholder } from "@/lib/placeholder-images";
 import { cn } from "@/lib/utils";
 
 type TriviaStageProps = {
@@ -59,9 +59,34 @@ const openEndedQuestions: OpenEndedQuestion[] = [
 ];
 
 const LETTERS = {
-  3: { title: 'Lo que más amo de ti…', content: ['Tu sonrisa, tu cariño y tu manera tan hermosa de querer hacen que cada día valga la pena. 💖', 'Aunque a veces no estemos de acuerdo y peleemos, yo te elijo a ti.', 'Gracias por tu paciencia, por entenderme cuando me cuesta explicarme, por quedarte incluso cuando no es fácil y por elegirnos una y otra vez.', 'A tu lado aprendí que el amor también es calma, apoyo y complicidad, y que también son pláticas incómodas, discusiones y peleas, pero siempre volver a escogernos.'] },
-  6: { title: 'Mi recuerdo más preciado…', content: ['Tal vez no fue perfecto, pero fue real.', 'Los días que me quedé en Lagos solo con tal de verte, cuando todavía no conocía nada, pero sí tenía claro que quería conocerte a ti.', 'Tanto, que dormí en el suelo en casa de Edgar, hicimos carne asada y fueron días muy bonitos que siempre voy a apreciar profundamente.', 'Desde ese momento supe que algo especial estaba empezando entre nosotros. ✨'] },
-  9: { title: 'Lo que quiero contigo…', content: ['Compartir risas, crear más recuerdos y seguir eligiéndonos todos los días,', 'en los días malos, cuando estemos cansados y sintamos que no podemos más, saber que estamos el uno para el otro, para apoyarnos y darnos la mano en esos momentos, sin importar lo que venga. 💕'] },
+  3: {
+    title: "Lo que más amo de ti…",
+    content: [
+      "Tu sonrisa, tu cariño y tu manera tan hermosa de querer hacen que cada día valga la pena. 💖",
+      "Aunque a veces no estemos de acuerdo y peleemos, yo te elijo a ti.",
+      "Gracias por tu paciencia, por entenderme cuando me cuesta explicarme, por quedarte incluso cuando no es fácil y por elegirnos una y otra vez.",
+      "A tu lado aprendí que el amor también es calma, apoyo y complicidad, y que también son pláticas incómodas, discusiones y peleas, pero siempre volver a escogernos.",
+    ],
+    imageIds: ["letter-1-img-1", "letter-1-img-2", "letter-1-img-3"],
+  },
+  6: {
+    title: "Mi recuerdo más preciado…",
+    content: [
+      "Tal vez no fue perfecto, pero fue real.",
+      "Los días que me quedé en Lagos solo con tal de verte, cuando todavía no conocía nada, pero sí tenía claro que quería conocerte a ti.",
+      "Tanto, que dormí en el suelo en casa de Edgar, hicimos carne asada y fueron días muy bonitos que siempre voy a apreciar profundamente.",
+      "Desde ese momento supe que algo especial estaba empezando entre nosotros. ✨",
+    ],
+    imageIds: ["letter-2-img-1", "letter-2-img-2", "letter-2-img-3"],
+  },
+  9: {
+    title: "Lo que quiero contigo…",
+    content: [
+      "Compartir risas, crear más recuerdos y seguir eligiéndonos todos los días,",
+      "en los días malos, cuando estemos cansados y sintamos que no podemos más, saber que estamos el uno para el otro, para apoyarnos y darnos la mano en esos momentos, sin importar lo que venga. 💕",
+    ],
+    imageIds: ["letter-3-img-1", "letter-3-img-2", "letter-3-img-3"],
+  },
 };
 
 const MIN_CORRECT_ANSWERS = 8;
@@ -86,7 +111,7 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
   const [stage, setStage] = useState<"playing" | "failed" | "finished">("playing");
   const { toast } = useToast();
   
-  const [letterToShow, setLetterToShow] = useState<{ title: string; content: string[] } | null>(null);
+  const [letterToShow, setLetterToShow] = useState<{ title: string; content: string[]; images: ImagePlaceholder[] } | null>(null);
   const [shownLetters, setShownLetters] = useState<Record<number, boolean>>({});
 
   const setupTrivia = () => {
@@ -108,7 +133,12 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
     if (stage !== "playing") return;
 
     if (score > 0 && LETTERS[score as keyof typeof LETTERS] && !shownLetters[score]) {
-        setLetterToShow(LETTERS[score as keyof typeof LETTERS]);
+        const letterData = LETTERS[score as keyof typeof LETTERS];
+        const letterImages = letterData.imageIds
+          .map(id => PlaceHolderImages.find(img => img.id === id))
+          .filter((img): img is ImagePlaceholder => !!img);
+          
+        setLetterToShow({ ...letterData, images: letterImages });
         setShownLetters(prev => ({ ...prev, [score]: true }));
     }
   }, [score, shownLetters, stage]);
@@ -213,7 +243,7 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
     <div className="w-full flex flex-col gap-6 items-center">
       <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5">
         {imagePlaceholder && (
-          <div className="relative w-full aspect-video rounded-t-xl overflow-hidden">
+          <div className="relative w-full aspect-[21/9] rounded-t-xl overflow-hidden">
             <Image
               src={imagePlaceholder.imageUrl}
               alt={imagePlaceholder.description}

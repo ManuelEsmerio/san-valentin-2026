@@ -7,6 +7,60 @@
       "imageHint": "couple hug"
     },
     {
+      "id": "letter-1-img-1",
+      "description": "Imagen 1 para la primera carta romántica.",
+      "imageUrl": "/images/letter-1-img-1.jpg",
+      "imageHint": "couple smiling"
+    },
+    {
+      "id": "letter-1-img-2",
+      "description": "Imagen 2 para la primera carta romántica.",
+      "imageUrl": "/images/letter-1-img-2.jpg",
+      "imageHint": "romantic dinner"
+    },
+    {
+      "id": "letter-1-img-3",
+      "description": "Imagen 3 para la primera carta romántica.",
+      "imageUrl": "/images/letter-1-img-3.jpg",
+      "imageHint": "couple selfie"
+    },
+    {
+      "id": "letter-2-img-1",
+      "description": "Imagen 1 para la segunda carta romántica.",
+      "imageUrl": "/images/letter-2-img-1.jpg",
+      "imageHint": "travel landscape"
+    },
+    {
+      "id": "letter-2-img-2",
+      "description": "Imagen 2 para la segunda carta romántica.",
+      "imageUrl": "/images/letter-2-img-2.jpg",
+      "imageHint": "adventure couple"
+    },
+    {
+      "id": "letter-2-img-3",
+      "description": "Imagen 3 para la segunda carta romántica.",
+      "imageUrl": "/images/letter-2-img-3.jpg",
+      "imageHint": "funny moment"
+    },
+    {
+      "id": "letter-3-img-1",
+      "description": "Imagen 1 para la tercera carta romántica.",
+      "imageUrl": "/images/letter-3-img-1.jpg",
+      "imageHint": "couple future"
+    },
+    {
+      "id": "letter-3-img-2",
+      "description": "Imagen 2 para la tercera carta romántica.",
+      "imageUrl": "/images/letter-3-img-2.jpg",
+      "imageHint": "holding hands"
+    },
+    {
+      "id": "letter-3-img-3",
+      "description": "Imagen 3 para la tercera carta romántica.",
+      "imageUrl": "/images/letter-3-img-3.jpg",
+      "imageHint": "looking sunset"
+    },
+    {
       "id": "trivia-1",
       "description": "Imagen para la pregunta de trivia #1: ¿Dónde nos conocimos por primera vez?",
       "imageUrl": "/images/trivia-1.jpg",
