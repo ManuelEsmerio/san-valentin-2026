@@ -11,6 +11,7 @@ type AdventureModalProps = {
   onConfirm: () => void;
 };
 
+// New array of responses
 const NO_BUTTON_RESPONSES = [
   "¿Segura?",
   "Intenta otra vez 😅",
@@ -18,14 +19,18 @@ const NO_BUTTON_RESPONSES = [
   "Más rápida",
   "Casi...",
   "Nop",
-  "¡Uy, qué rebelde!"
+  "¡Uy, qué rebelde!",
+  "Mejor no...",
+  "¿Estás jugando?",
+  "Te doy otra chance...",
 ];
 
 export default function AdventureModal({ isOpen, onConfirm }: AdventureModalProps) {
   const [modalStage, setModalStage] = useState<'question' | 'confirmation'>('question');
   const [noButtonPosition, setNoButtonPosition] = useState({ top: 'auto', left: 'auto' });
   const [noButtonText, setNoButtonText] = useState('No');
-  const modalRef = useRef<HTMLDivElement>(null);
+  const [noClickCount, setNoClickCount] = useState(0);
+  const buttonContainerRef = useRef<HTMLDivElement>(null);
   const [isShowing, setIsShowing] = useState(false);
   
   const adventureImage = PlaceHolderImages.find((img) => img.id === 'adventure-modal-img');
@@ -37,6 +42,7 @@ export default function AdventureModal({ isOpen, onConfirm }: AdventureModalProp
       setModalStage('question');
       setNoButtonPosition({ top: 'auto', left: 'auto' });
       setNoButtonText('No');
+      setNoClickCount(0);
     } else {
       const timer = setTimeout(() => setIsShowing(false), 300);
       return () => clearTimeout(timer);
@@ -44,26 +50,39 @@ export default function AdventureModal({ isOpen, onConfirm }: AdventureModalProp
   }, [isOpen]);
 
   const moveNoButton = () => {
-    if (modalRef.current) {
-      const modal = modalRef.current;
-      const modalRect = modal.getBoundingClientRect();
-      // Use smaller button dimensions to be safe
-      const buttonWidth = 80; 
-      const buttonHeight = 50;
+    if (noClickCount >= 10) {
+      setNoClickCount(prev => prev + 1); // This will make it 11 and hide the button
+      return;
+    }
+    
+    const newCount = noClickCount + 1;
+    setNoClickCount(newCount);
+    
+    if (newCount === 10) {
+      setNoButtonText("Una más y me voy...");
+    } else {
+      const randomIndex = Math.floor(Math.random() * NO_BUTTON_RESPONSES.length);
+      setNoButtonText(NO_BUTTON_RESPONSES[randomIndex]);
+    }
 
-      const newTop = Math.random() * (modalRect.height - buttonHeight);
-      const newLeft = Math.random() * (modalRect.width - buttonWidth);
+    if (buttonContainerRef.current) {
+      const container = buttonContainerRef.current;
+      // Dimensions of the button. Let's make it a bit bigger than the actual button to have some padding.
+      const buttonWidth = 120;
+      const buttonHeight = 60;
+
+      const newTop = Math.random() * (container.clientHeight - buttonHeight);
+      const newLeft = Math.random() * (container.clientWidth - buttonWidth);
 
       setNoButtonPosition({ top: `${newTop}px`, left: `${newLeft}px` });
-      
-      const randomResponse = NO_BUTTON_RESPONSES[Math.floor(Math.random() * NO_BUTTON_RESPONSES.length)];
-      setNoButtonText(randomResponse);
     }
   };
 
   if (!isShowing) {
     return null;
   }
+  
+  const yesButtonScale = 1 + noClickCount * 0.07;
 
   return (
     <div
@@ -73,9 +92,8 @@ export default function AdventureModal({ isOpen, onConfirm }: AdventureModalProp
       )}
     >
       <div
-        ref={modalRef}
         className={cn(
-          'relative w-full max-w-md m-4 bg-card text-card-foreground rounded-xl shadow-2xl shadow-primary/20 border border-primary/10 transition-all duration-300',
+          'relative w-full max-w-lg m-4 bg-card text-card-foreground rounded-xl shadow-2xl shadow-primary/20 border border-primary/10 transition-all duration-300',
           isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
         )}
         onClick={(e) => e.stopPropagation()}
@@ -96,22 +114,25 @@ export default function AdventureModal({ isOpen, onConfirm }: AdventureModalProp
             <h2 className="text-2xl font-bold text-foreground mb-6">
               ¿Te gustaría acompañarme a escribir una nueva historia juntos?
             </h2>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center relative h-28 items-center">
+            <div ref={buttonContainerRef} className="flex flex-col sm:flex-row gap-3 justify-center relative h-40 items-center">
               <Button
                 onClick={() => setModalStage('confirmation')}
-                className="w-full sm:w-auto h-12 px-10 text-lg font-bold z-10"
+                className="w-full sm:w-auto h-12 px-10 text-lg font-bold z-10 origin-center transition-transform duration-300 ease-out"
+                style={{ transform: `scale(${yesButtonScale})` }}
               >
                 Sí
               </Button>
-              <Button
-                variant="secondary"
-                className="w-full sm:w-auto h-12 px-10 text-lg font-bold transition-all duration-200 ease-out z-20"
-                style={noButtonPosition.top !== 'auto' ? { position: 'absolute', top: noButtonPosition.top, left: noButtonPosition.left } : {}}
-                onMouseEnter={moveNoButton}
-                onClick={moveNoButton} // For touch devices
-              >
-                {noButtonText}
-              </Button>
+              {noClickCount < 11 && (
+                <Button
+                  variant="secondary"
+                  className="w-full sm:w-auto h-12 px-10 text-lg font-bold transition-all duration-200 ease-out z-20"
+                  style={noButtonPosition.top !== 'auto' ? { position: 'absolute', top: noButtonPosition.top, left: noButtonPosition.left } : {}}
+                  onMouseEnter={moveNoButton}
+                  onClick={moveNoButton} // For touch devices
+                >
+                  {noButtonText}
+                </Button>
+              )}
             </div>
           </div>
         )}
