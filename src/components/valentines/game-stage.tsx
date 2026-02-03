@@ -9,7 +9,7 @@ import { Progress } from "../ui/progress";
 const GRID_SIZE = 20;
 const CANVAS_SIZE = 600;
 const TILE_SIZE = CANVAS_SIZE / GRID_SIZE;
-const TARGET_SCORE = 20;
+const TARGET_SCORE = 2;
 
 type GameStageProps = {
   onSuccess: () => void;
