@@ -3,9 +3,18 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Heart, BookOpen, Image, MessageSquare } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 
 type CountdownStageProps = {
   onComplete: () => void;
+};
+
+type TimeLeft = {
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
 };
 
 const CountdownUnit = ({ value, label }: { value: string; label: string }) => (
@@ -20,13 +29,15 @@ const CountdownUnit = ({ value, label }: { value: string; label: string }) => (
 );
 
 export default function CountdownStage({ onComplete }: CountdownStageProps) {
-  const calculateTimeLeft = () => {
+  const { toast } = useToast();
+
+  const calculateTimeLeft = (): TimeLeft => {
     const now = new Date();
     // The target date is February 4th of the current year.
     const targetDate = new Date(now.getFullYear(), 1, 4);
 
     const difference = +targetDate - +now;
-    let timeLeft = {};
+    let timeLeft: TimeLeft;
 
     if (difference > 0) {
       timeLeft = {
@@ -36,31 +47,53 @@ export default function CountdownStage({ onComplete }: CountdownStageProps) {
         seconds: Math.floor((difference / 1000) % 60),
       };
     } else {
-      // If the date is in the past, countdown is over.
-      onComplete();
       timeLeft = { days: 0, hours: 0, minutes: 0, seconds: 0 };
     }
     return timeLeft;
   };
 
-  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [timeLeft, setTimeLeft] = useState<TimeLeft>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [isClient, setIsClient] = useState(false);
+  const [isTimeUp, setIsTimeUp] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
-    // Initialize countdown on client to avoid hydration mismatch
-    setTimeLeft(calculateTimeLeft());
-  }, [onComplete]);
+    const initialTimeLeft = calculateTimeLeft();
+    setTimeLeft(initialTimeLeft);
+    if (initialTimeLeft.days === 0 && initialTimeLeft.hours === 0 && initialTimeLeft.minutes === 0 && initialTimeLeft.seconds === 0) {
+      setIsTimeUp(true);
+    }
+  }, []);
 
   useEffect(() => {
-    if (!isClient) return;
+    if (!isClient || isTimeUp) return;
 
-    const timer = setTimeout(() => {
-      setTimeLeft(calculateTimeLeft());
+    const timer = setInterval(() => {
+      const newTimeLeft = calculateTimeLeft();
+      setTimeLeft(newTimeLeft);
+      if (newTimeLeft.days === 0 && newTimeLeft.hours === 0 && newTimeLeft.minutes === 0 && newTimeLeft.seconds === 0) {
+        setIsTimeUp(true);
+        clearInterval(timer);
+      }
     }, 1000);
 
-    return () => clearTimeout(timer);
-  });
+    return () => clearInterval(timer);
+  }, [isClient, isTimeUp]);
+  
+  const handleDisabledClick = () => {
+    toast({
+        title: 'Un poco de paciencia, mi amor',
+        description: 'Este regalo se podrá ver cuando el contador llegue a 0.',
+    });
+  };
+
+  const handleOpenSurprise = () => {
+      if(isTimeUp) {
+          onComplete();
+      } else {
+          handleDisabledClick();
+      }
+  };
 
   const formatNumber = (num: number) => num.toString().padStart(2, '0');
 
@@ -72,7 +105,7 @@ export default function CountdownStage({ onComplete }: CountdownStageProps) {
           Feliz Día de San Valentín
         </h1>
         <h1 className="text-5xl md:text-7xl font-bold text-primary mb-4">
-          Mi Amor
+          Mi Chula
         </h1>
         <p className="max-w-md text-white/70 mb-12">
           Cada melodía me recuerda los hermosos momentos que hemos compartido juntos.
@@ -88,18 +121,39 @@ export default function CountdownStage({ onComplete }: CountdownStageProps) {
         )}
 
         <div className="flex gap-4">
-          <Button size="lg" className="h-12 text-base font-bold bg-primary hover:bg-primary/90 rounded-full px-8 shadow-lg shadow-primary/20">
+          <Button
+            size="lg"
+            className={cn(
+              "h-12 text-base font-bold bg-primary hover:bg-primary/90 rounded-full px-8 shadow-lg shadow-primary/20",
+              !isTimeUp && "opacity-50 cursor-not-allowed"
+            )}
+            onClick={handleOpenSurprise}
+          >
             <Heart className="mr-2 h-5 w-5" fill="white" />
             Abrir Sorpresa
           </Button>
-          <Button size="lg" variant="ghost" className="h-12 text-base font-bold text-white/80 hover:bg-white/10 hover:text-white rounded-full px-8">
+          <Button
+            size="lg"
+            variant="ghost"
+            className={cn(
+              "h-12 text-base font-bold text-white/80 hover:bg-white/10 hover:text-white rounded-full px-8",
+              !isTimeUp && "opacity-50 cursor-not-allowed"
+            )}
+            onClick={handleDisabledClick}
+          >
             Nuestra Galería
           </Button>
         </div>
       </div>
       
-      <div className="relative z-10 mt-auto mb-8">
-         <div className="flex items-center gap-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full py-2 px-6">
+      <div 
+        className="relative z-10 mt-auto mb-8"
+        onClick={!isTimeUp ? handleDisabledClick : undefined}
+      >
+         <div className={cn(
+            "flex items-center gap-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full py-2 px-6",
+            !isTimeUp && "opacity-50 cursor-not-allowed"
+         )}>
             <div className="flex flex-col items-center gap-2">
                 <BookOpen className="h-5 w-5 text-white/70"/>
                 <span className="text-xs text-white/50 font-medium">NUESTRA HISTORIA</span>
