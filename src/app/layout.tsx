@@ -40,8 +40,7 @@ export default function RootLayout({
                 favorite
             </span>
             <h2 className="text-primary text-xl font-bold">
-            Para Mariana Rangel Zermeño.
-            Con cariño.
+            Para Mariana Rangel Zermeño, Con mucho cariño.
             </h2>
           </div>
           <ThemeToggle />
