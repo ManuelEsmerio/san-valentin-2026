@@ -551,7 +551,7 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
       <div className="w-full flex flex-col items-center gap-6">
         {imagePlaceholder ? (
           // Layout WITH image
-          <div className="w-full flex flex-col-reverse md:flex-row items-center md:items-start gap-8">
+          <div className="w-full flex flex-col-reverse md:flex-row items-center md:items-center gap-8">
             <div className="w-full md:flex-1">
               <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5">
                 <div className="relative w-full aspect-[21/9] rounded-t-xl overflow-hidden bg-black/20">
