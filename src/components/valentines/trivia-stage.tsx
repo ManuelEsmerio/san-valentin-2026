@@ -96,7 +96,7 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
       "Hamburguesas",
       "Tus besos"
     ],
-    correctAnswer: ["Mariscos", "Tus besos"],
+    correctAnswer: ["Tus besos"],
     image: "trivia-4",
     hint: "Hay dos respuestas correctas aquí, una es del mar y la otra… de ti."
   },
@@ -578,10 +578,10 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
               className="grid grid-cols-1 sm:grid-cols-2 gap-3"
               disabled={answerStatus !== 'unanswered'}
             >
-              {(currentQuestion as MultipleChoiceQuestion).options.map((option) => (
+              {(currentQuestion as MultipleChoiceQuestion).options.map((option, index) => (
                 <Label 
-                  key={option} 
-                  htmlFor={option} 
+                  key={`${option}-${index}`}
+                  htmlFor={`${option}-${index}`}
                   className={cn(
                     "flex items-center space-x-3 p-4 rounded-lg border-2 border-border has-[input:checked]:border-primary has-[input:checked]:bg-primary/5 cursor-pointer transition-all",
                     answerStatus !== 'unanswered' &&
@@ -592,7 +592,7 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
                     answerStatus === 'incorrect' && answers[currentQuestion.id] === option && "border-destructive bg-destructive/5"
                   )}
                 >
-                  <RadioGroupItem value={option} id={option} disabled={answerStatus !== 'unanswered'} />
+                  <RadioGroupItem value={option} id={`${option}-${index}`} disabled={answerStatus !== 'unanswered'} />
                   <span className="font-body text-base flex-1">{option}</span>
                 </Label>
               ))}
