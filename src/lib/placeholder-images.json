@@ -61,6 +61,24 @@
       "imageHint": "looking sunset"
     },
     {
+      "id": "letter-4-img-1",
+      "description": "Imagen 1 para la cuarta carta romántica.",
+      "imageUrl": "/image/letter-4-img-1.jpg",
+      "imageHint": "video call 1"
+    },
+    {
+      "id": "letter-4-img-2",
+      "description": "Imagen 2 para la cuarta carta romántica.",
+      "imageUrl": "/image/letter-4-img-2.jpg",
+      "imageHint": "video call 2"
+    },
+    {
+      "id": "letter-4-img-3",
+      "description": "Imagen 3 para la cuarta carta romántica.",
+      "imageUrl": "/image/letter-4-img-3.jpg",
+      "imageHint": "video call 3"
+    },
+    {
       "id": "trivia-1",
       "description": "Imagen para la pregunta de trivia #1: ¿Dónde nos conocimos por primera vez?",
       "imageUrl": "/image/trivia-1.jpg",

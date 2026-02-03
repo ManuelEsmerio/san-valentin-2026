@@ -112,7 +112,7 @@ export default function AdventureModal({ isOpen, onConfirm }: AdventureModalProp
               </div>
             )}
             <h2 className="text-2xl font-bold text-foreground mb-6">
-              ¿Te gustaría acompañarme a escribir una nueva historia juntos?
+              ¿Te gustaría ir conmigo a este viaje?
             </h2>
             <div ref={buttonContainerRef} className="flex flex-col sm:flex-row gap-3 justify-center relative h-40 items-center">
               <Button
