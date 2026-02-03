@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -36,8 +37,17 @@ export default function CountdownStage({ onComplete }: CountdownStageProps) {
   const [isTimeUp, setIsTimeUp] = useState(false);
 
   useEffect(() => {
-    // The target date is set ONCE when the effect runs.
-    const targetDate = new Date('2025-02-14T00:00:00');
+    const now = new Date();
+    let targetYear = now.getFullYear();
+    
+    // Create a date for Feb 14 of the current year (month is 0-indexed).
+    let targetDate = new Date(targetYear, 1, 14, 0, 0, 0);
+
+    // If Feb 14 of this year has already passed, target next year's Feb 14.
+    if (now.getTime() > targetDate.getTime()) {
+      targetDate.setFullYear(targetYear + 1);
+    }
+
     let timer: NodeJS.Timeout;
 
     const updateCountdown = () => {
