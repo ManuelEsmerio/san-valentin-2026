@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
-import { KeyRound, ChevronLeft, Gift, DoorOpen } from 'lucide-react';
+import { KeyRound, ChevronLeft, Gift, DoorOpen, Puzzle } from 'lucide-react';
 
 type RiddleModalProps = {
   isOpen: boolean;
@@ -13,8 +13,9 @@ type RiddleModalProps = {
   onBack: () => void;
 };
 
+// --- Keyword Constants ---
 const CORRECT_KEYWORD = "comunicacion";
-const ERROR_MESSAGES = [
+const KEYWORD_ERROR_MESSAGES = [
   {
     title: 'Hey… 😌',
     description: 'Esto no se adivina, se descubre. La pista está en el lugar físico.',
@@ -29,45 +30,170 @@ const ERROR_MESSAGES = [
   },
 ];
 
+// --- Riddle Constants ---
+const RIDDLE_TEXT = `No es un lugar público,
+solo unos pocos entran.
+
+Ahí descansa, sueña
+y guarda lo que más importa.
+
+No se abre con palabras,
+pero hoy una llave te guiará.
+
+¿Qué lugar es?`;
+const CORRECT_RIDDLE_ANSWERS = ["mi cuarto", "el cuarto"];
+const RIDDLE_HINTS = [
+    "Es un lugar cotidiano, pero no cualquiera entra sin permiso.",
+    "Ahí terminan sus días y comienzan sus sueños.",
+    "Tiene una puerta, una cama y hoy guarda tu regalo."
+];
+
 
 export default function RiddleModal({ isOpen, onSuccess, onBack }: RiddleModalProps) {
-  const [inputValue, setInputValue] = useState('');
+  const [modalStage, setModalStage] = useState<'keyword' | 'riddle' | 'success'>('keyword');
+  const [keywordValue, setKeywordValue] = useState('');
+  const [riddleValue, setRiddleValue] = useState('');
+  
+  const [keywordErrorCount, setKeywordErrorCount] = useState(0);
+  const [riddleHintCount, setRiddleHintCount] = useState(0);
+
   const [isShowing, setIsShowing] = useState(false);
-  const [errorCount, setErrorCount] = useState(0);
-  const [isSolved, setIsSolved] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
     if (isOpen) {
       setIsShowing(true);
       // Reset state when modal opens
-      setInputValue('');
-      setErrorCount(0);
-      setIsSolved(false);
+      setModalStage('keyword');
+      setKeywordValue('');
+      setRiddleValue('');
+      setKeywordErrorCount(0);
+      setRiddleHintCount(0);
     } else {
       const timer = setTimeout(() => setIsShowing(false), 300);
       return () => clearTimeout(timer);
     }
   }, [isOpen]);
 
-  const handleSubmit = () => {
-    const cleanedAnswer = inputValue.trim().toLowerCase();
-    if (cleanedAnswer === CORRECT_KEYWORD) {
-      setIsSolved(true);
+  const handleKeywordSubmit = () => {
+    if (keywordValue.trim().toLowerCase() === CORRECT_KEYWORD) {
+      setModalStage('riddle');
     } else {
-      setInputValue(''); // Clear input on wrong answer
-      const currentError = ERROR_MESSAGES[errorCount % ERROR_MESSAGES.length];
+      setKeywordValue(''); // Clear input on wrong answer
+      const currentError = KEYWORD_ERROR_MESSAGES[keywordErrorCount % KEYWORD_ERROR_MESSAGES.length];
       toast({
         variant: 'destructive',
         title: currentError.title,
         description: currentError.description,
       });
-      setErrorCount(prev => prev + 1);
+      setKeywordErrorCount(prev => prev + 1);
+    }
+  };
+
+  const handleRiddleSubmit = () => {
+    const cleanedAnswer = riddleValue.trim().toLowerCase();
+    if (CORRECT_RIDDLE_ANSWERS.includes(cleanedAnswer)) {
+      setModalStage('success');
+    } else {
+      setRiddleValue(''); // Clear input on wrong answer
+      if (riddleHintCount < RIDDLE_HINTS.length) {
+          toast({
+              variant: 'default',
+              title: `Pista #${riddleHintCount + 1}`,
+              description: RIDDLE_HINTS[riddleHintCount],
+          });
+          setRiddleHintCount(prev => prev + 1);
+      } else {
+          toast({
+              variant: 'destructive',
+              title: 'Casi lo tienes...',
+              description: 'Intenta pensar en un lugar muy personal. ¡Vuelve a leer las pistas!'
+          })
+      }
     }
   };
 
   if (!isShowing) {
     return null;
+  }
+
+  const renderContent = () => {
+    switch(modalStage) {
+      case 'keyword':
+        return (
+          <div className="p-6 sm:p-8 text-center animate-fade-in">
+              <div className="flex justify-center items-center gap-2 mb-4">
+                  <KeyRound className="text-primary h-8 w-8" />
+                  <h2 className="text-2xl font-bold text-foreground">Palabra Clave Final</h2>
+              </div>
+              <p className="text-muted-foreground mb-6">
+                Para el último paso, necesitas la palabra que recibiste junto con la llave. Ingrésala para descubrir dónde usarla.
+              </p>
+              <div className="flex flex-col gap-3">
+                  <Input
+                    type="text"
+                    placeholder="Escribe la palabra clave"
+                    value={keywordValue}
+                    onKeyDown={(e) => e.key === 'Enter' && handleKeywordSubmit()}
+                    onChange={(e) => setKeywordValue(e.target.value)}
+                    className="h-12 text-center text-lg"
+                  />
+                  <Button onClick={handleKeywordSubmit} className="w-full h-12 text-lg font-bold">
+                      Desbloquear
+                  </Button>
+                  <Button variant="outline" onClick={onBack} className="w-full h-12 text-base font-bold">
+                      <ChevronLeft className="mr-2 h-4 w-4" />
+                      Volver al Mapa
+                  </Button>
+              </div>
+          </div>
+        );
+      case 'riddle':
+        return (
+          <div className="p-6 sm:p-8 text-center animate-fade-in">
+              <div className="flex justify-center items-center gap-2 mb-4">
+                  <Puzzle className="text-primary h-8 w-8" />
+                  <h2 className="text-2xl font-bold text-foreground">Acertijo Final</h2>
+              </div>
+              <p className="text-muted-foreground mb-6 whitespace-pre-line">
+                {RIDDLE_TEXT}
+              </p>
+              <div className="flex flex-col gap-3">
+                  <Input
+                    type="text"
+                    placeholder="Resuelve el acertijo"
+                    value={riddleValue}
+                    onKeyDown={(e) => e.key === 'Enter' && handleRiddleSubmit()}
+                    onChange={(e) => setRiddleValue(e.target.value)}
+                    className="h-12 text-center text-lg"
+                  />
+                  <Button onClick={handleRiddleSubmit} className="w-full h-12 text-lg font-bold">
+                      Resolver
+                  </Button>
+                   <Button variant="outline" onClick={onBack} className="w-full h-12 text-base font-bold">
+                      <ChevronLeft className="mr-2 h-4 w-4" />
+                      Volver al Mapa
+                  </Button>
+              </div>
+          </div>
+        );
+      case 'success':
+        return (
+          <div className="p-6 sm:p-8 text-center animate-fade-in">
+              <Gift className="text-primary h-12 w-12 mx-auto mb-4 animate-heart-beat" />
+              <h2 className="text-2xl font-bold text-foreground mb-2">¡Correcto! Es tu cuarto.</h2>
+              <p className="text-muted-foreground mb-6">
+                  La llave que te dieron abre la puerta a tu sorpresa final. Tu regalo te está esperando adentro. ¡Ve a descubrirlo!
+              </p>
+              <Button onClick={onSuccess} className="w-full h-12 text-lg font-bold">
+                  <DoorOpen className="mr-2 h-5 w-5" />
+                  Ver mi regalo final
+              </Button>
+          </div>
+        );
+      default:
+        return null;
+    }
   }
 
   return (
@@ -84,48 +210,7 @@ export default function RiddleModal({ isOpen, onSuccess, onBack }: RiddleModalPr
         )}
         onClick={(e) => e.stopPropagation()}
       >
-        {!isSolved ? (
-            <div className="p-6 sm:p-8 text-center">
-                <div className="flex justify-center items-center gap-2 mb-4">
-                    <KeyRound className="text-primary h-8 w-8" />
-                    <h2 className="text-2xl font-bold text-foreground">Palabra Clave Final</h2>
-                </div>
-                
-                <p className="text-muted-foreground mb-6">
-                  Para el último paso, necesitas la palabra que recibiste junto con la llave. Ingrésala para descubrir dónde usarla.
-                </p>
-
-                <div className="flex flex-col gap-3">
-                    <Input
-                    type="text"
-                    placeholder="Escribe la palabra clave"
-                    value={inputValue}
-                    onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    className="h-12 text-center text-lg"
-                    />
-                    <Button onClick={handleSubmit} className="w-full h-12 text-lg font-bold">
-                        Desbloquear
-                    </Button>
-                    <Button variant="outline" onClick={onBack} className="w-full h-12 text-base font-bold">
-                        <ChevronLeft className="mr-2 h-4 w-4" />
-                        Volver al Mapa
-                    </Button>
-                </div>
-            </div>
-        ) : (
-            <div className="p-6 sm:p-8 text-center animate-fade-in">
-                <Gift className="text-primary h-12 w-12 mx-auto mb-4 animate-heart-beat" />
-                <h2 className="text-2xl font-bold text-foreground mb-2">¡Palabra Correcta!</h2>
-                <p className="text-muted-foreground mb-6">
-                    La llave que te dieron abre la puerta a tu sorpresa final. Es la llave de **tu cuarto**, donde te espera tu regalo. ¡Ve a descubrirlo!
-                </p>
-                <Button onClick={onSuccess} className="w-full h-12 text-lg font-bold">
-                    <DoorOpen className="mr-2 h-5 w-5" />
-                    Ver mi regalo final
-                </Button>
-            </div>
-        )}
+        {renderContent()}
       </div>
     </div>
   );
