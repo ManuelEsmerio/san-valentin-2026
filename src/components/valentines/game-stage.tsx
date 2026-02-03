@@ -1,8 +1,9 @@
+
 "use client";
 
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Heart, Lock, Trophy, Target } from "lucide-react";
+import { Heart, Lock, Trophy, Target, ChevronUp, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Progress } from "../ui/progress";
 
@@ -254,6 +255,9 @@ export default function GameStage({ onSuccess }: GameStageProps) {
                 Recoge {TARGET_SCORE} corazones para desbloquear la primera pista de
                 tu regalo de San Valentín.
               </p>
+              <p className="text-muted-foreground text-xs mt-2 hidden md:block">
+                Usa las flechas del teclado para moverte.
+              </p>
               <Button
                 onClick={startGame}
                 className="min-w-[200px] h-12 px-6 text-base font-bold tracking-wider hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/30 z-10"
@@ -301,6 +305,56 @@ export default function GameStage({ onSuccess }: GameStageProps) {
         </div>
       </div>
 
+      {gameState === 'playing' && (
+        <div className="md:hidden mt-4 grid grid-cols-3 gap-3 w-48">
+          <div />
+          <Button
+            variant="secondary"
+            size="icon"
+            className="h-14 w-14 rounded-full"
+            onClick={() => {
+              if (directionRef.current.y === 0) directionRef.current = { x: 0, y: -1 };
+            }}
+          >
+            <ChevronUp className="h-8 w-8" />
+          </Button>
+          <div />
+          <Button
+            variant="secondary"
+            size="icon"
+            className="h-14 w-14 rounded-full"
+            onClick={() => {
+              if (directionRef.current.x === 0) directionRef.current = { x: -1, y: 0 };
+            }}
+          >
+            <ChevronLeft className="h-8 w-8" />
+          </Button>
+          <div />
+          <Button
+            variant="secondary"
+            size="icon"
+            className="h-14 w-14 rounded-full"
+            onClick={() => {
+              if (directionRef.current.x === 0) directionRef.current = { x: 1, y: 0 };
+            }}
+          >
+            <ChevronRight className="h-8 w-8" />
+          </Button>
+          <div />
+          <Button
+            variant="secondary"
+            size="icon"
+            className="h-14 w-14 rounded-full"
+            onClick={() => {
+              if (directionRef.current.y === 0) directionRef.current = { x: 0, y: 1 };
+            }}
+          >
+            <ChevronDown className="h-8 w-8" />
+          </Button>
+          <div />
+        </div>
+      )}
+
       {gameState !== "won" && (
         <div className="w-full mt-2 p-6 bg-primary/10 border border-dashed border-primary/40 rounded-xl flex flex-col items-center gap-4">
           <div className="flex items-center gap-3">
@@ -329,3 +383,5 @@ export default function GameStage({ onSuccess }: GameStageProps) {
     </div>
   );
 }
+
+    
