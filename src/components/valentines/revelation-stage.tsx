@@ -11,6 +11,8 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { Button } from "@/components/ui/button";
+import { RotateCcw } from "lucide-react";
 
 // The firework particle effect component
 const HeartFirework = ({ baseDelay = 0 }: { baseDelay?: number }) => {
@@ -68,6 +70,10 @@ export default function RevelationStage() {
     setFireworks(generatedFireworks);
   }, []);
 
+  const handleReplay = () => {
+    localStorage.removeItem('valentines-app-stage');
+    window.location.reload();
+  };
 
   return (
     <div className="w-full bg-card dark:bg-stone-900 rounded-xl shadow-xl overflow-hidden border border-primary/5 relative">
@@ -237,6 +243,15 @@ export default function RevelationStage() {
             💕 ¡Te amo infinito! 💕
           </p>
         </div>
+
+        <Button
+          variant="outline"
+          onClick={handleReplay}
+          className="mt-6 w-full max-w-sm h-12 text-base font-bold"
+        >
+          <RotateCcw className="mr-2 h-4 w-4" />
+          Volver a vivir la experiencia
+        </Button>
       </div>
     </div>
   );
