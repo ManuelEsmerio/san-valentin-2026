@@ -32,54 +32,37 @@ export default function CountdownStage({ onComplete }: CountdownStageProps) {
   const { toast } = useToast();
   const longPressTimer = useRef<NodeJS.Timeout>();
 
-  const calculateTimeLeft = (): TimeLeft => {
-    const now = new Date();
-    // TEST: The target date is 30 seconds from now.
-    const targetDate = new Date(now.getTime() + 30 * 1000);
-
-    const difference = +targetDate - +now;
-    let timeLeft: TimeLeft;
-
-    if (difference > 0) {
-      timeLeft = {
-        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((difference / 1000 / 60) % 60),
-        seconds: Math.floor((difference / 1000) % 60),
-      };
-    } else {
-      timeLeft = { days: 0, hours: 0, minutes: 0, seconds: 0 };
-    }
-    return timeLeft;
-  };
-
-  const [timeLeft, setTimeLeft] = useState<TimeLeft>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-  const [isClient, setIsClient] = useState(false);
+  const [timeLeft, setTimeLeft] = useState<TimeLeft | null>(null);
   const [isTimeUp, setIsTimeUp] = useState(false);
 
   useEffect(() => {
-    setIsClient(true);
-    const initialTimeLeft = calculateTimeLeft();
-    setTimeLeft(initialTimeLeft);
-    if (initialTimeLeft.days === 0 && initialTimeLeft.hours === 0 && initialTimeLeft.minutes === 0 && initialTimeLeft.seconds === 0) {
-      setIsTimeUp(true);
-    }
-  }, []);
+    // The target date is set ONCE when the effect runs.
+    const targetDate = new Date(new Date().getTime() + 30 * 1000);
+    let timer: NodeJS.Timeout;
 
-  useEffect(() => {
-    if (!isClient || isTimeUp) return;
+    const updateCountdown = () => {
+      const now = new Date();
+      const difference = +targetDate - +now;
 
-    const timer = setInterval(() => {
-      const newTimeLeft = calculateTimeLeft();
-      setTimeLeft(newTimeLeft);
-      if (newTimeLeft.days === 0 && newTimeLeft.hours === 0 && newTimeLeft.minutes === 0 && newTimeLeft.seconds === 0) {
+      if (difference > 0) {
+        setTimeLeft({
+          days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+          minutes: Math.floor((difference / 1000 / 60) % 60),
+          seconds: Math.floor((difference / 1000) % 60),
+        });
+      } else {
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
         setIsTimeUp(true);
-        clearInterval(timer);
+        if(timer) clearInterval(timer);
       }
-    }, 1000);
+    };
+    
+    updateCountdown();
+    timer = setInterval(updateCountdown, 1000);
 
     return () => clearInterval(timer);
-  }, [isClient, isTimeUp]);
+  }, []);
   
   // This hook handles both keyboard and touch shortcuts to skip the countdown
   useEffect(() => {
@@ -142,12 +125,12 @@ export default function CountdownStage({ onComplete }: CountdownStageProps) {
           Cada melodía me recuerda los hermosos momentos que hemos compartido juntos.
         </p>
 
-        {isClient && (
+        {timeLeft && (
           <div className="flex items-center gap-8 md:gap-16 mb-12">
-            <CountdownUnit value={formatNumber(timeLeft.days || 0)} label="DÍAS" />
-            <CountdownUnit value={formatNumber(timeLeft.hours || 0)} label="HORAS" />
-            <CountdownUnit value={formatNumber(timeLeft.minutes || 0)} label="MINUTOS" />
-            <CountdownUnit value={formatNumber(timeLeft.seconds || 0)} label="SEGUNDOS" />
+            <CountdownUnit value={formatNumber(timeLeft.days)} label="DÍAS" />
+            <CountdownUnit value={formatNumber(timeLeft.hours)} label="HORAS" />
+            <CountdownUnit value={formatNumber(timeLeft.minutes)} label="MINUTOS" />
+            <CountdownUnit value={formatNumber(timeLeft.seconds)} label="SEGUNDOS" />
           </div>
         )}
 
