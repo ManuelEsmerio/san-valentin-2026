@@ -33,7 +33,7 @@ type LoginStageProps = {
 
 function CustomDay({ date, ...props }: DayProps) {
   if (props.modifiers.hidden) {
-    return <div className="h-8 w-8"></div>;
+    return <></>;
   }
 
   const content = <span className="relative z-10">{format(date, 'd')}</span>;
