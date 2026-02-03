@@ -86,7 +86,8 @@ export default function KeywordModal({ isOpen, onSuccess, onBack }: KeywordModal
             <h2 className="text-2xl font-bold text-foreground">Palabra Clave Requerida</h2>
           </div>
           <p className="text-muted-foreground mb-6">
-            Para continuar al siguiente desafío, necesitas la palabra clave que se forma con nuestros sentimientos.
+          Para continuar, necesitas la palabra que encontraste en la pista.
+          Escríbela aquí para seguir avanzando.
           </p>
           <div className="flex flex-col gap-4">
             <Input

@@ -131,7 +131,7 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [score, setScore] = useState(0);
   const [answerStatus, setAnswerStatus] = useState<AnswerStatus>('unanswered');
-  const [stage, setStage] = useState<"playing" | "failed" | "finished">("playing");
+  const [stage, setStage] = useState<"intro" | "playing" | "failed" | "finished">("intro");
   const { toast } = useToast();
   
   const [letterToShow, setLetterToShow] = useState<{ title: string; content: string[]; images: ImagePlaceholder[] } | null>(null);
@@ -147,7 +147,7 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
     setAnswers({});
     setScore(0);
     setAnswerStatus('unanswered');
-    setStage("playing");
+    setStage("intro");
     setShownLetters({});
     setPuzzleModalOpen(false);
     setFlippedQuestions({});
@@ -241,6 +241,31 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
   const handleRetry = () => {
     setupTrivia();
   };
+
+  if (stage === "intro") {
+    return (
+      <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5 animate-fade-in">
+        <div className="p-6 sm:p-10 text-center flex flex-col items-center gap-4">
+            <span className="material-symbols-outlined text-primary text-6xl" style={{ fontVariationSettings: "'FILL' 1" }}>
+                quiz
+            </span>
+            <h2 className="text-foreground text-3xl font-bold leading-tight tracking-[-0.015em]">
+                ¡Bien hecho, mi chula!
+            </h2>
+            <p className="text-muted-foreground max-w-md">
+                Superaste el primer desafío y conseguiste la pista. Ahora, una trivia para demostrar cuánto nos conocemos. ¿Estás lista?
+            </p>
+            <Button
+                onClick={() => setStage('playing')}
+                className="h-12 px-8 text-lg font-bold shadow-lg shadow-primary/20 mt-4"
+                size="lg"
+            >
+                ¡Estoy lista!
+            </Button>
+        </div>
+      </div>
+    );
+  }
   
   if (stage === "failed") {
     return (
@@ -282,7 +307,7 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
       )
   }
 
-  if (!currentQuestion) {
+  if (!currentQuestion || stage !== 'playing') {
     return null;
   }
 
