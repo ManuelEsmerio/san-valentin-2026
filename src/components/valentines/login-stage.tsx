@@ -28,7 +28,10 @@ import { Heart } from 'lucide-react';
 
 const formSchema = z.object({
   nickname: z.string().min(1, 'Dime quién eres...'),
-  anniversary: z.string().min(1, 'Por favor, elige nuestra fecha especial.'),
+  anniversary: z.date({
+    required_error: 'Por favor, elige nuestra fecha especial.',
+    invalid_type_error: 'Esa no parece ser una fecha válida.',
+  }),
 });
 
 export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
@@ -39,14 +42,21 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       nickname: '',
-      anniversary: '',
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const isNicknameCorrect =
       values.nickname.trim().toLowerCase() === 'mi chula';
-    const isDateCorrect = values.anniversary.trim() === '13/04/2025';
+
+    let isDateCorrect = false;
+    if (values.anniversary) {
+      const day = values.anniversary.getDate();
+      const month = values.anniversary.getMonth() + 1; // getMonth() is 0-indexed
+      if (day === 13 && month === 4) {
+        isDateCorrect = true;
+      }
+    }
 
     if (isNicknameCorrect && isDateCorrect) {
       onSuccess();
@@ -141,7 +151,7 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
                           </span>
                            <span className='pl-8'>
                             {field.value ? (
-                                format(new Date(field.value.split('/').reverse().join('-')+'T12:00:00'), 'PPP', { locale: es })
+                                format(field.value, 'PPP', { locale: es })
                             ) : (
                                 <span>Elige una fecha</span>
                             )}
@@ -156,15 +166,9 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
                       <Calendar
                         mode="single"
                         locale={es}
-                        selected={
-                          field.value
-                            ? new Date(
-                                field.value.split('/').reverse().join('-') + 'T12:00:00'
-                              )
-                            : undefined
-                        }
+                        selected={field.value}
                         onSelect={(date) => {
-                          field.onChange(date ? format(date, 'dd/MM/yyyy') : '');
+                          field.onChange(date);
                           setIsCalendarOpen(false);
                         }}
                         formatters={{
