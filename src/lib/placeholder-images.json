@@ -131,6 +131,12 @@
       "description": "Imagen para la pregunta abierta #12: ¿Qué es lo que más te gusta de nosotros como pareja?",
       "imageUrl": "/image/open-ended-2.jpg",
       "imageHint": "happy couple"
+    },
+    {
+      "id": "adventure-modal-img",
+      "description": "Imagen para la modal de aventura.",
+      "imageUrl": "/image/adventure-modal-img.jpg",
+      "imageHint": "adventure travel"
     }
   ]
 }

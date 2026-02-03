@@ -13,6 +13,7 @@ import { Progress } from "../ui/progress";
 import RomanticLetterModal from "./RomanticLetterModal";
 import { PlaceHolderImages, type ImagePlaceholder } from "@/lib/placeholder-images";
 import { cn } from "@/lib/utils";
+import AdventureModal from "./AdventureModal";
 
 type TriviaStageProps = {
   onSuccess: () => void;
@@ -113,6 +114,7 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
   
   const [letterToShow, setLetterToShow] = useState<{ title: string; content: string[]; images: ImagePlaceholder[] } | null>(null);
   const [shownLetters, setShownLetters] = useState<Record<number, boolean>>({});
+  const [showAdventureModal, setShowAdventureModal] = useState(false);
 
   const setupTrivia = () => {
     const shuffledMcq = shuffleArray([...multipleChoiceQuestions]);
@@ -123,6 +125,7 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
     setAnswerStatus('unanswered');
     setStage("playing");
     setShownLetters({});
+    setShowAdventureModal(false);
   };
 
   useEffect(() => {
@@ -235,11 +238,15 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
                     <span className="material-symbols-outlined text-primary text-5xl">check_circle</span>
                     <AlertTitle className="font-headline mt-2 text-xl text-green-600">¡Perfecto! ¡Sabía que lo sabrías todo!</AlertTitle>
                     <AlertDescription className="font-body space-y-4 mt-4 text-foreground/80">
-                    <p>Has completado el desafío. Ahora, la revelación final...</p>
-                    <Button onClick={onSuccess} className="w-full h-12 text-lg font-bold">Ver mi sorpresa</Button>
+                      <p>Has completado el desafío. Ahora, una última pregunta...</p>
+                      <Button onClick={() => setShowAdventureModal(true)} className="w-full h-12 text-lg font-bold">Continuar</Button>
                     </AlertDescription>
                 </Alert>
             </div>
+            <AdventureModal 
+              isOpen={showAdventureModal}
+              onConfirm={onSuccess}
+            />
         </div>
       )
   }
@@ -339,6 +346,11 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
         isOpen={!!letterToShow}
         letter={letterToShow}
         onClose={() => setLetterToShow(null)}
+      />
+
+      <AdventureModal 
+        isOpen={showAdventureModal}
+        onConfirm={onSuccess}
       />
     </div>
   );
