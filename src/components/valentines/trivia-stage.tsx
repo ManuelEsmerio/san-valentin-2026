@@ -548,8 +548,12 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
 
   return (
     <>
-      <div className="w-full flex flex-col md:flex-row gap-8 items-center md:items-start">
-        <div className="flex-1 w-full flex flex-col gap-6 items-center">
+      <div className="w-full md:relative">
+        <div className="w-full flex justify-center md:absolute md:top-0 md:right-0 md:w-auto z-10">
+          <CircularProgress current={currentQuestionIndex + 1} total={questions.length} />
+        </div>
+
+        <div className="w-full flex flex-col gap-6 items-center mt-8 md:mt-0">
           <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5">
             {imagePlaceholder && (
               <div className="relative w-full aspect-[21/9] rounded-t-xl overflow-hidden bg-black/20">
@@ -656,10 +660,6 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
             </Button>
           )}
         </div>
-
-        <div className="w-full md:w-auto">
-          <CircularProgress current={currentQuestionIndex + 1} total={questions.length} />
-        </div>
       </div>
       
       <RomanticLetterModal
@@ -675,5 +675,3 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
     </>
   );
 }
-
-    
