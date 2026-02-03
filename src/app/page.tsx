@@ -13,11 +13,11 @@ import { cn } from '@/lib/utils';
 type Stage = 'login' | 'welcome' | 'game' | 'trivia' | 'revelation';
 
 const stageInfo: Record<Stage, { step: number; title: string }> = {
-  login: { step: 1, title: 'The Beginning' },
-  welcome: { step: 1, title: 'Welcome' },
-  game: { step: 2, title: 'El Snake de Corazones' },
-  trivia: { step: 3, title: 'Trivia de Nuestro Amor' },
-  revelation: { step: 4, title: 'The Surprise' },
+  login: { step: 1, title: 'El Inicio' },
+  welcome: { step: 1, title: 'Un Momento' },
+  game: { step: 2, title: 'El Recorrido' },
+  trivia: { step: 3, title: 'Lo Que Sabemos' },
+  revelation: { step: 4, title: 'Aquí' },
 };
 
 export default function Home() {

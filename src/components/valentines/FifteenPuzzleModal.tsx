@@ -4,15 +4,13 @@ import { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { Map, MapPin } from 'lucide-react';
+import { Map, MapPin, BarChart2, RotateCcw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 // Puzzle constants
 const GRID_SIZE = 4;
 const TILE_COUNT = GRID_SIZE * GRID_SIZE;
 const EMPTY_TILE = TILE_COUNT - 1; // The last tile (15) is our empty space
-const PUZZLE_DIMENSION = 400; // The dimension of the puzzle board in pixels
-const TILE_DIMENSION = PUZZLE_DIMENSION / GRID_SIZE;
 
 // Function to generate a solvable shuffled puzzle
 const shuffleTiles = () => {
@@ -54,17 +52,15 @@ export default function FifteenPuzzleModal({ isOpen, onSuccess }: FifteenPuzzleM
   const [isShowing, setIsShowing] = useState(false);
   const [isSolved, setIsSolved] = useState(false);
   const [tiles, setTiles] = useState<number[]>([]);
+  const [moves, setMoves] = useState(0);
   const { toast } = useToast();
   
   const puzzleImage = useMemo(() => PlaceHolderImages.find(img => img.id === 'puzzle-image'), []);
 
-  // Modal open/close transition management
   useEffect(() => {
     if (isOpen) {
       setIsShowing(true);
-      // Initialize puzzle state
-      setTiles(shuffleTiles());
-      setIsSolved(false);
+      handleRestart();
     } else {
       const timer = setTimeout(() => setIsShowing(false), 300);
       return () => clearTimeout(timer);
@@ -96,6 +92,7 @@ export default function FifteenPuzzleModal({ isOpen, onSuccess }: FifteenPuzzleM
       const newTiles = [...tiles];
       [newTiles[clickedIndex], newTiles[emptyIndex]] = [newTiles[emptyIndex], newTiles[clickedIndex]];
       setTiles(newTiles);
+      setMoves(prev => prev + 1);
 
       if (checkIfSolved(newTiles)) {
         setIsSolved(true);
@@ -107,7 +104,12 @@ export default function FifteenPuzzleModal({ isOpen, onSuccess }: FifteenPuzzleM
     }
   };
 
-  // New map data for the final clue
+  const handleRestart = () => {
+    setTiles(shuffleTiles());
+    setMoves(0);
+    setIsSolved(false);
+  };
+  
   const coordinates = "19.4173° N, 99.1652° W";
   const lat = "19.4173";
   const long = "-99.1652";
@@ -127,47 +129,58 @@ export default function FifteenPuzzleModal({ isOpen, onSuccess }: FifteenPuzzleM
     >
       <div
         className={cn(
-          'relative w-full max-w-2xl m-4 bg-card text-card-foreground rounded-xl shadow-2xl shadow-primary/20 border border-primary/10 transition-all duration-300',
+          'relative w-full max-w-lg m-4 bg-card text-card-foreground rounded-2xl shadow-2xl shadow-primary/20 border border-primary/10 transition-all duration-300 dark:bg-zinc-900 dark:border-zinc-800',
           isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
         )}
         onClick={(e) => e.stopPropagation()}
       >
         {!isSolved ? (
-            <div className="p-6 sm:p-8 text-center">
-                <h2 className="text-2xl font-bold text-foreground mb-2">Un último juego...</h2>
-                <p className="text-muted-foreground mb-6">Ordena la imagen para revelar la pista final de tu sorpresa.</p>
-                <div 
-                    className="relative mx-auto grid border-2 border-primary/20 bg-black/20 rounded-lg overflow-hidden"
-                    style={{
-                        width: PUZZLE_DIMENSION,
-                        height: PUZZLE_DIMENSION,
-                        gridTemplateColumns: `repeat(${GRID_SIZE}, 1fr)`,
-                    }}
-                >
-                    {tiles.map((tileValue, index) => {
-                        const isEMPTY_TILE = tileValue === EMPTY_TILE;
-                        const correctRow = Math.floor(tileValue / GRID_SIZE);
-                        const correctCol = tileValue % GRID_SIZE;
-                        
-                        return (
-                            <div
-                                key={index}
-                                onClick={() => handleTileClick(index)}
-                                className={cn(
-                                    "bg-cover bg-no-repeat transition-all duration-300 ease-out",
-                                    !isEMPTY_TILE && "cursor-pointer hover:scale-105 hover:z-10 shadow-md",
-                                    isEMPTY_TILE && "bg-card/50"
-                                )}
-                                style={{
-                                    width: TILE_DIMENSION,
-                                    height: TILE_DIMENSION,
-                                    backgroundImage: !isEMPTY_TILE && puzzleImage ? `url(${puzzleImage.imageUrl})` : 'none',
-                                    backgroundPosition: `-${correctCol * TILE_DIMENSION}px -${correctRow * TILE_DIMENSION}px`,
-                                    backgroundSize: `${PUZZLE_DIMENSION}px ${PUZZLE_DIMENSION}px`,
-                                }}
-                            />
-                        );
-                    })}
+            <div className="p-6 md:p-8 text-center">
+                <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white mb-3">
+                    Un último juego...
+                </h1>
+                <p className="text-primary font-medium text-lg leading-relaxed mb-8">
+                    Ordena la imagen para revelar la pista final de tu sorpresa.
+                </p>
+                <div className="bg-pink-50 dark:bg-zinc-800/50 p-3 rounded-2xl max-w-sm mx-auto shadow-inner">
+                  <div className="grid grid-cols-4 gap-2 aspect-square">
+                      {tiles.map((tileValue, index) => {
+                          const isEMPTY_TILE = tileValue === EMPTY_TILE;
+                          const correctRow = Math.floor(tileValue / GRID_SIZE);
+                          const correctCol = tileValue % GRID_SIZE;
+                          
+                          return (
+                              <div
+                                  key={index}
+                                  onClick={() => handleTileClick(index)}
+                                  className={cn(
+                                      "bg-cover bg-no-repeat rounded-lg md:rounded-xl transition-all duration-200 ease-in-out",
+                                      !isEMPTY_TILE && "cursor-pointer hover:brightness-110 hover:scale-[.98] shadow-md",
+                                      isEMPTY_TILE && "bg-white/50 dark:bg-zinc-700/50 border-2 border-dashed border-primary/20"
+                                  )}
+                                  style={{
+                                      backgroundImage: !isEMPTY_TILE && puzzleImage ? `url(${puzzleImage.imageUrl})` : 'none',
+                                      backgroundPosition: `${(correctCol * 100) / (GRID_SIZE - 1)}% ${(correctRow * 100) / (GRID_SIZE - 1)}%`,
+                                      backgroundSize: `${GRID_SIZE * 100}% ${GRID_SIZE * 100}%`,
+                                  }}
+                              />
+                          );
+                      })}
+                  </div>
+                </div>
+                <div className="mt-8 flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-4">
+                    <div className="flex items-center gap-2 text-gray-600 dark:text-zinc-400">
+                        <BarChart2 className="text-primary h-5 w-5" />
+                        <span className="font-bold text-sm">{moves} Movimientos</span>
+                    </div>
+                    <Button 
+                        onClick={handleRestart}
+                        variant="default"
+                        className="flex items-center gap-2 bg-primary text-white px-6 py-3 h-auto rounded-full font-bold hover:opacity-90 active:scale-95 transition-all shadow-lg shadow-pink-200 dark:shadow-none"
+                    >
+                        <RotateCcw className="h-4 w-4" />
+                        Reiniciar Juego
+                    </Button>
                 </div>
             </div>
         ) : (
