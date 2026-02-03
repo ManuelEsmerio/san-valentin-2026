@@ -2,11 +2,13 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
 
 export default function MusicPlayer() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     setIsMounted(true);
@@ -15,14 +17,26 @@ export default function MusicPlayer() {
     }
   }, []);
 
-  const togglePlayPause = () => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.play();
+  const togglePlayPause = async () => {
+    if (!audioRef.current) return;
+
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      try {
+        await audioRef.current.play();
+        setIsPlaying(true);
+      } catch (error) {
+        console.error('Audio playback error:', error);
+        toast({
+          variant: 'destructive',
+          title: 'No se encontró la música',
+          description:
+            "Para activar la música, añade un archivo 'music.mp3' en la carpeta 'public/audio'.",
+        });
+        setIsPlaying(false);
       }
-      setIsPlaying(!isPlaying);
     }
   };
 
