@@ -103,12 +103,6 @@
       "imageHint": "couple cooking"
     },
     {
-      "id": "trivia-5",
-      "description": "Imagen para la pregunta de trivia: ¿Qué es lo que más nos gusta hacer juntos?",
-      "imageUrl": "/image/trivia-5.jpg",
-      "imageHint": "couple movie"
-    },
-    {
       "id": "trivia-6",
       "description": "Imagen para la pregunta de trivia: ¿Quién nunca lava el baño?",
       "imageUrl": "/image/trivia-6.jpg",
@@ -131,12 +125,6 @@
       "description": "Imagen para la pregunta de trivia: ¿Quién es más enojón?",
       "imageUrl": "/image/trivia-9.jpg",
       "imageHint": "angry person"
-    },
-    {
-      "id": "trivia-10",
-      "description": "Imagen para la pregunta de trivia: ¿Cómo describirías nuestra relación?",
-      "imageUrl": "/image/trivia-10.jpg",
-      "imageHint": "couple laughing"
     },
     {
       "id": "trivia-11",
@@ -197,6 +185,18 @@
       "description": "Imagen para la pregunta de trivia: ¿A quién le da más hueva bañarse?",
       "imageUrl": "/image/trivia-22.jpg",
       "imageHint": "person lazy"
+    },
+    {
+      "id": "trivia-23",
+      "description": "Imagen para la pregunta de trivia: ¿Qué es lo que más nos gusta hacer juntos?",
+      "imageUrl": "/image/trivia-23.jpg",
+      "imageHint": "couple movie"
+    },
+    {
+      "id": "trivia-24",
+      "description": "Imagen para la pregunta de trivia: ¿Cómo describirías nuestra relación?",
+      "imageUrl": "/image/trivia-24.jpg",
+      "imageHint": "couple laughing"
     },
     {
       "id": "open-ended-1",

@@ -80,15 +80,6 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
     hint: 'El sazón nunca falla 🍳',
   },
   {
-    id: 5,
-    type: 'multiple-choice',
-    question: '¿Qué es lo que más nos gusta hacer juntos?',
-    options: ['Ver películas', 'Salir a comer', 'Viajar', 'Todo lo anterior'],
-    correctAnswer: 'Todo lo anterior',
-    image: 'trivia-5',
-    hint: 'La mejor compañía para cualquier plan 🍿',
-  },
-  {
     id: 6,
     type: 'multiple-choice',
     question: '¿Quién nunca lava el baño?',
@@ -123,25 +114,6 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
     correctAnswer: 'Ambos',
     image: 'trivia-9',
     hint: 'El que hace más caras 😡',
-  },
-  {
-    id: 10,
-    type: "multiple-choice",
-    question: "¿Cómo describirías nuestra relación?",
-    options: [
-      "Divertida",
-      "Única",
-      "Auténtica",
-      "Todas las anteriores"
-    ],
-    correctAnswer: [
-      "Divertida",
-      "Única",
-      "Auténtica",
-      "Todas las anteriores"
-    ],
-    image: "trivia-10",
-    hint: "No hay respuesta incorrecta aquí."
   },
   {
     id: 11,
@@ -282,13 +254,41 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
     correctAnswer: "Todas las anteriores 👀",
     image: "trivia-22",
     hint: "El agua no muerde… pero parece que sí 😂🚿"
+  },
+  {
+    id: 23,
+    type: 'multiple-choice',
+    question: '¿Qué es lo que más nos gusta hacer juntos?',
+    options: ['Ver películas', 'Salir a comer', 'Viajar', 'Todo lo anterior'],
+    correctAnswer: 'Todo lo anterior',
+    image: 'trivia-23',
+    hint: 'La mejor compañía para cualquier plan 🍿',
+  },
+  {
+    id: 24,
+    type: "multiple-choice",
+    question: "¿Cómo describirías nuestra relación?",
+    options: [
+      "Divertida",
+      "Única",
+      "Auténtica",
+      "Todas las anteriores"
+    ],
+    correctAnswer: [
+      "Divertida",
+      "Única",
+      "Auténtica",
+      "Todas las anteriores"
+    ],
+    image: "trivia-24",
+    hint: "No hay respuesta incorrecta aquí."
   }
 ];
 
 
 const openEndedQuestions: OpenEndedQuestion[] = [
     {
-        id: 23,
+        id: 25,
         type: 'open-ended',
         question: '¿Qué es lo que más valoras cuando te sientes en calma conmigo?',
         creatorAnswer: 'Valoro que, aun con malentendidos, conversaciones incómodas o silencios, sigamos eligiendo quedarnos un momento más y no salir corriendo cuando algo duele.',
@@ -296,7 +296,7 @@ const openEndedQuestions: OpenEndedQuestion[] = [
         hint: 'Una pregunta sobre el presente y la paz.'
     },
     {
-        id: 24,
+        id: 26,
         type: 'open-ended',
         question: '¿Qué sientes que nos ha costado más últimamente?',
         creatorAnswer: 'Siento que nos ha costado escucharnos de verdad, sin sentir que tenemos que defendernos o estar a la defensiva todo el tiempo.',
@@ -304,7 +304,7 @@ const openEndedQuestions: OpenEndedQuestion[] = [
         hint: 'Una reflexión sobre nuestra comunicación.'
     },
     {
-        id: 25,
+        id: 27,
         type: 'open-ended',
         question: '¿Qué necesitarías hoy para sentirte tranquila, sin presión?',
         creatorAnswer: 'Estar presente, apoyar en lo que esté en mis manos y respetar tu ritmo, sin exigencias ni promesas vacías.',
