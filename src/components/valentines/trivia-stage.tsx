@@ -85,7 +85,7 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
     question: '¿Quién nunca lava el baño?',
     options: ['Yo', 'Tú', 'Ambos lo evitamos', 'Siempre lo hace otro'],
     correctAnswer: 'Tú',
-    image: 'trivia-5',
+    image: 'trivia-6',
     hint: 'La misión imposible del aseo 🚽',
   },
   {
@@ -94,7 +94,7 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
     question: '¿Quién ronca más fuerte?',
     options: ['Yo', 'Tú', 'Ambos', 'Nadie'],
     correctAnswer: 'Tú',
-    image: 'trivia-6',
+    image: 'trivia-7',
     hint: 'El concierto nocturno 🎶😴',
   },
   {
@@ -103,7 +103,7 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
     question: '¿Quién es más distraído?',
     options: ['Yo', 'Tú', 'Ambos', 'Nadie'],
     correctAnswer: 'Yo',
-    image: 'trivia-7',
+    image: 'trivia-8',
     hint: 'El clásico: ‘¿y mis llaves?’ 🔑',
   },
   {
@@ -112,7 +112,7 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
     question: '¿Quién es más enojón?',
     options: ['Yo', 'Tú', 'Ambos', 'Nadie'],
     correctAnswer: 'Ambos',
-    image: 'trivia-8',
+    image: 'trivia-9',
     hint: 'El que hace más caras 😡',
   },
   {
@@ -121,7 +121,7 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
     question: '¿Quién llora de la nada al ver videos de animalitos?',
     options: ['Yo', 'Tú', 'Ambos', 'Nadie'],
     correctAnswer: 'Tú',
-    image: 'trivia-9',
+    image: 'trivia-11',
     hint: 'Los animalitos siempre ganan 🐶🐱',
   },
   {
@@ -130,7 +130,7 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
     question: '¿Quién tiene una obsesión con las chichis del otro?',
     options: ['Yo', 'Tú', 'Ambos', 'Nadie'],
     correctAnswer: 'Ambos',
-    image: 'trivia-10',
+    image: 'trivia-12',
     hint: 'Una obsesión divertida 🤭',
   },
   {
@@ -144,7 +144,7 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
       "Todo lo anterior"
     ],
     correctAnswer: "Todo lo anterior",
-    image: "trivia-9",
+    image: "trivia-13",
     hint: "Es la base de todo."
   },
   {
@@ -163,7 +163,7 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
       "Auténtica",
       "Todas las anteriores"
     ],
-    image: "trivia-10",
+    image: "trivia-14",
     hint: "No hay respuesta incorrecta aquí."
   },
   {
@@ -182,7 +182,7 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
       "Definitivamente tú",
       "No hay duda: tú"
     ],
-    image: "trivia-11",
+    image: "trivia-16",
     hint: "Ni el aromatizante pudo contra eso 😂🦶"
   },
   {
@@ -196,7 +196,7 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
       "Todas las anteriores"
     ],
     correctAnswer: "Todas las anteriores",
-    image: "trivia-12",
+    image: "trivia-17",
     hint: "Según tú: ‘ya casi’ 🚿📱"
   },
   {
@@ -210,7 +210,7 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
       "Todas aplican"
     ],
     correctAnswer: "Todas aplican",
-    image: "trivia-13",
+    image: "trivia-18",
     hint: "El amor todo lo soporta… incluso eso 💨😂"
   },
   {
@@ -224,7 +224,7 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
       "Todo lo anterior"
     ],
     correctAnswer: "Todo lo anterior",
-    image: "trivia-14",
+    image: "trivia-19",
     hint: "Lo simple también es especial."
   },
   {
@@ -238,7 +238,7 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
       "Un poco de todo"
     ],
     correctAnswer: "Un poco de todo",
-    image: "trivia-15",
+    image: "trivia-21",
     hint: "Nada aquí es casual."
   },
   {
@@ -252,7 +252,7 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
       "Todas las anteriores 👀"
     ],
     correctAnswer: "Todas las anteriores 👀",
-    image: "trivia-16",
+    image: "trivia-22",
     hint: "El agua no muerde… pero parece que sí 😂🚿"
   }
 ];
@@ -315,12 +315,14 @@ const LETTERS = {
     imageIds: ["letter-3-img-1", "letter-3-img-2", "letter-3-img-3"],
   },
   20: {
-    title: "Lo que quiero contigo…",
+    title: "Lo que nos unió a pesar de la distancia…",
     content: [
-      "Compartir risas, crear más recuerdos y seguir eligiéndonos todos los días,",
-      "en los días malos, cuando estemos cansados y sintamos que no podemos más, saber que estamos el uno para el otro, para apoyarnos y darnos la mano en esos momentos, sin importar lo que venga. 💕",
+      "Al principio, todo era pantalla y voz. Pero cada videollamada nos acercaba más, como si el tiempo y la distancia se hicieran pequeños cuando te veía sonreír.",
+      "Hablábamos de todo y de nada, y aun así cada conversación me hacía sentir más cerca de ti.",
+      "A veces me quedaba despierto solo para verte un ratito más, aunque fuera cansado, aunque fuera tarde… porque tú valías la pena.",
+      "Esas llamadas fueron el inicio de algo que hoy es mucho más grande: nosotros. 💞",
     ],
-    imageIds: ["letter-3-img-1", "letter-3-img-2", "letter-3-img-3"],
+    imageIds: ["letter-4-img-1", "letter-4-img-2", "letter-4-img-3"],
   },
 };
 
