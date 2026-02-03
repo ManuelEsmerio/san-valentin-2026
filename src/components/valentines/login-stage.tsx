@@ -157,21 +157,13 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
                             field.onChange(date ? format(date, 'dd/MM/yyyy') : '');
                             setIsCalendarOpen(false);
                         }}
-                        month={new Date(2025, 3)}
                         formatters={{
                           formatShortWeekday: (day) => format(day, 'EEEEEE', { locale: es }).slice(0, 2),
                         }}
-                        disabled={(date) =>
-                          date > new Date('2026-01-01') || date < new Date('2024-01-01')
-                        }
                         initialFocus
                         classNames={{
                           root: 'p-0',
                           month: 'space-y-4',
-                          caption: 'flex flex-col items-start relative mb-4 h-12',
-                          caption_label: 'text-base font-medium capitalize',
-                          nav: 'space-x-1 flex items-center absolute top-7',
-                          nav_button: 'h-7 w-7 bg-transparent p-0 opacity-80 hover:opacity-100',
                           table: 'w-full border-collapse',
                           head_row: 'flex',
                           head_cell: 'text-muted-foreground rounded-md w-8 font-normal text-[0.8rem] capitalize',

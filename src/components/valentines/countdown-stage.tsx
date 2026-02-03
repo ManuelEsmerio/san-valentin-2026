@@ -69,13 +69,13 @@ export default function CountdownStage({ onComplete }: CountdownStageProps) {
       <div className="absolute top-0 left-0 w-full h-full bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+PHJlY3Qgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiBmaWxsPSJ0cmFuc3BhcmVudCI+PC9yZWN0PjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIHg9IjAiIHk9IjAiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTNSLDAuMDUpIj48L3JlY3Q+PC9zdmc+')]"></div>
       <div className="relative z-10 flex flex-col items-center justify-center flex-grow animate-fade-in">
         <h1 className="text-5xl md:text-7xl font-bold mb-2">
-          Happy Valentine's
+          Feliz Día de San Valentín
         </h1>
         <h1 className="text-5xl md:text-7xl font-bold text-primary mb-4">
-          Day, My Love
+          Mi Amor
         </h1>
         <p className="max-w-md text-white/70 mb-12">
-          Every melody reminds me of the beautiful moments we've shared together.
+          Cada melodía me recuerda los hermosos momentos que hemos compartido juntos.
         </p>
 
         {isClient && (
@@ -90,10 +90,10 @@ export default function CountdownStage({ onComplete }: CountdownStageProps) {
         <div className="flex gap-4">
           <Button size="lg" className="h-12 text-base font-bold bg-primary hover:bg-primary/90 rounded-full px-8 shadow-lg shadow-primary/20">
             <Heart className="mr-2 h-5 w-5" fill="white" />
-            Open Surprise
+            Abrir Sorpresa
           </Button>
           <Button size="lg" variant="ghost" className="h-12 text-base font-bold text-white/80 hover:bg-white/10 hover:text-white rounded-full px-8">
-            Our Gallery
+            Nuestra Galería
           </Button>
         </div>
       </div>
@@ -102,15 +102,15 @@ export default function CountdownStage({ onComplete }: CountdownStageProps) {
          <div className="flex items-center gap-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full py-2 px-6">
             <div className="flex flex-col items-center gap-2">
                 <BookOpen className="h-5 w-5 text-white/70"/>
-                <span className="text-xs text-white/50 font-medium">OUR STORY</span>
+                <span className="text-xs text-white/50 font-medium">NUESTRA HISTORIA</span>
             </div>
              <div className="flex flex-col items-center gap-2">
                 <Image className="h-5 w-5 text-white/70"/>
-                <span className="text-xs text-white/50 font-medium">MEMORIES</span>
+                <span className="text-xs text-white/50 font-medium">RECUERDOS</span>
             </div>
              <div className="flex flex-col items-center gap-2">
                 <MessageSquare className="h-5 w-5 text-white/70"/>
-                <span className="text-xs text-white/50 font-medium">LOVE NOTES</span>
+                <span className="text-xs text-white/50 font-medium">NOTAS DE AMOR</span>
             </div>
          </div>
       </div>
