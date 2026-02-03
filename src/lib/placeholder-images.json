@@ -5,6 +5,78 @@
       "description": "A placeholder image representing a couple.",
       "imageUrl": "https://images.unsplash.com/photo-1641617254442-30e517accac0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjb3VwbGUlMjBodWd8ZW58MHx8fHwxNzcwMDk3ODA3fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "couple hug"
+    },
+    {
+      "id": "trivia-1",
+      "description": "A couple meeting for the first time in a field.",
+      "imageUrl": "https://images.unsplash.com/photo-1758686254049-8c1d1e8f9564?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjb3VwbGUlMjBtZWV0aW5nfGVufDB8fHx8MTc3MDEwOTE3NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "couple meeting"
+    },
+    {
+      "id": "trivia-2",
+      "description": "Friends on a trip in a beautiful landscape.",
+      "imageUrl": "https://images.unsplash.com/photo-1446160657592-4782fb76fb99?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxmcmllbmRzJTIwdHJhdmVsfGVufDB8fHx8MTc3MDAzNDcyMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "friends travel"
+    },
+    {
+      "id": "trivia-3",
+      "description": "A calendar page with a heart on a specific date.",
+      "imageUrl": "https://images.unsplash.com/photo-1544655152-4dc3bc4df059?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjYWxlbmRhciUyMGxvdmV8ZW58MHx8fHwxNzcwMTA5MTc3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "calendar love"
+    },
+    {
+      "id": "trivia-4",
+      "description": "A delicious plate of seafood.",
+      "imageUrl": "https://images.unsplash.com/photo-1674468699645-5766f6501dec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxzZWFmb29kJTIwZGlzaHxlbnwwfHx8fDE3NzAwNzg2Mzh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "seafood dish"
+    },
+    {
+      "id": "trivia-5",
+      "description": "A couple watching a movie together.",
+      "imageUrl": "https://images.unsplash.com/photo-1714999496547-cab764dccdb3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjb3VwbGUlMjBtb3ZpZXxlbnwwfHx8fDE3NzAxMDkxNzV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "couple movie"
+    },
+    {
+      "id": "trivia-6",
+      "description": "A person sleeping peacefully.",
+      "imageUrl": "https://images.unsplash.com/photo-1658928785463-990d81c7d4f3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8cGVyc29uJTIwc2xlZXBpbmd8ZW58MHx8fHwxNzcwMTAyNDM1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person sleeping"
+    },
+    {
+      "id": "trivia-7",
+      "description": "A close-up of a couple sharing a secret.",
+      "imageUrl": "https://images.unsplash.com/photo-1769414704007-e155b8045d24?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjb3VwbGUlMjBzZWNyZXR8ZW58MHx8fHwxNzcwMTA5MTc2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "couple secret"
+    },
+    {
+      "id": "trivia-8",
+      "description": "A couple on a sunny beach.",
+      "imageUrl": "https://images.unsplash.com/photo-1508978053361-f0df91897005?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjb3VwbGUlMjBiZWFjaHxlbnwwfHx8fDE3NzAwNjI5MTJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "couple beach"
+    },
+    {
+      "id": "trivia-9",
+      "description": "A couple holding hands, showing trust and communication.",
+      "imageUrl": "https://images.unsplash.com/photo-1506014299253-3725319c0f69?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxob2xkaW5nJTIwaGFuZHN8ZW58MHx8fHwxNzcwMTAyMzEyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "holding hands"
+    },
+    {
+      "id": "trivia-10",
+      "description": "A couple laughing together.",
+      "imageUrl": "https://images.unsplash.com/photo-1525206809752-65312b959c88?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjb3VwbGUlMjBsYXVnaGluZ3xlbnwwfHx8fDE3NzAwMTkxNjR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "couple laughing"
+    },
+    {
+      "id": "open-ended-1",
+      "description": "A romantic image representing a special feeling.",
+      "imageUrl": "https://images.unsplash.com/photo-1553907626-552e1ecd471e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxzcGVjaWFsJTIwZmVlbGluZ3xlbnwwfHx8fDE3NzAxMDkxNzV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "special feeling"
+    },
+    {
+      "id": "open-ended-2",
+      "description": "An image of a happy couple, representing their partnership.",
+      "imageUrl": "https://images.unsplash.com/photo-1541089404510-5c9a779841fc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxoYXBweSUyMGNvdXBsZXxlbnwwfHx8fDE3NzAwNTA2MDJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "happy couple"
     }
   ]
 }

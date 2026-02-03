@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Heart, Lock } from "lucide-react";
+import { Heart, Lock, Trophy, Target } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Progress } from "../ui/progress";
 
@@ -167,22 +167,19 @@ export default function GameStage({ onSuccess }: GameStageProps) {
     runGame();
 
     const handleKeyDown = (e: KeyboardEvent) => {
+      e.preventDefault();
       const dir = directionRef.current;
       switch (e.key) {
         case "ArrowUp":
-          e.preventDefault();
           if (dir.y === 0) directionRef.current = { x: 0, y: -1 };
           break;
         case "ArrowDown":
-          e.preventDefault();
           if (dir.y === 0) directionRef.current = { x: 0, y: 1 };
           break;
         case "ArrowLeft":
-          e.preventDefault();
           if (dir.x === 0) directionRef.current = { x: -1, y: 0 };
           break;
         case "ArrowRight":
-          e.preventDefault();
           if (dir.x === 0) directionRef.current = { x: 1, y: 0 };
           break;
       }
@@ -201,22 +198,32 @@ export default function GameStage({ onSuccess }: GameStageProps) {
 
   return (
     <div className="w-full flex flex-col items-center gap-6">
-      <div className="flex flex-col items-center gap-2 rounded-xl p-6 border border-primary/20 bg-card shadow-sm w-80">
-        <div className="flex items-center gap-3 text-primary">
-          <Heart className="w-8 h-8" />
-          <p className="text-foreground text-xl font-medium leading-normal">
-            Corazones Recolectados
-          </p>
+      <div className="w-full flex flex-wrap justify-center gap-4">
+        <div className="flex min-w-[180px] flex-1 flex-col items-center gap-2 rounded-xl p-4 border border-primary/20 bg-card shadow-sm">
+            <div className="flex items-center gap-2 text-primary">
+                <Heart className="w-5 h-5"/>
+                <p className="text-foreground text-sm font-medium leading-normal">Recolectados</p>
+            </div>
+            <p className="text-primary tracking-light text-4xl font-bold leading-tight">{score}</p>
         </div>
-        <p className="text-primary tracking-light text-6xl font-bold leading-tight">
-          {score}
-        </p>
-        {score > 0 && score >= highScore && (
-          <p className="text-green-600 text-sm font-medium leading-normal">
-            ¡Nuevo récord personal!
-          </p>
-        )}
+
+        <div className="flex min-w-[180px] flex-1 flex-col items-center gap-2 rounded-xl p-4 border border-border bg-card shadow-sm">
+            <div className="flex items-center gap-2 text-muted-foreground">
+                <Trophy className="w-5 h-5"/>
+                <p className="text-foreground text-sm font-medium leading-normal">Récord</p>
+            </div>
+            <p className="text-foreground tracking-light text-4xl font-bold leading-tight">{highScore}</p>
+        </div>
+        
+        <div className="flex min-w-[180px] flex-1 flex-col items-center gap-2 rounded-xl p-4 border border-border bg-card shadow-sm">
+            <div className="flex items-center gap-2 text-muted-foreground">
+                <Target className="w-5 h-5"/>
+                <p className="text-foreground text-sm font-medium leading-normal">Meta</p>
+            </div>
+            <p className="text-foreground tracking-light text-4xl font-bold leading-tight">{TARGET_SCORE}</p>
+        </div>
       </div>
+
 
       <div className="w-full p-2 rounded-xl border-2 border-primary/20 bg-card/80">
         <div
