@@ -45,8 +45,10 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    const isNicknameCorrect =
-      values.nickname.trim().toLowerCase() === 'mi chula';
+    const acceptedNicknames = ['mi chula', 'chula'];
+    const isNicknameCorrect = acceptedNicknames.includes(
+      values.nickname.trim().toLowerCase()
+    );
 
     let isDateCorrect = false;
     if (values.anniversary) {
@@ -130,7 +132,7 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <label className="text-foreground text-base font-medium leading-normal pb-2">
-                    Nuestra proxima fecha especial
+                    Nuestra fecha especial
                   </label>
                   <Popover
                     open={isCalendarOpen}
