@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/popover';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { Heart } from 'lucide-react';
 
 const formSchema = z.object({
   nickname: z.string().min(1, 'Dime quién eres...'),
@@ -148,33 +149,76 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
                         </Button>
                       </FormControl>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-4 bg-background border border-border rounded-xl" align="start">
+                    <PopoverContent
+                        align="start"
+                        className="w-auto rounded-2xl border border-border bg-background p-4 shadow-xl"
+                    >
                       <Calendar
                         mode="single"
                         locale={es}
-                        selected={field.value ? new Date(field.value.split('/').reverse().join('-') + 'T12:00:00') : undefined}
+                        selected={
+                          field.value
+                            ? new Date(
+                                field.value.split('/').reverse().join('-') + 'T12:00:00'
+                              )
+                            : undefined
+                        }
                         onSelect={(date) => {
-                            field.onChange(date ? format(date, 'dd/MM/yyyy') : '');
-                            setIsCalendarOpen(false);
+                          field.onChange(date ? format(date, 'dd/MM/yyyy') : '');
+                          setIsCalendarOpen(false);
                         }}
                         formatters={{
-                          formatShortWeekday: (day) => format(day, 'EEEEEE', { locale: es }).slice(0, 2),
+                          formatShortWeekday: (day) =>
+                            format(day, 'EEEEEE', { locale: es }).slice(0, 2),
                         }}
                         initialFocus
                         classNames={{
-                          root: 'p-0',
-                          month: 'space-y-4',
-                          table: 'w-full border-collapse',
-                          head_row: 'flex',
-                          head_cell: 'text-muted-foreground rounded-md w-8 font-normal text-[0.8rem] capitalize',
-                          row: 'flex w-full mt-2',
-                          cell: 'h-8 w-8 text-center text-sm p-0 relative',
-                          day: 'h-8 w-8 p-0 font-normal aria-selected:opacity-100 rounded-md',
-                          day_selected:
-                            'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground',
-                          day_today: 'bg-accent text-accent-foreground',
-                          day_outside: 'text-muted-foreground/50',
-                        }}
+                            root: 'p-0',
+                            months: 'flex justify-center',
+                            month: 'space-y-4',
+                            caption: 'flex justify-center relative items-center',
+                            caption_label:
+                              'text-lg font-semibold text-primary capitalize',
+                            nav: 'space-x-1 flex items-center',
+                            nav_button:
+                              'h-8 w-8 rounded-full hover:bg-primary/10',
+                            nav_button_previous: 'absolute left-1',
+                            nav_button_next: 'absolute right-1',
+                          
+                            table: 'w-full border-collapse',
+                            head_row: 'grid grid-cols-7',
+                            head_cell:
+                              'text-muted-foreground text-xs font-medium text-center uppercase',
+                          
+                            row: 'grid grid-cols-7 mt-2',
+                            cell: 'relative flex items-center justify-center',
+                          
+                            day:
+                              'h-10 w-10 rounded-full text-sm font-normal hover:bg-primary/10',
+                          
+                            day_selected:
+                              'bg-primary text-primary-foreground hover:bg-primary',
+                          
+                            day_today:
+                              'border border-primary text-primary',
+                          
+                            day_outside:
+                              'text-muted-foreground/30 pointer-events-none opacity-30',
+                          }}
+                          components={{
+                            DayContent: ({ date }) => {
+                              const isFourteen = date.getDate() === 14;
+                              return (
+                                <div className="flex items-center justify-center w-full h-full">
+                                  {isFourteen ? (
+                                    <Heart className="h-5 w-5 text-primary fill-primary" />
+                                  ) : (
+                                    date.getDate()
+                                  )}
+                                </div>
+                              );
+                            },
+                          }}
                       />
                     </PopoverContent>
                   </Popover>
