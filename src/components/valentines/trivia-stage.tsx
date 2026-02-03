@@ -80,6 +80,15 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
     hint: 'El sazón nunca falla 🍳',
   },
   {
+    id: 5,
+    type: 'multiple-choice',
+    question: '¿Qué es lo que más nos gusta hacer juntos?',
+    options: ['Ver películas', 'Salir a comer', 'Viajar', 'Todo lo anterior'],
+    correctAnswer: 'Todo lo anterior',
+    image: 'trivia-5',
+    hint: 'La mejor compañía para cualquier plan 🍿',
+  },
+  {
     id: 6,
     type: 'multiple-choice',
     question: '¿Quién nunca lava el baño?',
@@ -114,6 +123,25 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
     correctAnswer: 'Ambos',
     image: 'trivia-9',
     hint: 'El que hace más caras 😡',
+  },
+  {
+    id: 10,
+    type: "multiple-choice",
+    question: "¿Cómo describirías nuestra relación?",
+    options: [
+      "Divertida",
+      "Única",
+      "Auténtica",
+      "Todas las anteriores"
+    ],
+    correctAnswer: [
+      "Divertida",
+      "Única",
+      "Auténtica",
+      "Todas las anteriores"
+    ],
+    image: "trivia-10",
+    hint: "No hay respuesta incorrecta aquí."
   },
   {
     id: 11,
@@ -355,7 +383,8 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
 
 
   const setupTrivia = () => {
-    const shuffledMcq = shuffleArray([...multipleChoiceQuestions]);
+    const sortedMcq = [...multipleChoiceQuestions].sort((a,b) => a.id - b.id);
+    const shuffledMcq = shuffleArray(sortedMcq);
     const allQuestions = [...shuffledMcq, ...openEndedQuestions];
     setQuestions(allQuestions);
     setCurrentQuestionIndex(0);

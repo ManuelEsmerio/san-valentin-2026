@@ -40,7 +40,7 @@ export default function MapModal({ isOpen, onClose, onNextChallenge, coordinates
     >
       <div
         className={cn(
-          'relative w-full max-w-2xl m-4 bg-card text-card-foreground rounded-xl shadow-2xl shadow-primary/20 border border-primary/10 transition-all duration-300',
+          'relative w-full max-w-2xl m-4 bg-card text-card-foreground rounded-2xl shadow-2xl shadow-primary/20 border border-primary/10 transition-all duration-300 dark:bg-zinc-900 dark:border-zinc-800',
           isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
         )}
         onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
