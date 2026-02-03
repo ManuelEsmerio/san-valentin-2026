@@ -551,11 +551,8 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
       <div className="w-full flex flex-col items-center gap-6">
         {imagePlaceholder ? (
           // Layout WITH image
-          <div className="w-full md:relative">
-            <div className="w-full flex justify-center md:absolute md:top-0 md:right-0 md:w-auto z-10">
-              <CircularProgress current={currentQuestionIndex + 1} total={questions.length} />
-            </div>
-            <div className="w-full flex flex-col gap-6 items-center mt-8 md:mt-0">
+          <div className="w-full flex flex-col-reverse md:flex-row items-center md:items-start gap-8">
+            <div className="w-full md:flex-1">
               <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5">
                 <div className="relative w-full aspect-[21/9] rounded-t-xl overflow-hidden bg-black/20">
                   <Image
@@ -576,7 +573,6 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
                   <h2 className="text-2xl font-bold text-center mb-2">{currentQuestion.question}</h2>
                   <p className="text-center text-muted-foreground mb-6">{currentQuestion.hint}</p>
                   
-                  {/* ... Options rendering for image layout ... */}
                   {currentQuestion.type === 'multiple-choice' && (
                     <RadioGroup
                       onValueChange={handleAnswerChange}
@@ -606,11 +602,36 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
                   )}
                   {currentQuestion.type === 'open-ended' && (
                     <div className="pt-2 [perspective:1000px]">
-                      {/* ... Open-ended flip card ... */}
+                      <div
+                          className={cn(
+                              "relative w-full min-h-[160px] [transform-style:preserve-3d] transition-transform duration-1000",
+                              flippedQuestions[currentQuestion.id] && "[transform:rotateY(180deg)]"
+                          )}
+                      >
+                          <div className="absolute w-full h-full [backface-visibility:hidden]">
+                              <Textarea
+                              placeholder="Escribe tu respuesta aquí, mi chula..."
+                              className="min-h-[160px] text-base"
+                              value={answers[currentQuestion.id] || ""}
+                              onChange={(e) => handleAnswerChange(e.target.value)}
+                              disabled={!!flippedQuestions[currentQuestion.id]}
+                              />
+                          </div>
+
+                          <div className="absolute w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] bg-primary/10 p-6 rounded-lg flex flex-col justify-center items-center text-center">
+                              <p className="text-foreground/80 italic text-lg">
+                                  &ldquo;{(currentQuestion as OpenEndedQuestion).creatorAnswer}&rdquo;
+                              </p>
+                          </div>
+                      </div>
                     </div>
                   )}
                 </div>
               </div>
+            </div>
+            {/* Progress Circle Side */}
+            <div className="w-full md:w-auto flex justify-center md:pl-8">
+                <CircularProgress current={currentQuestionIndex + 1} total={questions.length} />
             </div>
           </div>
         ) : (
