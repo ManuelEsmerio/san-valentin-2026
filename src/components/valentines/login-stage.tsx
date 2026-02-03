@@ -8,7 +8,7 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
+import RomanticCalendar from '@/components/valentines/RomanticCalendar';
 import {
   Form,
   FormControl,
@@ -24,7 +24,6 @@ import {
 } from '@/components/ui/popover';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
-import { Heart } from 'lucide-react';
 
 const formSchema = z.object({
   nickname: z.string().min(1, 'Dime quién eres...'),
@@ -161,87 +160,15 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
                     </PopoverTrigger>
                     <PopoverContent
                         align="start"
-                        className="w-auto rounded-2xl border border-border bg-background p-4 shadow-xl"
+                        className="w-auto p-0 border-none bg-transparent shadow-none"
                     >
-                      <Calendar
-                        mode="single"
-                        locale={es}
+                      <RomanticCalendar
                         selected={field.value}
                         onSelect={(date) => {
-                          field.onChange(date);
-                          setIsCalendarOpen(false);
+                            field.onChange(date);
+                            setIsCalendarOpen(false);
                         }}
-                        formatters={{
-                          formatShortWeekday: (day) =>
-                            format(day, 'EEEEEE', { locale: es }).slice(0, 2),
-                        }}
-                        initialFocus
-                        classNames={{
-                            // Use p-0 on the root and control padding on the PopoverContent.
-                            root: 'p-0',
-                            
-                            // Center the month block.
-                            months: 'flex flex-col sm:flex-row justify-center',
-                            month: 'space-y-4',
-
-                            // Style the caption (e.g., "Febrero 2024").
-                            caption: 'flex justify-center pt-1 relative items-center',
-                            caption_label:
-                              'text-lg font-semibold text-primary capitalize',
-                            
-                            // Style the navigation buttons.
-                            nav: 'space-x-1 flex items-center',
-                            nav_button:
-                              'h-8 w-8 rounded-full bg-transparent hover:bg-primary/10 flex justify-center items-center',
-                            nav_button_previous: 'absolute left-1',
-                            nav_button_next: 'absolute right-1',
-                          
-                            // Use flex for rows to ensure proper alignment. This is the shadcn way.
-                            table: 'w-full border-collapse space-y-1',
-                            head_row: 'flex',
-                            row: 'flex w-full mt-2',
-
-                            // Style the weekday headers (LU, MA, etc.).
-                            head_cell:
-                              'text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]',
-                            
-                            // Style each day's container cell.
-                            cell: 'h-10 w-10 text-center text-sm p-0 relative flex items-center justify-center',
-                          
-                            // Style the day button itself.
-                            day:
-                              'h-10 w-10 rounded-full text-sm font-normal hover:bg-primary/10',
-                          
-                            // Style for the selected day.
-                            day_selected:
-                              'bg-primary text-primary-foreground hover:bg-primary/90 focus:bg-primary focus:text-primary-foreground',
-                          
-                            // Style for today's date.
-                            day_today:
-                              'bg-accent text-accent-foreground',
-                          
-                            // Make days outside the current month very subtle.
-                            day_outside:
-                              'text-muted-foreground/50 opacity-50',
-                            
-                            day_disabled: 'text-muted-foreground opacity-50',
-                            day_hidden: 'invisible',
-                          }}
-                          components={{
-                            // Use DayContent to inject custom elements without breaking layout.
-                            DayContent: ({ date }) => {
-                              // Mark the 14th of any month with a heart.
-                              const isFourteen = date.getDate() === 14;
-                              return (
-                                <div className="flex items-center justify-center w-full h-full relative">
-                                  {date.getDate()}
-                                  {isFourteen && (
-                                    <Heart className="h-3 w-3 absolute text-primary/70 top-1 right-1" fill="currentColor" />
-                                  )}
-                                </div>
-                              );
-                            },
-                          }}
+                        specialDay={13}
                       />
                     </PopoverContent>
                   </Popover>
