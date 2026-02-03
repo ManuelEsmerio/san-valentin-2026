@@ -34,8 +34,8 @@ export default function CountdownStage({ onComplete }: CountdownStageProps) {
 
   const calculateTimeLeft = (): TimeLeft => {
     const now = new Date();
-    // The target date is February 4th of the current year.
-    const targetDate = new Date(now.getFullYear(), 1, 4);
+    // The target date is February 14th of the current year.
+    const targetDate = new Date(now.getFullYear(), 1, 14);
 
     const difference = +targetDate - +now;
     let timeLeft: TimeLeft;
@@ -130,7 +130,7 @@ export default function CountdownStage({ onComplete }: CountdownStageProps) {
       onTouchEnd={handleTouchEnd}
       onContextMenu={(e) => e.preventDefault()}
     >
-      <div className="absolute top-0 left-0 w-full h-full bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+PHJlY3Qgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiBmaWxsPSJ0cmFuc3BhcmVudCI+PC9yZWN0PjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIHg9IjAiIHk9IjAiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTNSLDAuMDUpIj48L3JlY3Q+PC9zdmc+')]"></div>
+      <div className="absolute top-0 left-0 w-full h-full bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+PHJlY3Qgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiBmaWxsPSJ0cmFuc3BhcmVudCI+PC9yZWN0PjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIHg9IjAiIHk9IjAiIGZpbGw9InJnYmEoMjU1LDI1NSwyNSNSLDAuMDUpIj48L3JlY3Q+PC9zdmc+')]"></div>
       <div className="relative z-10 flex flex-col items-center justify-center flex-grow animate-fade-in">
         <h1 className="text-5xl md:text-7xl font-bold mb-2">
           Feliz Día de San Valentín
