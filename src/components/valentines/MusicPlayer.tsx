@@ -28,7 +28,7 @@ export default function MusicPlayer() {
         await audioRef.current.play();
         setIsPlaying(true);
       } catch (error) {
-        console.error('Audio playback error:', error);
+        // console.error('Audio playback error:', error); // Removed to avoid confusion
         toast({
           variant: 'destructive',
           title: 'No se encontró la música',

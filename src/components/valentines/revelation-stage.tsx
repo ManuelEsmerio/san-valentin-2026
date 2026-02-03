@@ -3,16 +3,17 @@
 import Image from "next/image";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
 
-// New component for the firework effect
-const HeartFirework = ({ position, baseDelay = 0 }: { position: string, baseDelay?: number }) => {
+// The firework particle effect component
+const HeartFirework = ({ baseDelay = 0 }: { baseDelay?: number }) => {
   const animations = [
     'animate-heart-fly-1', 'animate-heart-fly-2', 'animate-heart-fly-3', 'animate-heart-fly-4',
     'animate-heart-fly-5', 'animate-heart-fly-6', 'animate-heart-fly-7', 'animate-heart-fly-8'
   ];
 
   return (
-    <div className={cn("absolute", position)}>
+    <>
       {animations.map((anim, index) => (
         <span
           key={index}
@@ -20,8 +21,8 @@ const HeartFirework = ({ position, baseDelay = 0 }: { position: string, baseDela
             'material-symbols-outlined text-primary absolute opacity-0 text-2xl',
             anim
           )}
-          // Stagger the animation of each particle in the burst
           style={{ 
+            // The total animation is 4s long, this delay is for the start of the infinite loop
             animationDelay: `${baseDelay + index * 75}ms`,
             fontVariationSettings: "'FILL' 1"
           }}
@@ -29,22 +30,38 @@ const HeartFirework = ({ position, baseDelay = 0 }: { position: string, baseDela
           favorite
         </span>
       ))}
-    </div>
+    </>
   );
 };
 
 export default function RevelationStage() {
   const finalImage = PlaceHolderImages.find((img) => img.id === "couple-photo");
+  const [fireworks, setFireworks] = useState([]);
+
+  useEffect(() => {
+    // This avoids hydration errors by running only on the client
+    const generatedFireworks = Array.from({ length: 15 }).map((_, i) => ({
+      id: i,
+      style: {
+        top: `${Math.random() * 100}%`,
+        left: `${Math.random() * 100}%`,
+      },
+      delay: Math.random() * 4000, // Random delay up to 4 seconds for each burst
+    }));
+    setFireworks(generatedFireworks);
+  }, []);
+
 
   return (
     <div className="w-full bg-card dark:bg-stone-900 rounded-xl shadow-xl overflow-hidden border border-primary/5 relative">
       
       {/* Container for fireworks to sit on top */}
       <div className="absolute inset-0 w-full h-full pointer-events-none z-20 overflow-hidden rounded-xl">
-        <HeartFirework position="top-[20%] left-[15%]" baseDelay={300} />
-        <HeartFirework position="top-[30%] right-[20%]" baseDelay={600} />
-        <HeartFirework position="bottom-[35%] left-[25%]" baseDelay={900} />
-        <HeartFirework position="bottom-[25%] right-[10%]" baseDelay={1200} />
+        {fireworks.map(fw => (
+            <div key={fw.id} className="absolute" style={fw.style}>
+                <HeartFirework baseDelay={fw.delay} />
+            </div>
+        ))}
       </div>
 
       {/* Main content, with a lower z-index */}
