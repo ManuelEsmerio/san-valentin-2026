@@ -170,15 +170,19 @@ export default function GameStage({ onSuccess }: GameStageProps) {
       const dir = directionRef.current;
       switch (e.key) {
         case "ArrowUp":
+          e.preventDefault();
           if (dir.y === 0) directionRef.current = { x: 0, y: -1 };
           break;
         case "ArrowDown":
+          e.preventDefault();
           if (dir.y === 0) directionRef.current = { x: 0, y: 1 };
           break;
         case "ArrowLeft":
+          e.preventDefault();
           if (dir.x === 0) directionRef.current = { x: -1, y: 0 };
           break;
         case "ArrowRight":
+          e.preventDefault();
           if (dir.x === 0) directionRef.current = { x: 1, y: 0 };
           break;
       }
@@ -199,12 +203,12 @@ export default function GameStage({ onSuccess }: GameStageProps) {
     <div className="w-full flex flex-col items-center gap-6">
       <div className="flex flex-col items-center gap-2 rounded-xl p-6 border border-primary/20 bg-card shadow-sm w-80">
         <div className="flex items-center gap-3 text-primary">
-          <Heart className="w-5 h-5" />
-          <p className="text-foreground text-lg font-medium leading-normal">
+          <Heart className="w-8 h-8" />
+          <p className="text-foreground text-xl font-medium leading-normal">
             Corazones Recolectados
           </p>
         </div>
-        <p className="text-primary tracking-light text-5xl font-bold leading-tight">
+        <p className="text-primary tracking-light text-6xl font-bold leading-tight">
           {score}
         </p>
         {score > 0 && score >= highScore && (
@@ -260,7 +264,7 @@ export default function GameStage({ onSuccess }: GameStageProps) {
               width={CANVAS_SIZE}
               height={CANVAS_SIZE}
               className={cn(
-                "rounded-lg bg-accent/20",
+                "rounded-lg bg-pink-100/20 dark:bg-pink-900/10",
                 (gameState === "lost" || gameState === "won") && "opacity-20"
               )}
               style={{ maxWidth: "100%", height: "auto" }}
