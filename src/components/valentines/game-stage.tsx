@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Gamepad2, Heart, Lock } from "lucide-react";
+import { Heart, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Progress } from "../ui/progress";
 
@@ -143,7 +143,7 @@ export default function GameStage({ onSuccess }: GameStageProps) {
           segment.y * TILE_SIZE,
           TILE_SIZE * 0.9,
           TILE_SIZE * 0.9,
-          `hsla(330, 100%, 78%, ${opacity})`
+          `hsla(342, 85%, 75%, ${opacity})`
         );
       });
 
@@ -153,7 +153,7 @@ export default function GameStage({ onSuccess }: GameStageProps) {
         foodRef.current.y * TILE_SIZE,
         TILE_SIZE,
         TILE_SIZE,
-        "hsl(330, 100%, 78%)"
+        "hsl(342, 85%, 55%)"
       );
     };
 
@@ -197,14 +197,14 @@ export default function GameStage({ onSuccess }: GameStageProps) {
 
   return (
     <div className="w-full flex flex-col items-center gap-6">
-      <div className="flex flex-col items-center gap-2 rounded-xl p-6 border border-primary/20 bg-card shadow-sm w-64">
-        <div className="flex items-center gap-2 text-primary">
-          <Heart className="w-4 h-4" />
-          <p className="text-foreground text-base font-medium leading-normal">
+      <div className="flex flex-col items-center gap-2 rounded-xl p-6 border border-primary/20 bg-card shadow-sm w-80">
+        <div className="flex items-center gap-3 text-primary">
+          <Heart className="w-5 h-5" />
+          <p className="text-foreground text-lg font-medium leading-normal">
             Corazones Recolectados
           </p>
         </div>
-        <p className="text-primary tracking-light text-4xl font-bold leading-tight">
+        <p className="text-primary tracking-light text-5xl font-bold leading-tight">
           {score}
         </p>
         {score > 0 && score >= highScore && (
