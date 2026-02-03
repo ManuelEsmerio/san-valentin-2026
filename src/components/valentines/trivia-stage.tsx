@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
-import { CheckCircle2, Lightbulb, RotateCcw, XCircle } from "lucide-react";
+import { CheckCircle2, Lightbulb, Link, RotateCcw, XCircle } from "lucide-react";
 import RomanticLetterModal from "./RomanticLetterModal";
 import { PlaceHolderImages, type ImagePlaceholder } from "@/lib/placeholder-images";
 import { cn } from "@/lib/utils";
@@ -45,117 +45,93 @@ type AnswerStatus = "unanswered" | "correct" | "incorrect";
 const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
   {
     id: 1,
-    type: "multiple-choice",
-    question: "¿Dónde nos conocimos por primera vez?",
-    options: [
-      "En la casa de Tequila",
-      "En Lagos de Moreno",
-      "En el terreno",
-      "En los canteritos del Güero"
-    ],
-    correctAnswer: "En el terreno",
-    image: "trivia-1",
-    hint: "Fue un lugar al aire libre, con mucha tierra."
+    type: 'multiple-choice',
+    question: '¿Quién es más competitivo en juegos de mesa?',
+    options: ['Yo', 'Tú', 'Los dos', 'Ninguno'],
+    correctAnswer: 'Yo',
+    image: 'trivia-1',
+    hint: 'Siempre hay alguien que no quiere perder 🎲',
   },
   {
     id: 2,
-    type: "multiple-choice",
-    question: "¿Cuál fue nuestro primer viaje juntos (acompañados entre amigos)?",
-    options: [
-      "Mazamitla",
-      "La Huasteca Potosina",
-      "Guadalajara",
-      "León, Guanajuato"
-    ],
-    correctAnswer: "La Huasteca Potosina",
-    image: "trivia-2",
-    hint: "Cascadas y paisajes verdes.",
-    category: "Viaje inolvidable"
+    type: 'multiple-choice',
+    question: '¿Quién se roba más seguido la cobija?',
+    options: ['Yo', 'Tú', 'Ambos', 'Nadie'],
+    correctAnswer: 'Tú',
+    image: 'trivia-2',
+    hint: 'La lucha nocturna por sobrevivir al frío 🛏️',
   },
   {
     id: 3,
-    type: "multiple-choice",
-    question: "¿Qué día celebramos nuestro aniversario?",
-    options: [
-      "13 de febrero",
-      "13 de abril",
-      "13 de marzo",
-      "23 de marzo"
-    ],
-    correctAnswer: "13 de abril",
-    image: "trivia-3",
-    hint: "El mes de la primavera."
+    type: 'multiple-choice',
+    question: '¿Quién canta peor?',
+    options: ['Yo', 'Tú', 'Ambos desafinamos', 'Nadie, somos estrellas'],
+    correctAnswer: 'Yo',
+    image: 'trivia-3',
+    hint: 'El karaoke nunca miente 🎤',
   },
   {
     id: 4,
-    type: "multiple-choice",
-    question: "¿Cuál es mi comida favorita?",
-    options: [
-      "Mariscos",
-      "Tacos",
-      "Hamburguesas",
-      "Tus besos"
-    ],
-    correctAnswer: ["Tus besos"],
-    image: "trivia-4",
-    hint: "Hay dos respuestas correctas aquí, una es del mar y la otra… de ti."
+    type: 'multiple-choice',
+    question: '¿Quién cocina mejor?',
+    options: ['Yo', 'Tú', 'Ambos', 'Nadie, pedimos comida'],
+    correctAnswer: 'Tú',
+    image: 'trivia-4',
+    hint: 'El sazón nunca falla 🍳',
+  },
+  {
+    id: 5,
+    type: 'multiple-choice',
+    question: '¿Quién nunca lava el baño?',
+    options: ['Yo', 'Tú', 'Ambos lo evitamos', 'Siempre lo hace otro'],
+    correctAnswer: 'Yo',
+    image: 'trivia-5',
+    hint: 'La misión imposible del aseo 🚽',
   },
   {
     id: 6,
-    type: "multiple-choice",
-    question: "¿Qué es lo que más nos gusta hacer juntos?",
-    options: [
-      "Ver películas",
-      "Viajar",
-      "Comer",
-      "Todo lo anterior"
-    ],
-    correctAnswer: "Todo lo anterior",
-    image: "trivia-5",
-    hint: "Cualquier cosa, pero juntos."
+    type: 'multiple-choice',
+    question: '¿Quién ronca más fuerte?',
+    options: ['Yo', 'Tú', 'Ambos', 'Nadie'],
+    correctAnswer: 'Tú',
+    image: 'trivia-6',
+    hint: 'El concierto nocturno 🎶😴',
   },
   {
     id: 7,
-    type: "multiple-choice",
-    question: "¿Quién se duerme primero casi siempre?",
-    options: [
-      "Yo",
-      "Tú",
-      "Tomás",
-      "Los tres al mismo tiempo"
-    ],
-    correctAnswer: "Yo",
-    image: "trivia-6",
-    hint: "El que madruga… cae primero 😴"
+    type: 'multiple-choice',
+    question: '¿Quién es más distraído?',
+    options: ['Yo', 'Tú', 'Ambos', 'Nadie'],
+    correctAnswer: 'Yo',
+    image: 'trivia-7',
+    hint: 'El clásico: ‘¿y mis llaves?’ 🔑',
   },
   {
     id: 8,
-    type: "multiple-choice",
-    question: "¿Qué apodo usamos más entre nosotros?",
-    options: [
-      "Mi amor",
-      "Mi chula",
-      "Mi reina",
-      "La chama"
-    ],
-    correctAnswer: ["Mi chula", "La chama", "Mi reina"],
-    image: "trivia-7",
-    hint: "Son cortos, dulces y muy nuestros."
+    type: 'multiple-choice',
+    question: '¿Quién es más enojón?',
+    options: ['Yo', 'Tú', 'Ambos', 'Nadie'],
+    correctAnswer: 'Tú',
+    image: 'trivia-8',
+    hint: 'El que hace más caras 😡',
   },
   {
     id: 9,
-    type: "multiple-choice",
-    question: "¿Cuál fue nuestro último viaje juntos?",
-    options: [
-      "Playa",
-      "Pueblo mágico",
-      "Ciudad cercana",
-      "Otro país"
-    ],
-    correctAnswer: "Playa",
-    image: "trivia-8",
-    hint: "Sol, arena y mar.",
-    category: "Aventura reciente"
+    type: 'multiple-choice',
+    question: '¿Quién llora de la nada al ver videos de animalitos?',
+    options: ['Yo', 'Tú', 'Ambos', 'Nadie'],
+    correctAnswer: 'Yo',
+    image: 'trivia-9',
+    hint: 'Los animalitos siempre ganan 🐶🐱',
+  },
+  {
+    id: 10,
+    type: 'multiple-choice',
+    question: '¿Quién tiene una obsesión con las chichis del otro?',
+    options: ['Yo', 'Tú', 'Ambos', 'Nadie'],
+    correctAnswer: 'Yo',
+    image: 'trivia-10',
+    hint: 'Una obsesión divertida 🤭',
   },
   {
     id: 11,
@@ -190,9 +166,6 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
     image: "trivia-10",
     hint: "No hay respuesta incorrecta aquí."
   },
-
-  // 🟡 NUEVAS – humor interno 😄
-
   {
     id: 13,
     type: "multiple-choice",
@@ -240,9 +213,6 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
     image: "trivia-13",
     hint: "El amor todo lo soporta… incluso eso 💨😂"
   },
-
-  // 🟢 NUEVAS – cierre bonito
-
   {
     id: 17,
     type: "multiple-choice",
@@ -709,7 +679,6 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
           </div>
         )}
 
-        {/* Action Button and Result */}
         {answerStatus !== 'unanswered' ? (
           <div className={cn(
             "w-full p-4 rounded-lg flex items-center gap-4 animate-fade-in",
