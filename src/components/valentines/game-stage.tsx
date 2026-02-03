@@ -35,7 +35,7 @@ export default function GameStage({ onSuccess }: GameStageProps) {
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
   const [gameState, setGameState] = useState<GameState>("idle");
-  const [targetScore, setTargetScore] = useState(35);
+  const [targetScore, setTargetScore] = useState(20);
   const gameLoopRef = useRef<number>();
   
   const [isMapModalOpen, setMapModalOpen] = useState(false);
@@ -127,11 +127,7 @@ export default function GameStage({ onSuccess }: GameStageProps) {
         if (score > highScore) setHighScore(score);
         
         // Difficulty adjustment logic
-        setTargetScore(prevTarget => {
-          if (prevTarget > 25) return prevTarget - 5;
-          if (prevTarget === 25) return 10;
-          return 10; // Stays at 10
-        });
+        setTargetScore(15);
 
         return;
       }
