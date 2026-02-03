@@ -40,7 +40,7 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
     const isNicknameCorrect =
       values.nickname.trim().toLowerCase() === 'mi chula';
 
-    const correctDate = new Date(2025, 3, 13);
+    const correctDate = new Date('2025-04-13T00:00:00');
     const selectedDate = values.anniversary;
 
     const isDateCorrect =
@@ -122,23 +122,13 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <label className="text-foreground text-base font-medium leading-normal pb-2">
-                    Nuestra fecha
+                    Nuestra fecha{' '}
+                    {field.value && (
+                      <span className="text-primary font-bold">
+                        ({format(field.value, 'dd / MM / yyyy')})
+                      </span>
+                    )}
                   </label>
-                  <div className="relative">
-                    <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary/50 z-10">
-                      calendar_month
-                    </span>
-                    <Input
-                      readOnly
-                      className="h-14 pl-12 pr-4 text-base bg-card focus:border-primary border-border justify-start font-normal text-left"
-                      placeholder="DD / MM / YYYY"
-                      value={
-                        field.value
-                          ? format(field.value, 'dd / MM / yyyy')
-                          : ''
-                      }
-                    />
-                  </div>
                   <FormControl>
                     <div className="mt-2 p-4 bg-card border border-primary/10 rounded-xl shadow-inner w-full">
                       <Calendar
@@ -159,6 +149,8 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
                           day: 'h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-pink-50 dark:hover:bg-stone-700 rounded-lg',
                           day_selected:
                             'day-selected',
+                          day_outside:
+                            'day-outside text-muted-foreground/50 aria-selected:bg-accent/50 aria-selected:text-muted-foreground',
                         }}
                         components={{
                           IconLeft: () => <ChevronLeft className="h-6 w-6" />,
