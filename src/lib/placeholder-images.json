@@ -80,81 +80,141 @@
     },
     {
       "id": "trivia-1",
-      "description": "Imagen para la pregunta de trivia #1: ¿Dónde nos conocimos por primera vez?",
+      "description": "Imagen para la pregunta de trivia: ¿Quién es más competitivo en juegos de mesa?",
       "imageUrl": "/image/trivia-1.jpg",
-      "imageHint": "couple meeting"
+      "imageHint": "board game"
     },
     {
       "id": "trivia-2",
-      "description": "Imagen para la pregunta de trivia #2: ¿Cuál fue nuestro primer viaje juntos (Acompañados entre amigos)?",
+      "description": "Imagen para la pregunta de trivia: ¿Quién se roba más seguido la cobija?",
       "imageUrl": "/image/trivia-2.jpg",
-      "imageHint": "friends travel"
+      "imageHint": "couple bed"
     },
     {
       "id": "trivia-3",
-      "description": "Imagen para la pregunta de trivia #3: ¿Qué día celebramos nuestro aniversario?",
+      "description": "Imagen para la pregunta de trivia: ¿Quién canta peor?",
       "imageUrl": "/image/trivia-3.jpg",
-      "imageHint": "calendar love"
+      "imageHint": "karaoke singing"
     },
     {
       "id": "trivia-4",
-      "description": "Imagen para la pregunta de trivia #4: ¿Cuál es mi comida favorita?",
+      "description": "Imagen para la pregunta de trivia: ¿Quién cocina mejor?",
       "imageUrl": "/image/trivia-4.jpg",
-      "imageHint": "seafood dish"
+      "imageHint": "couple cooking"
     },
     {
       "id": "trivia-5",
-      "description": "Imagen para la pregunta de trivia #5: ¿Qué es lo que más nos gusta hacer juntos?",
+      "description": "Imagen para la pregunta de trivia: ¿Qué es lo que más nos gusta hacer juntos?",
       "imageUrl": "/image/trivia-5.jpg",
       "imageHint": "couple movie"
     },
     {
       "id": "trivia-6",
-      "description": "Imagen para la pregunta de trivia #6: ¿Quién se duerme primero casi siempre?",
+      "description": "Imagen para la pregunta de trivia: ¿Quién nunca lava el baño?",
       "imageUrl": "/image/trivia-6.jpg",
-      "imageHint": "person sleeping"
+      "imageHint": "cleaning bathroom"
     },
     {
       "id": "trivia-7",
-      "description": "Imagen para la pregunta de trivia #7: ¿Qué apodo usamos más entre nosotros?",
+      "description": "Imagen para la pregunta de trivia: ¿Quién ronca más fuerte?",
       "imageUrl": "/image/trivia-7.jpg",
-      "imageHint": "couple secret"
+      "imageHint": "person sleeping"
     },
     {
       "id": "trivia-8",
-      "description": "Imagen para la pregunta de trivia #8: ¿Cuál fue nuestro ultimo viaje juntos?",
+      "description": "Imagen para la pregunta de trivia: ¿Quién es más distraído?",
       "imageUrl": "/image/trivia-8.jpg",
-      "imageHint": "couple beach"
+      "imageHint": "person thinking"
     },
     {
       "id": "trivia-9",
-      "description": "Imagen para la pregunta de trivia #9: ¿Qué es lo que más valoro de nuestra relación?",
+      "description": "Imagen para la pregunta de trivia: ¿Quién es más enojón?",
       "imageUrl": "/image/trivia-9.jpg",
-      "imageHint": "holding hands"
+      "imageHint": "angry person"
     },
     {
       "id": "trivia-10",
-      "description": "Imagen para la pregunta de trivia #10: ¿Cómo describirías nuestra relación?",
+      "description": "Imagen para la pregunta de trivia: ¿Cómo describirías nuestra relación?",
       "imageUrl": "/image/trivia-10.jpg",
       "imageHint": "couple laughing"
     },
     {
+      "id": "trivia-11",
+      "description": "Imagen para la pregunta de trivia: ¿Quién llora con videos de animalitos?",
+      "imageUrl": "/image/trivia-11.jpg",
+      "imageHint": "cute puppy"
+    },
+    {
+      "id": "trivia-12",
+      "description": "Imagen para la pregunta de trivia: ¿Quién tiene una obsesión con las chichis del otro?",
+      "imageUrl": "/image/trivia-12.jpg",
+      "imageHint": "couple playful"
+    },
+    {
+      "id": "trivia-13",
+      "description": "Imagen para la pregunta de trivia: ¿Qué es lo que más valoro de nuestra relación?",
+      "imageUrl": "/image/trivia-13.jpg",
+      "imageHint": "couple trust"
+    },
+    {
+      "id": "trivia-14",
+      "description": "Imagen para la pregunta de trivia: ¿Cómo describirías nuestra relación?",
+      "imageUrl": "/image/trivia-14.jpg",
+      "imageHint": "unique couple"
+    },
+    {
+      "id": "trivia-16",
+      "description": "Imagen para la pregunta de trivia: ¿A quién le huelen más las patas?",
+      "imageUrl": "/image/trivia-16.jpg",
+      "imageHint": "funny feet"
+    },
+    {
+      "id": "trivia-17",
+      "description": "Imagen para la pregunta de trivia: ¿Quién dura más tiempo en el baño?",
+      "imageUrl": "/image/trivia-17.jpg",
+      "imageHint": "person bathroom"
+    },
+    {
+      "id": "trivia-18",
+      "description": "Imagen para la pregunta de trivia: ¿Quién es más pedorro?",
+      "imageUrl": "/image/trivia-18.jpg",
+      "imageHint": "funny couple"
+    },
+    {
+      "id": "trivia-19",
+      "description": "Imagen para la pregunta de trivia: ¿Qué momento simple disfruto más contigo?",
+      "imageUrl": "/image/trivia-19.jpg",
+      "imageHint": "simple moment"
+    },
+    {
+      "id": "trivia-21",
+      "description": "Imagen para la pregunta de trivia: ¿Qué significa para mí compartir este juego contigo?",
+      "imageUrl": "/image/trivia-21.jpg",
+      "imageHint": "special gift"
+    },
+    {
+      "id": "trivia-22",
+      "description": "Imagen para la pregunta de trivia: ¿A quién le da más hueva bañarse?",
+      "imageUrl": "/image/trivia-22.jpg",
+      "imageHint": "person lazy"
+    },
+    {
       "id": "open-ended-1",
-      "description": "Imagen para la pregunta abierta #11: ¿Qué es lo que más valoras cuando te sientes en calma conmigo?",
+      "description": "Imagen para la pregunta abierta: ¿Qué es lo que más valoras cuando te sientes en calma conmigo?",
       "imageUrl": "/image/open-ended-1.jpg",
-      "imageHint": "special feeling"
+      "imageHint": "peaceful moment"
     },
     {
       "id": "open-ended-2",
-      "description": "Imagen para la pregunta abierta #12: ¿Qué sientes que nos ha costado más últimamente?",
+      "description": "Imagen para la pregunta abierta: ¿Qué sientes que nos ha costado más últimamente?",
       "imageUrl": "/image/open-ended-2.jpg",
-      "imageHint": "happy couple"
+      "imageHint": "couple talking"
     },
     {
       "id": "open-ended-3",
-      "description": "Imagen para la pregunta abierta #13: ¿Qué necesitarías hoy para sentirte tranquila, sin presión?",
+      "description": "Imagen para la pregunta abierta: ¿Qué necesitarías hoy para sentirte tranquila, sin presión?",
       "imageUrl": "/image/open-ended-3.jpg",
-      "imageHint": "peaceful moment"
+      "imageHint": "relaxed person"
     },
     {
       "id": "puzzle-image",
