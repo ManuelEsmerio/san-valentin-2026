@@ -28,12 +28,12 @@ const formSchema = z.object({
 
 function CustomDay(props: DayProps) {
   if (props.modifiers.hidden) {
-    return <div className="h-8 w-8" />;
+    return <></>;
   }
 
   // Handle invalid dates being passed by react-day-picker for empty cells
   if (!props.date) {
-    return <div className="h-8 w-8" />;
+    return <></>;
   }
 
   const content = <span className="relative z-10">{format(props.date, 'd')}</span>;
@@ -189,7 +189,7 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
                       />
                     </div>
                   </FormControl>
-                  <div className="mt-2 p-4 bg-card border border-primary/10 rounded-xl shadow-2xl w-full">
+                  <div className="mt-2 p-4 bg-card border border-primary/10 rounded-xl shadow-inner w-full">
                     <DayPicker
                       mode="single"
                       selected={field.value}
