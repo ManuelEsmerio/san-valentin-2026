@@ -1,30 +1,29 @@
-"use client";
+'use client';
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { Button } from "@/components/ui/button";
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
-import { cn } from "@/lib/utils";
-import { DayProps } from "react-day-picker";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { useToast } from '@/hooks/use-toast';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
+import { cn } from '@/lib/utils';
+import { DayPicker, DayProps } from 'react-day-picker';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const formSchema = z.object({
-  nickname: z.string().min(1, "Dime quién eres..."),
+  nickname: z.string().min(1, 'Dime quién eres...'),
   anniversary: z.date({
-    required_error: "Por favor, elige nuestra fecha especial.",
+    required_error: 'Por favor, elige nuestra fecha especial.',
   }),
 });
 
@@ -32,22 +31,69 @@ type LoginStageProps = {
   onSuccess: () => void;
 };
 
+function CustomDay({ date, ...props }: DayProps) {
+  if (props.modifiers.hidden) {
+    return <div className="h-8 w-8"></div>;
+  }
+
+  const content = <span className="relative z-10">{format(date, 'd')}</span>;
+
+  if (props.modifiers.selected) {
+    return (
+      <div
+        className={cn(
+          'relative flex h-8 w-8 cursor-pointer items-center justify-center text-white',
+          props.className
+        )}
+        {...props.buttonProps}
+      >
+        <span
+          className="material-symbols-outlined text-primary text-3xl absolute z-0"
+          style={{ fontVariationSettings: "'FILL' 1" }}
+        >
+          favorite
+        </span>
+        <span className="relative z-10 text-[10px] font-bold">
+          {format(date, 'd')}
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      {...props.buttonProps}
+      className={cn(
+        'flex h-8 w-8 items-center justify-center rounded-lg hover:bg-pink-50 dark:hover:bg-stone-700',
+        {
+          'cursor-pointer': !props.modifiers.disabled,
+          'opacity-50 cursor-not-allowed': props.modifiers.disabled,
+          'text-muted-foreground opacity-50': props.modifiers.outside,
+        },
+        props.className
+      )}
+    >
+      {content}
+    </button>
+  );
+}
+
 export default function LoginStage({ onSuccess }: LoginStageProps) {
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      nickname: "",
+      nickname: '',
       anniversary: undefined,
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const isNicknameCorrect =
-      values.nickname.trim().toLowerCase() === "mi chula";
-    
-    // The correct date is April 13, 2025
+      values.nickname.trim().toLowerCase() === 'mi chula';
+
     const correctDate = new Date(2025, 3, 13);
     const selectedDate = values.anniversary;
 
@@ -61,10 +107,10 @@ export default function LoginStage({ onSuccess }: LoginStageProps) {
       onSuccess();
     } else {
       toast({
-        variant: "destructive",
-        title: "Inténtalo de nuevo, mi amor",
+        variant: 'destructive',
+        title: 'Inténtalo de nuevo, mi amor',
         description:
-          "Una de las respuestas no es correcta, pero sé que la sabes. 😉",
+          'Una de las respuestas no es correcta, pero sé que la sabes. 😉',
       });
     }
   }
@@ -129,91 +175,57 @@ export default function LoginStage({ onSuccess }: LoginStageProps) {
               name="anniversary"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                   <label className="text-foreground text-base font-medium leading-normal pb-2">
+                  <label className="text-foreground text-base font-medium leading-normal pb-2">
                     Nuestra fecha
                   </label>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
-                          variant={"outline"}
+                          variant={'outline'}
                           className={cn(
-                            "h-14 pl-12 pr-4 text-base bg-card focus:border-primary border-border justify-start font-normal text-left relative",
-                            !field.value && "text-muted-foreground"
+                            'h-14 pl-12 pr-4 text-base bg-card focus:border-primary border-border justify-start font-normal text-left relative',
+                            !field.value && 'text-muted-foreground'
                           )}
                         >
                           <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary/50">
                             calendar_month
                           </span>
                           {field.value ? (
-                            format(field.value, "dd / MM / yyyy")
+                            format(field.value, 'dd / MM / yyyy')
                           ) : (
                             <span>DD / MM / YYYY</span>
                           )}
                         </Button>
                       </FormControl>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0 bg-card border-primary/10 rounded-xl shadow-2xl" align="start">
-                       <Calendar
+                    <PopoverContent
+                      className="w-auto p-0 bg-card border-primary/10 rounded-xl shadow-2xl"
+                      align="start"
+                    >
+                      <DayPicker
                         mode="single"
                         selected={field.value}
                         onSelect={field.onChange}
-                        disabled={(date) => date < new Date(2020, 0, 1)}
+                        disabled={{ before: new Date(2020, 0, 1) }}
                         defaultMonth={new Date(2025, 3)}
                         locale={es}
                         classNames={{
-                            root: 'p-4',
-                            month: 'space-y-4',
-                            caption: 'flex items-center justify-between mb-4',
-                            caption_label: 'text-primary font-bold',
-                            nav_button: 'h-7 w-7 p-1 hover:bg-primary/5 rounded-full text-primary',
-                            table: 'w-full border-collapse space-y-1',
-                            head_row: 'grid grid-cols-7 text-center text-xs font-medium text-muted-foreground mb-2',
-                            head_cell: 'w-auto',
-                            row: 'grid grid-cols-7',
-                            cell: 'h-8 w-8 text-center text-sm p-0 relative',
-                            day: 'h-8 w-8',
-                            day_selected: '',
-                            day_hidden: 'invisible',
-                            day_disabled: 'text-muted-foreground opacity-50',
-                            day_outside: 'text-muted-foreground opacity-50',
+                          root: 'p-4',
+                          caption: 'flex items-center justify-between mb-4',
+                          caption_label: 'text-primary font-bold',
+                          nav_button:
+                            'h-7 w-7 p-1 hover:bg-primary/5 rounded-full text-primary',
+                          head_row:
+                            'grid grid-cols-7 text-center text-xs font-medium text-muted-foreground mb-2',
+                          head_cell: 'w-auto font-normal',
+                          row: 'grid grid-cols-7',
+                          cell: 'p-0',
                         }}
                         components={{
                           IconLeft: () => <ChevronLeft className="h-6 w-6" />,
                           IconRight: () => <ChevronRight className="h-6 w-6" />,
-                          Day: ({ date, ...dayProps }: DayProps) => {
-                            if (!date) {
-                                return <td></td>;
-                            }
-                            const content = <>{format(date, 'd')}</>;
-                            const commonClasses = 'h-8 w-8 flex items-center justify-center rounded-lg cursor-pointer';
-
-                            if (dayProps.modifiers.selected) {
-                                return (
-                                    <td>
-                                        <button type="button" className={cn(commonClasses, "relative text-white")} onClick={() => field.onChange(date)}>
-                                            <span className="material-symbols-outlined text-primary text-3xl absolute z-0" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
-                                            <span className="relative z-10 text-[10px] font-bold">{content}</span>
-                                        </button>
-                                    </td>
-                                );
-                            }
-                            if (dayProps.modifiers.outside) {
-                                return <td><div className={cn(commonClasses, 'text-stone-300 dark:text-stone-600')}>{content}</div></td>;
-                            }
-                            return (
-                                <td>
-                                    <button
-                                        type="button"
-                                        className={cn(commonClasses, !dayProps.modifiers.disabled && 'hover:bg-pink-50 dark:hover:bg-stone-700', dayProps.modifiers.disabled && 'opacity-50 cursor-not-allowed')}
-                                        disabled={dayProps.modifiers.disabled}
-                                        onClick={() => field.onChange(date)}
-                                    >
-                                        {content}
-                                    </button>
-                                </td>
-                            );
-                          },
+                          Day: CustomDay,
                         }}
                       />
                     </PopoverContent>
