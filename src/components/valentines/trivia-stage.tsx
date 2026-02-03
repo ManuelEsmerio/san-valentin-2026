@@ -405,26 +405,20 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
   useEffect(() => {
     if (stage !== "playing") return;
 
-    const scoreBasedLetterTriggers = [5, 10, 15];
-    let letterKeyToShow: number | null = null;
-
-    if (score >= 15 && !shownLetters[15]) {
-      letterKeyToShow = 15;
-    } else if (score >= 10 && !shownLetters[10]) {
-      letterKeyToShow = 10;
-    } else if (score >= 5 && !shownLetters[5]) {
-      letterKeyToShow = 5;
-    }
-
-    if (letterKeyToShow && LETTERS[letterKeyToShow as keyof typeof LETTERS]) {
-        const letterData = LETTERS[letterKeyToShow as keyof typeof LETTERS];
+    const letterTriggers: (keyof typeof LETTERS)[] = [5, 10, 15];
+    
+    letterTriggers.forEach(triggerScore => {
+      if (score >= triggerScore && !shownLetters[triggerScore]) {
+        const letterData = LETTERS[triggerScore];
         const letterImages = letterData.imageIds
           .map(id => PlaceHolderImages.find(img => img.id === id))
           .filter((img): img is ImagePlaceholder => !!img);
           
         setLetterToShow({ ...letterData, images: letterImages });
-        setShownLetters(prev => ({ ...prev, [letterKeyToShow!]: true }));
-    }
+        setShownLetters(prev => ({ ...prev, [triggerScore]: true }));
+      }
+    });
+
   }, [score, stage, shownLetters]);
 
 
@@ -595,7 +589,7 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
               <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5">
                 <div className="relative w-full aspect-video rounded-t-xl overflow-hidden bg-black/20">
                   <Image
-                    src={imagePlaceholder.imageUrl}
+                    src={`${imagePlaceholder.imageUrl}?v=1`}
                     alt={imagePlaceholder.description}
                     data-ai-hint={imagePlaceholder.imageHint}
                     fill

@@ -53,7 +53,7 @@ export default function RomanticLetterModal({ isOpen, letter, onClose }: Romanti
             <div className="mb-6 grid grid-cols-3 grid-rows-2 gap-2 w-full aspect-[4/3]">
               <div className="col-span-2 row-span-2 relative rounded-lg overflow-hidden shadow-md bg-black/20">
                 <Image
-                  src={letter.images[0].imageUrl}
+                  src={`${letter.images[0].imageUrl}?v=1`}
                   alt={letter.images[0].description}
                   data-ai-hint={letter.images[0].imageHint}
                   fill
@@ -62,7 +62,7 @@ export default function RomanticLetterModal({ isOpen, letter, onClose }: Romanti
               </div>
               <div className="col-span-1 row-span-1 relative rounded-lg overflow-hidden shadow-md bg-black/20">
                 <Image
-                  src={letter.images[1].imageUrl}
+                  src={`${letter.images[1].imageUrl}?v=1`}
                   alt={letter.images[1].description}
                   data-ai-hint={letter.images[1].imageHint}
                   fill
@@ -71,7 +71,7 @@ export default function RomanticLetterModal({ isOpen, letter, onClose }: Romanti
               </div>
               <div className="col-span-1 row-span-1 relative rounded-lg overflow-hidden shadow-md bg-black/20">
                 <Image
-                  src={letter.images[2].imageUrl}
+                  src={`${letter.images[2].imageUrl}?v=1`}
                   alt={letter.images[2].description}
                   data-ai-hint={letter.images[2].imageHint}
                   fill

@@ -121,7 +121,7 @@ export default function RevelationStage() {
                     {collage1_img1 && (
                       <div className="col-span-2 row-span-2 relative rounded-lg overflow-hidden shadow-md bg-black/20">
                         <Image
-                          src={collage1_img1.imageUrl}
+                          src={`${collage1_img1.imageUrl}?v=1`}
                           alt={collage1_img1.description}
                           data-ai-hint={collage1_img1.imageHint}
                           fill
@@ -132,7 +132,7 @@ export default function RevelationStage() {
                     {collage1_img2 && (
                       <div className="col-span-1 row-span-1 relative rounded-lg overflow-hidden shadow-md bg-black/20">
                         <Image
-                          src={collage1_img2.imageUrl}
+                          src={`${collage1_img2.imageUrl}?v=1`}
                           alt={collage1_img2.description}
                           data-ai-hint={collage1_img2.imageHint}
                           fill
@@ -143,7 +143,7 @@ export default function RevelationStage() {
                     {collage1_img3 && (
                       <div className="col-span-1 row-span-1 relative rounded-lg overflow-hidden shadow-md bg-black/20">
                         <Image
-                          src={collage1_img3.imageUrl}
+                          src={`${collage1_img3.imageUrl}?v=1`}
                           alt={collage1_img3.description}
                           data-ai-hint={collage1_img3.imageHint}
                           fill
@@ -162,7 +162,7 @@ export default function RevelationStage() {
                     {collage2_img1 && (
                       <div className="col-span-1 row-span-2 relative rounded-lg overflow-hidden shadow-md bg-black/20">
                         <Image
-                          src={collage2_img1.imageUrl}
+                          src={`${collage2_img1.imageUrl}?v=1`}
                           alt={collage2_img1.description}
                           data-ai-hint={collage2_img1.imageHint}
                           fill
@@ -173,7 +173,7 @@ export default function RevelationStage() {
                     {collage2_img2 && (
                       <div className="col-span-2 row-span-1 relative rounded-lg overflow-hidden shadow-md bg-black/20">
                         <Image
-                          src={collage2_img2.imageUrl}
+                          src={`${collage2_img2.imageUrl}?v=1`}
                           alt={collage2_img2.description}
                           data-ai-hint={collage2_img2.imageHint}
                           fill
@@ -184,7 +184,7 @@ export default function RevelationStage() {
                     {collage2_img3 && (
                       <div className="col-span-2 row-span-1 relative rounded-lg overflow-hidden shadow-md bg-black/20">
                         <Image
-                          src={collage2_img3.imageUrl}
+                          src={`${collage2_img3.imageUrl}?v=1`}
                           alt={collage2_img3.description}
                           data-ai-hint={collage2_img3.imageHint}
                           fill
@@ -203,7 +203,7 @@ export default function RevelationStage() {
                     {collage3_img1 && (
                       <div className="col-span-2 row-span-1 relative rounded-lg overflow-hidden shadow-md bg-black/20">
                         <Image
-                          src={collage3_img1.imageUrl}
+                          src={`${collage3_img1.imageUrl}?v=1`}
                           alt={collage3_img1.description}
                           data-ai-hint={collage3_img1.imageHint}
                           fill
@@ -214,7 +214,7 @@ export default function RevelationStage() {
                     {collage3_img2 && (
                       <div className="col-span-1 row-span-1 relative rounded-lg overflow-hidden shadow-md bg-black/20">
                         <Image
-                          src={collage3_img2.imageUrl}
+                          src={`${collage3_img2.imageUrl}?v=1`}
                           alt={collage3_img2.description}
                           data-ai-hint={collage3_img2.imageHint}
                           fill
@@ -225,7 +225,7 @@ export default function RevelationStage() {
                     {collage3_img3 && (
                       <div className="col-span-1 row-span-1 relative rounded-lg overflow-hidden shadow-md bg-black/20">
                         <Image
-                          src={collage3_img3.imageUrl}
+                          src={`${collage3_img3.imageUrl}?v=1`}
                           alt={collage3_img3.description}
                           data-ai-hint={collage3_img3.imageHint}
                           fill
@@ -244,7 +244,7 @@ export default function RevelationStage() {
                     {collage4_img1 && (
                       <div className="col-span-2 row-span-1 relative rounded-lg overflow-hidden shadow-md bg-black/20">
                         <Image
-                          src={collage4_img1.imageUrl}
+                          src={`${collage4_img1.imageUrl}?v=1`}
                           alt={collage4_img1.description}
                           data-ai-hint={collage4_img1.imageHint}
                           fill
@@ -255,7 +255,7 @@ export default function RevelationStage() {
                     {collage4_img2 && (
                       <div className="col-span-1 row-span-1 relative rounded-lg overflow-hidden shadow-md bg-black/20">
                         <Image
-                          src={collage4_img2.imageUrl}
+                          src={`${collage4_img2.imageUrl}?v=1`}
                           alt={collage4_img2.description}
                           data-ai-hint={collage4_img2.imageHint}
                           fill
@@ -266,7 +266,7 @@ export default function RevelationStage() {
                     {collage4_img3 && (
                       <div className="col-span-1 row-span-1 relative rounded-lg overflow-hidden shadow-md bg-black/20">
                         <Image
-                          src={collage4_img3.imageUrl}
+                          src={`${collage4_img3.imageUrl}?v=1`}
                           alt={collage4_img3.description}
                           data-ai-hint={collage4_img3.imageHint}
                           fill

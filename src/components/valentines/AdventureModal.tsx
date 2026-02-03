@@ -103,7 +103,7 @@ export default function AdventureModal({ isOpen, onConfirm }: AdventureModalProp
             {adventureImage && (
               <div className="relative w-full aspect-video rounded-lg overflow-hidden shadow-lg bg-black/20 mb-6">
                 <Image
-                  src={adventureImage.imageUrl}
+                  src={`${adventureImage.imageUrl}?v=1`}
                   alt={adventureImage.description}
                   data-ai-hint={adventureImage.imageHint}
                   fill
