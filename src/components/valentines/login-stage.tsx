@@ -15,11 +15,6 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale/es';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -47,6 +42,7 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
       values.nickname.trim().toLowerCase() === 'mi chula';
 
     const correctDate = new Date('2025-04-13T00:00:00');
+    // Adjust for timezone differences by comparing year, month, and day
     const selectedDate = values.anniversary;
 
     const isDateCorrect =
@@ -127,57 +123,42 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
               name="anniversary"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <label className="text-foreground text-base font-medium leading-normal pb-2">
+                  <label className="text-foreground text-base font-medium leading-normal text-center pb-2">
                     Nuestra fecha
                   </label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant={'outline'}
-                          className={cn(
-                            'h-14 pl-12 pr-4 text-base w-full justify-start text-left font-normal border-input bg-card focus:ring-2 focus:ring-primary/20 focus:border-primary',
-                            !field.value && 'text-muted-foreground'
-                          )}
-                        >
-                          <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary/50 pointer-events-none">
-                            calendar_month
-                          </span>
-                          {field.value ? (
-                            format(field.value, 'dd / MM / yyyy')
-                          ) : (
-                            <span>Selecciona nuestro aniversario</span>
-                          )}
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent
-                      className="w-auto p-0 border-primary/10 shadow-2xl"
-                      align="start"
-                    >
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        initialFocus
-                        locale={es}
-                        defaultMonth={new Date(2025, 3)}
-                        classNames={{
-                          caption: 'flex justify-between items-center mb-4 px-1',
-                          caption_label: 'text-primary font-bold text-lg',
-                          nav_button:
-                            'h-8 w-8 p-0 bg-transparent hover:bg-primary/5 rounded-full text-primary disabled:opacity-50',
-                          nav_button_previous: '',
-                          nav_button_next: '',
-                        }}
-                        components={{
-                          IconLeft: (props) => <ChevronLeft {...props} />,
-                          IconRight: (props) => <ChevronRight {...props} />,
-                        }}
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <FormMessage />
+                  <div className="mt-2 p-0 sm:p-4 bg-card border-none sm:border sm:border-primary/10 rounded-xl sm:shadow-inner">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      defaultMonth={new Date(2025, 3)}
+                      locale={es}
+                      weekStartsOn={1}
+                      formatters={{
+                        formatWeekdayName: (day) =>
+                          format(day, 'EEEEEE', { locale: es }).toLowerCase(),
+                      }}
+                      classNames={{
+                        caption: 'flex justify-center text-center relative items-center mb-4',
+                        caption_label: 'text-primary font-bold text-lg capitalize',
+                        nav: 'flex items-center',
+                        nav_button:
+                          'h-7 w-7 bg-transparent p-0 opacity-80 hover:opacity-100',
+                        nav_button_previous: 'absolute left-1',
+                        nav_button_next: 'absolute right-1',
+                        head_cell: 'w-9 text-center font-medium text-muted-foreground text-sm',
+                        cell: 'h-9 w-9 text-center text-sm p-0',
+                        day: 'w-9 h-9 hover:bg-accent rounded-lg transition-colors',
+                        day_today: 'font-bold',
+                        day_outside: 'text-muted-foreground opacity-50',
+                      }}
+                      components={{
+                        IconLeft: () => <ChevronLeft className="h-4 w-4" />,
+                        IconRight: () => <ChevronRight className="h-4 w-4" />,
+                      }}
+                    />
+                  </div>
+                  <FormMessage className="text-center pt-2" />
                 </FormItem>
               )}
             />
