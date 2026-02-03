@@ -261,18 +261,24 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
 
   if (stage === "finished") {
      return (
-        <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5">
-            <div className="px-4 sm:px-8 pb-10 pt-6">
-                <Alert className="animate-fade-in text-center border-green-500/50">
-                    <span className="material-symbols-outlined text-primary text-5xl">check_circle</span>
-                    <AlertTitle className="font-headline mt-2 text-xl text-green-600">¡Perfecto! ¡Sabía que lo sabrías todo!</AlertTitle>
-                    <AlertDescription className="font-body space-y-4 mt-4 text-foreground/80">
-                      <p>Has completado el desafío. Ahora, un último juego te separa de la sorpresa final.</p>
-                      <Button onClick={() => setPuzzleModalOpen(true)} className="w-full h-12 text-lg font-bold">Continuar</Button>
-                    </AlertDescription>
-                </Alert>
-            </div>
-        </div>
+        <>
+          <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5">
+              <div className="px-4 sm:px-8 pb-10 pt-6">
+                  <Alert className="animate-fade-in text-center border-green-500/50">
+                      <span className="material-symbols-outlined text-primary text-5xl">check_circle</span>
+                      <AlertTitle className="font-headline mt-2 text-xl text-green-600">¡Perfecto! ¡Sabía que lo sabrías todo!</AlertTitle>
+                      <AlertDescription className="font-body space-y-4 mt-4 text-foreground/80">
+                        <p>Has completado el desafío. Ahora, un último juego te separa de la sorpresa final.</p>
+                        <Button onClick={() => setPuzzleModalOpen(true)} className="w-full h-12 text-lg font-bold">Continuar</Button>
+                      </AlertDescription>
+                  </Alert>
+              </div>
+          </div>
+          <FifteenPuzzleModal 
+            isOpen={isPuzzleModalOpen}
+            onSuccess={onSuccess}
+          />
+        </>
       )
   }
 
