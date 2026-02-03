@@ -3,12 +3,18 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Gamepad2 } from "lucide-react";
+import {
+  Gamepad2,
+  ArrowUp,
+  ArrowDown,
+  ArrowLeft,
+  ArrowRight,
+} from "lucide-react";
 
 const GRID_SIZE = 20;
 const CANVAS_SIZE = 400;
 const TILE_SIZE = CANVAS_SIZE / GRID_SIZE;
-const TARGET_SCORE = 5;
+const TARGET_SCORE = 10;
 
 type GameStageProps = {
   onSuccess: () => void;
@@ -71,6 +77,39 @@ export default function GameStage({ onSuccess }: GameStageProps) {
     setScore(0);
     setGameOver(false);
     setGameWon(false);
+  };
+
+  const handleDirectionChange = (
+    direction: "up" | "down" | "left" | "right"
+  ) => {
+    const newDirection = { ...directionRef.current };
+    switch (direction) {
+      case "up":
+        if (directionRef.current.y === 0) {
+          newDirection.y = -1;
+          newDirection.x = 0;
+        }
+        break;
+      case "down":
+        if (directionRef.current.y === 0) {
+          newDirection.y = 1;
+          newDirection.x = 0;
+        }
+        break;
+      case "left":
+        if (directionRef.current.x === 0) {
+          newDirection.x = -1;
+          newDirection.y = 0;
+        }
+        break;
+      case "right":
+        if (directionRef.current.x === 0) {
+          newDirection.x = 1;
+          newDirection.y = 0;
+        }
+        break;
+    }
+    directionRef.current = newDirection;
   };
 
   useEffect(() => {
@@ -164,26 +203,20 @@ export default function GameStage({ onSuccess }: GameStageProps) {
     runGame();
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      const newDirection = { ...directionRef.current };
       switch (e.key) {
         case "ArrowUp":
-          if (directionRef.current.y === 0)
-            (newDirection.y = -1), (newDirection.x = 0);
+          handleDirectionChange("up");
           break;
         case "ArrowDown":
-          if (directionRef.current.y === 0)
-            (newDirection.y = 1), (newDirection.x = 0);
+          handleDirectionChange("down");
           break;
         case "ArrowLeft":
-          if (directionRef.current.x === 0)
-            (newDirection.x = -1), (newDirection.y = 0);
+          handleDirectionChange("left");
           break;
         case "ArrowRight":
-          if (directionRef.current.x === 0)
-            (newDirection.x = 1), (newDirection.y = 0);
+          handleDirectionChange("right");
           break;
       }
-      directionRef.current = newDirection;
     };
 
     window.addEventListener("keydown", handleKeyDown);
@@ -212,8 +245,48 @@ export default function GameStage({ onSuccess }: GameStageProps) {
           width={CANVAS_SIZE}
           height={CANVAS_SIZE}
           className="rounded-lg border bg-card"
-          style={{maxWidth: '100%', height: 'auto'}}
+          style={{ maxWidth: "100%", height: "auto" }}
         />
+
+        <div className="mt-4 grid grid-cols-3 justify-items-center gap-2 md:hidden w-48">
+          <div />
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-16 w-16 rounded-full"
+            onClick={() => handleDirectionChange("up")}
+          >
+            <ArrowUp className="h-8 w-8" />
+          </Button>
+          <div />
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-16 w-16 rounded-full"
+            onClick={() => handleDirectionChange("left")}
+          >
+            <ArrowLeft className="h-8 w-8" />
+          </Button>
+          <div />
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-16 w-16 rounded-full"
+            onClick={() => handleDirectionChange("right")}
+          >
+            <ArrowRight className="h-8 w-8" />
+          </Button>
+          <div />
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-16 w-16 rounded-full"
+            onClick={() => handleDirectionChange("down")}
+          >
+            <ArrowDown className="h-8 w-8" />
+          </Button>
+          <div />
+        </div>
 
         {gameWon && (
           <Alert className="animate-fade-in">
@@ -222,10 +295,13 @@ export default function GameStage({ onSuccess }: GameStageProps) {
             </AlertTitle>
             <AlertDescription className="font-body space-y-4">
               <p>
-                💌 Primera pista:{" "}
-                <strong>"Donde comenzó algo muy bonito…"</strong>
+                💌 Primera pista: Ve a estas coordenadas y busca tu sorpresa:{" "}
+                <strong>19.4326° N, 99.1332° W</strong>
               </p>
-              <Button onClick={onSuccess} className="w-full h-12 text-lg font-bold">
+              <Button
+                onClick={onSuccess}
+                className="w-full h-12 text-lg font-bold"
+              >
                 Siguiente paso
               </Button>
             </AlertDescription>
