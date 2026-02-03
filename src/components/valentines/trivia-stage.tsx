@@ -23,7 +23,7 @@ type MultipleChoiceQuestion = {
   type: "multiple-choice";
   question: string;
   options: string[];
-  correctAnswer: string;
+  correctAnswer: string | string[];
   image: string;
   hint: string;
   category?: string;
@@ -41,16 +41,16 @@ type TriviaQuestion = MultipleChoiceQuestion | OpenEndedQuestion;
 type AnswerStatus = "unanswered" | "correct" | "incorrect";
 
 const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
-    { id: 1, type: "multiple-choice", question: "¿Dónde nos conocimos por primera vez?", options: ["En la casa", "En lagos de moreno", "En el terreno"], correctAnswer: "En el terreno", image: 'trivia-1', hint: "Fue un lugar al aire libre, con mucha tierra." },
-    { id: 2, type: "multiple-choice", question: "¿Cuál fue nuestro primer viaje juntos (Acompañados entre amigos)?", options: ["Mazamitla", "La Huasteca Potosina", "Guadalajara"], correctAnswer: "La Huasteca Potosina", image: 'trivia-2', hint: "Cascadas y paisajes verdes.", category: "Viaje Inolvidable" },
-    { id: 3, type: "multiple-choice", question: "¿Qué día celebramos nuestro aniversario?", options: ["13 de Febrero", "13 de Abril", "13 de Marzo"], correctAnswer: "13 de Abril", image: 'trivia-3', hint: "El mes de la primavera." },
-    { id: 4, type: "multiple-choice", question: "¿Cuál es mi comida favorita?", options: ["Mariscos", "Tacos", "Hamburguesas"], correctAnswer: "Mariscos", image: 'trivia-4', hint: "Viene del mar." },
-    { id: 5, type: "multiple-choice", question: "¿Qué es lo que más nos gusta hacer juntos?", options: ["Ver películas", "Viajar", "Todo lo anterior"], correctAnswer: "Todo lo anterior", image: 'trivia-5', hint: "Cualquier cosa, pero juntos." },
-    { id: 6, type: "multiple-choice", question: "¿Quién se duerme primero casi siempre?", options: ["Yo", "Tú", "Los dos al mismo tiempo"], correctAnswer: "Yo", image: 'trivia-6', hint: "El que madruga..." },
-    { id: 7, type: "multiple-choice", question: "¿Qué apodo usamos más entre nosotros?", options: ["Amor", "Mi chula", "Bebé"], correctAnswer: "Mi chula", image: 'trivia-7', hint: "Es corto y muy dulce." },
-    { id: 8, type: "multiple-choice", question: "¿Cuál fue nuestro ultimo viaje juntos?", options: ["Playa", "Pueblo mágico", "Ciudad cercana"], correctAnswer: "Playa", image: 'trivia-8', hint: "Sol, arena y mar.", category: "Aventura Reciente" },
-    { id: 9, type: "multiple-choice", question: "¿Qué es lo que más valoro de nuestra relación?", options: ["La confianza", "La comunicación", "Todo lo anterior"], correctAnswer: "Todo lo anterior", image: 'trivia-9', hint: "Es la base de todo." },
-    { id: 10, type: "multiple-choice", question: "¿Cómo describirías nuestra relación?", options: ["Divertida", "Única", "Ambas"], correctAnswer: "Ambas", image: 'trivia-10', hint: "Somos un equipo." },
+    { id: 1, type: "multiple-choice", question: "¿Dónde nos conocimos por primera vez?", options: ["En la casa de tequila", "En lagos de moreno", "En el terreno", "En los canteritos del güero"], correctAnswer: "En el terreno", image: 'trivia-1', hint: "Fue un lugar al aire libre, con mucha tierra." },
+    { id: 2, type: "multiple-choice", question: "¿Cuál fue nuestro primer viaje juntos (Acompañados entre amigos)?", options: ["Mazamitla", "La Huasteca Potosina", "Guadalajara", "León Guanajuato"], correctAnswer: "La Huasteca Potosina", image: 'trivia-2', hint: "Cascadas y paisajes verdes.", category: "Viaje Inolvidable" },
+    { id: 3, type: "multiple-choice", question: "¿Qué día celebramos nuestro aniversario?", options: ["13 de Febrero", "13 de Abril", "13 de Marzo", "23 de Marzo"], correctAnswer: "13 de Abril", image: 'trivia-3', hint: "El mes de la primavera." },
+    { id: 4, type: "multiple-choice", question: "¿Cuál es mi comida favorita?", options: ["Mariscos", "Tacos", "Hamburguesas", "tus besos"], correctAnswer: ["Mariscos", "tus besos"], image: 'trivia-4', hint: "Hay dos respuestas correctas aquí, una es del mar y la otra... de ti." },
+    { id: 5, type: "multiple-choice", question: "¿Qué es lo que más nos gusta hacer juntos?", options: ["Ver películas", "Viajar", "Comer", "Todo lo anterior"], correctAnswer: "Todo lo anterior", image: 'trivia-5', hint: "Cualquier cosa, pero juntos." },
+    { id: 6, type: "multiple-choice", question: "¿Quién se duerme primero casi siempre?", options: ["Yo", "Tú", "Tomas", "Los tres al mismo tiempo"], correctAnswer: "Yo", image: 'trivia-6', hint: "El que madruga..." },
+    { id: 7, type: "multiple-choice", question: "¿Qué apodo usamos más entre nosotros?", options: ["Amor", "Chula", "Bebé", "Chama"], correctAnswer: ["Chula", "Chama"], image: 'trivia-7', hint: "Son cortos, dulces y muy nuestros. ¡Hay dos correctos!" },
+    { id: 8, type: "multiple-choice", question: "¿Cuál fue nuestro ultimo viaje juntos?", options: ["Playa", "Pueblo mágico", "Ciudad cercana", "Otro país"], correctAnswer: "Playa", image: 'trivia-8', hint: "Sol, arena y mar.", category: "Aventura Reciente" },
+    { id: 9, type: "multiple-choice", question: "¿Qué es lo que más valoro de nuestra relación?", options: ["La confianza", "La comunicación", "Las acciones", "Todo lo anterior"], correctAnswer: "Todo lo anterior", image: 'trivia-9', hint: "Es la base de todo." },
+    { id: 10, type: "multiple-choice", question: "¿Cómo describirías nuestra relación?", options: ["Divertida", "Única", "Auténtica", "Todas lo anterior"], correctAnswer: ["Divertida", "Única", "Auténtica", "Todas lo anterior"], image: 'trivia-10', hint: "No hay respuesta incorrecta aquí, porque somos todo eso y más." },
 ];
 
 const openEndedQuestions: OpenEndedQuestion[] = [
@@ -189,7 +189,16 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
         return;
     }
     
-    if (currentAnswer === (currentQuestion as MultipleChoiceQuestion).correctAnswer) {
+    const correctAnswer = (currentQuestion as MultipleChoiceQuestion).correctAnswer;
+    let isCorrect = false;
+
+    if (Array.isArray(correctAnswer)) {
+      isCorrect = correctAnswer.includes(currentAnswer);
+    } else {
+      isCorrect = currentAnswer === correctAnswer;
+    }
+    
+    if (isCorrect) {
         setScore(prev => prev + 1);
         setAnswerStatus('correct');
     } else {
@@ -276,7 +285,11 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
                   htmlFor={option} 
                   className={cn(
                     "flex items-center space-x-3 p-4 rounded-lg border-2 border-border has-[input:checked]:border-primary has-[input:checked]:bg-primary/5 cursor-pointer transition-all",
-                    answerStatus !== 'unanswered' && (currentQuestion as MultipleChoiceQuestion).correctAnswer === option && "border-green-500 bg-green-500/5",
+                    answerStatus !== 'unanswered' &&
+                      (Array.isArray((currentQuestion as MultipleChoiceQuestion).correctAnswer)
+                        ? (currentQuestion as MultipleChoiceQuestion).correctAnswer.includes(option)
+                        : (currentQuestion as MultipleChoiceQuestion).correctAnswer === option) &&
+                      "border-green-500 bg-green-500/5",
                     answerStatus === 'incorrect' && answers[currentQuestion.id] === option && "border-destructive bg-destructive/5"
                   )}
                 >
