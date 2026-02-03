@@ -14,9 +14,14 @@ import {
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
+import { es } from 'date-fns/locale/es';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const formSchema = z.object({
   nickname: z.string().min(1, 'Dime quién eres...'),
@@ -45,9 +50,9 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
 
     const isDateCorrect =
       selectedDate &&
-      selectedDate.getDate() === correctDate.getDate() &&
+      selectedDate.getFullYear() === correctDate.getFullYear() &&
       selectedDate.getMonth() === correctDate.getMonth() &&
-      selectedDate.getFullYear() === correctDate.getFullYear();
+      selectedDate.getDate() === correctDate.getDate();
 
     if (isNicknameCorrect && isDateCorrect) {
       onSuccess();
@@ -122,43 +127,43 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <label className="text-foreground text-base font-medium leading-normal pb-2">
-                    Nuestra fecha{' '}
-                    {field.value && (
-                      <span className="text-primary font-bold">
-                        ({format(field.value, 'dd / MM / yyyy')})
-                      </span>
-                    )}
+                    Nuestra fecha
                   </label>
-                  <FormControl>
-                    <div className="mt-2 p-4 bg-card border border-primary/10 rounded-xl shadow-inner w-full">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={'outline'}
+                          className={cn(
+                            'h-14 pl-12 pr-4 text-base w-full justify-start text-left font-normal border-input bg-card focus:ring-2 focus:ring-primary/20 focus:border-primary',
+                            !field.value && 'text-muted-foreground'
+                          )}
+                        >
+                          <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary/50 pointer-events-none">
+                            calendar_month
+                          </span>
+                          {field.value ? (
+                            format(field.value, 'dd / MM / yyyy')
+                          ) : (
+                            <span>Selecciona nuestro aniversario</span>
+                          )}
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent
+                      className="w-auto p-0 border-primary/10 shadow-2xl"
+                      align="start"
+                    >
                       <Calendar
                         mode="single"
                         selected={field.value}
                         onSelect={field.onChange}
-                        disabled={{ before: new Date(2020, 0, 1) }}
-                        defaultMonth={new Date(2025, 3)}
+                        initialFocus
                         locale={es}
-                        classNames={{
-                          caption: 'flex items-center justify-between mb-4',
-                          caption_label: 'text-primary font-bold',
-                          nav_button:
-                            'h-7 w-7 p-1 hover:bg-primary/5 rounded-full text-primary',
-                          head_row: 'flex text-center text-xs font-medium text-muted-foreground mb-2 w-full',
-                          head_cell: 'font-normal w-full',
-                          row: 'flex w-full mt-0',
-                          day: 'h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-pink-50 dark:hover:bg-stone-700 rounded-lg',
-                          day_selected:
-                            'day-selected',
-                          day_outside:
-                            'day-outside text-muted-foreground/50 aria-selected:bg-accent/50 aria-selected:text-muted-foreground',
-                        }}
-                        components={{
-                          IconLeft: () => <ChevronLeft className="h-6 w-6" />,
-                          IconRight: () => <ChevronRight className="h-6 w-6" />,
-                        }}
+                        defaultMonth={new Date(2025, 3)}
                       />
-                    </div>
-                  </FormControl>
+                    </PopoverContent>
+                  </Popover>
                   <FormMessage />
                 </FormItem>
               )}
