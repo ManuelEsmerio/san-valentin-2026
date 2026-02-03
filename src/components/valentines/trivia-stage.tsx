@@ -341,6 +341,9 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
     setupTrivia();
   }, []);
   
+  const currentQuestion = questions[currentQuestionIndex];
+  const imagePlaceholder = PlaceHolderImages.find(img => img.id === currentQuestion?.image);
+
   const handleAnswerChange = (value: string) => {
     if (answerStatus !== 'unanswered') return;
      if (currentQuestion.type === 'open-ended' && flippedQuestions[currentQuestion.id]) return;
