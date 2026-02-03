@@ -383,11 +383,8 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
 
 
   const setupTrivia = () => {
-    // Explicitly combine shuffled Multiple Choice Questions with Open Ended questions at the end
-    const allQuestions = [
-      ...shuffleArray([...multipleChoiceQuestions]),
-      ...openEndedQuestions
-    ];
+    const shuffledMcq = shuffleArray([...multipleChoiceQuestions]);
+    const allQuestions = [...shuffledMcq, ...openEndedQuestions];
     
     setQuestions(allQuestions);
     setCurrentQuestionIndex(0);
@@ -404,19 +401,32 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
     setupTrivia();
   }, []);
   
+  // Effect for letters based on score (5, 10, 15)
   useEffect(() => {
     if (stage !== "playing") return;
 
-    if (score > 0 && LETTERS[score as keyof typeof LETTERS] && !shownLetters[score]) {
-        const letterData = LETTERS[score as keyof typeof LETTERS];
+    const scoreBasedLetterTriggers = [5, 10, 15];
+    let letterKeyToShow: number | null = null;
+
+    if (score >= 15 && !shownLetters[15]) {
+      letterKeyToShow = 15;
+    } else if (score >= 10 && !shownLetters[10]) {
+      letterKeyToShow = 10;
+    } else if (score >= 5 && !shownLetters[5]) {
+      letterKeyToShow = 5;
+    }
+
+    if (letterKeyToShow && LETTERS[letterKeyToShow as keyof typeof LETTERS]) {
+        const letterData = LETTERS[letterKeyToShow as keyof typeof LETTERS];
         const letterImages = letterData.imageIds
           .map(id => PlaceHolderImages.find(img => img.id === id))
           .filter((img): img is ImagePlaceholder => !!img);
           
         setLetterToShow({ ...letterData, images: letterImages });
-        setShownLetters(prev => ({ ...prev, [score]: true }));
+        setShownLetters(prev => ({ ...prev, [letterKeyToShow!]: true }));
     }
-  }, [score, shownLetters, stage]);
+  }, [score, stage, shownLetters]);
+
 
   const currentQuestion = questions[currentQuestionIndex];
   const imagePlaceholder = PlaceHolderImages.find(img => img.id === currentQuestion?.image);
@@ -430,6 +440,21 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
   
   const goToNextQuestion = () => {
     setAnswerStatus("unanswered");
+
+    // Special trigger for Letter 4 after the last multiple-choice question
+    const isLastMcq = currentQuestion?.type === 'multiple-choice' && questions[currentQuestionIndex + 1]?.type === 'open-ended';
+    if (isLastMcq) {
+      const letterData = LETTERS[20];
+      if (letterData && !shownLetters[20]) {
+        const letterImages = letterData.imageIds
+          .map(id => PlaceHolderImages.find(img => img.id === id))
+          .filter((img): img is ImagePlaceholder => !!img);
+          
+        setLetterToShow({ ...letterData, images: letterImages });
+        setShownLetters(prev => ({ ...prev, [20]: true }));
+      }
+    }
+
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {

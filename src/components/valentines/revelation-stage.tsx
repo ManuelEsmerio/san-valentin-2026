@@ -56,6 +56,10 @@ export default function RevelationStage() {
   const collage3_img2 = PlaceHolderImages.find((img) => img.id === "letter-3-img-2");
   const collage3_img3 = PlaceHolderImages.find((img) => img.id === "letter-3-img-3");
 
+  const collage4_img1 = PlaceHolderImages.find((img) => img.id === "letter-4-img-1");
+  const collage4_img2 = PlaceHolderImages.find((img) => img.id === "letter-4-img-2");
+  const collage4_img3 = PlaceHolderImages.find((img) => img.id === "letter-4-img-3");
+
   const [fireworks, setFireworks] = useState<any[]>([]);
   const [isAdventureModalOpen, setAdventureModalOpen] = useState(false);
 
@@ -224,6 +228,47 @@ export default function RevelationStage() {
                           src={collage3_img3.imageUrl}
                           alt={collage3_img3.description}
                           data-ai-hint={collage3_img3.imageHint}
+                          fill
+                          className="object-contain"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </CarouselItem>
+
+              {/* Slide 4 */}
+              <CarouselItem>
+                <div className="p-1">
+                  <div className="w-full aspect-[4/3] grid grid-cols-2 grid-rows-2 gap-2">
+                    {collage4_img1 && (
+                      <div className="col-span-2 row-span-1 relative rounded-lg overflow-hidden shadow-md bg-black/20">
+                        <Image
+                          src={collage4_img1.imageUrl}
+                          alt={collage4_img1.description}
+                          data-ai-hint={collage4_img1.imageHint}
+                          fill
+                          className="object-contain"
+                        />
+                      </div>
+                    )}
+                    {collage4_img2 && (
+                      <div className="col-span-1 row-span-1 relative rounded-lg overflow-hidden shadow-md bg-black/20">
+                        <Image
+                          src={collage4_img2.imageUrl}
+                          alt={collage4_img2.description}
+                          data-ai-hint={collage4_img2.imageHint}
+                          fill
+                          className="object-contain"
+                        />
+                      </div>
+                    )}
+                    {collage4_img3 && (
+                      <div className="col-span-1 row-span-1 relative rounded-lg overflow-hidden shadow-md bg-black/20">
+                        <Image
+                          src={collage4_img3.imageUrl}
+                          alt={collage4_img3.description}
+                          data-ai-hint={collage4_img3.imageHint}
                           fill
                           className="object-contain"
                         />
