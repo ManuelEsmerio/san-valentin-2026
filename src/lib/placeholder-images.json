@@ -3,133 +3,133 @@
     {
       "id": "couple-photo",
       "description": "Imagen para la pantalla final de revelación.",
-      "imageUrl": "/images/couple-photo.jpg",
+      "imageUrl": "/image/couple-photo.jpg",
       "imageHint": "couple hug"
     },
     {
       "id": "letter-1-img-1",
       "description": "Imagen 1 para la primera carta romántica.",
-      "imageUrl": "/images/letter-1-img-1.jpg",
+      "imageUrl": "/image/letter-1-img-1.jpg",
       "imageHint": "couple smiling"
     },
     {
       "id": "letter-1-img-2",
       "description": "Imagen 2 para la primera carta romántica.",
-      "imageUrl": "/images/letter-1-img-2.jpg",
+      "imageUrl": "/image/letter-1-img-2.jpg",
       "imageHint": "romantic dinner"
     },
     {
       "id": "letter-1-img-3",
       "description": "Imagen 3 para la primera carta romántica.",
-      "imageUrl": "/images/letter-1-img-3.jpg",
+      "imageUrl": "/image/letter-1-img-3.jpg",
       "imageHint": "couple selfie"
     },
     {
       "id": "letter-2-img-1",
       "description": "Imagen 1 para la segunda carta romántica.",
-      "imageUrl": "/images/letter-2-img-1.jpg",
+      "imageUrl": "/image/letter-2-img-1.jpg",
       "imageHint": "travel landscape"
     },
     {
       "id": "letter-2-img-2",
       "description": "Imagen 2 para la segunda carta romántica.",
-      "imageUrl": "/images/letter-2-img-2.jpg",
+      "imageUrl": "/image/letter-2-img-2.jpg",
       "imageHint": "adventure couple"
     },
     {
       "id": "letter-2-img-3",
       "description": "Imagen 3 para la segunda carta romántica.",
-      "imageUrl": "/images/letter-2-img-3.jpg",
+      "imageUrl": "/image/letter-2-img-3.jpg",
       "imageHint": "funny moment"
     },
     {
       "id": "letter-3-img-1",
       "description": "Imagen 1 para la tercera carta romántica.",
-      "imageUrl": "/images/letter-3-img-1.jpg",
+      "imageUrl": "/image/letter-3-img-1.jpg",
       "imageHint": "couple future"
     },
     {
       "id": "letter-3-img-2",
       "description": "Imagen 2 para la tercera carta romántica.",
-      "imageUrl": "/images/letter-3-img-2.jpg",
+      "imageUrl": "/image/letter-3-img-2.jpg",
       "imageHint": "holding hands"
     },
     {
       "id": "letter-3-img-3",
       "description": "Imagen 3 para la tercera carta romántica.",
-      "imageUrl": "/images/letter-3-img-3.jpg",
+      "imageUrl": "/image/letter-3-img-3.jpg",
       "imageHint": "looking sunset"
     },
     {
       "id": "trivia-1",
       "description": "Imagen para la pregunta de trivia #1: ¿Dónde nos conocimos por primera vez?",
-      "imageUrl": "/images/trivia-1.jpg",
+      "imageUrl": "/image/trivia-1.jpg",
       "imageHint": "couple meeting"
     },
     {
       "id": "trivia-2",
       "description": "Imagen para la pregunta de trivia #2: ¿Cuál fue nuestro primer viaje juntos (Acompañados entre amigos)?",
-      "imageUrl": "/images/trivia-2.jpg",
+      "imageUrl": "/image/trivia-2.jpg",
       "imageHint": "friends travel"
     },
     {
       "id": "trivia-3",
       "description": "Imagen para la pregunta de trivia #3: ¿Qué día celebramos nuestro aniversario?",
-      "imageUrl": "/images/trivia-3.jpg",
+      "imageUrl": "/image/trivia-3.jpg",
       "imageHint": "calendar love"
     },
     {
       "id": "trivia-4",
       "description": "Imagen para la pregunta de trivia #4: ¿Cuál es mi comida favorita?",
-      "imageUrl": "/images/trivia-4.jpg",
+      "imageUrl": "/image/trivia-4.jpg",
       "imageHint": "seafood dish"
     },
     {
       "id": "trivia-5",
       "description": "Imagen para la pregunta de trivia #5: ¿Qué es lo que más nos gusta hacer juntos?",
-      "imageUrl": "/images/trivia-5.jpg",
+      "imageUrl": "/image/trivia-5.jpg",
       "imageHint": "couple movie"
     },
     {
       "id": "trivia-6",
       "description": "Imagen para la pregunta de trivia #6: ¿Quién se duerme primero casi siempre?",
-      "imageUrl": "/images/trivia-6.jpg",
+      "imageUrl": "/image/trivia-6.jpg",
       "imageHint": "person sleeping"
     },
     {
       "id": "trivia-7",
       "description": "Imagen para la pregunta de trivia #7: ¿Qué apodo usamos más entre nosotros?",
-      "imageUrl": "/images/trivia-7.jpg",
+      "imageUrl": "/image/trivia-7.jpg",
       "imageHint": "couple secret"
     },
     {
       "id": "trivia-8",
       "description": "Imagen para la pregunta de trivia #8: ¿Cuál fue nuestro ultimo viaje juntos?",
-      "imageUrl": "/images/trivia-8.jpg",
+      "imageUrl": "/image/trivia-8.jpg",
       "imageHint": "couple beach"
     },
     {
       "id": "trivia-9",
       "description": "Imagen para la pregunta de trivia #9: ¿Qué es lo que más valoro de nuestra relación?",
-      "imageUrl": "/images/trivia-9.jpg",
+      "imageUrl": "/image/trivia-9.jpg",
       "imageHint": "holding hands"
     },
     {
       "id": "trivia-10",
       "description": "Imagen para la pregunta de trivia #10: ¿Cómo describirías nuestra relación?",
-      "imageUrl": "/images/trivia-10.jpg",
+      "imageUrl": "/image/trivia-10.jpg",
       "imageHint": "couple laughing"
     },
     {
       "id": "open-ended-1",
       "description": "Imagen para la pregunta abierta #11: ¿Qué fue lo primero que te hizo sentir algo especial por mí?",
-      "imageUrl": "/images/open-ended-1.jpg",
+      "imageUrl": "/image/open-ended-1.jpg",
       "imageHint": "special feeling"
     },
     {
       "id": "open-ended-2",
       "description": "Imagen para la pregunta abierta #12: ¿Qué es lo que más te gusta de nosotros como pareja?",
-      "imageUrl": "/images/open-ended-2.jpg",
+      "imageUrl": "/image/open-ended-2.jpg",
       "imageHint": "happy couple"
     }
   ]
