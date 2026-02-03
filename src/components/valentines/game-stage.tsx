@@ -101,13 +101,14 @@ export default function GameStage({ onSuccess }: GameStageProps) {
         y: snake[0].y + directionRef.current.y,
       };
 
-      if (
-        head.x < 0 ||
-        head.x >= GRID_SIZE ||
-        head.y < 0 ||
-        head.y >= GRID_SIZE ||
-        snake.some((segment) => segment.x === head.x && segment.y === head.y)
-      ) {
+      // Wrap around logic for walls
+      if (head.x < 0) head.x = GRID_SIZE - 1;
+      if (head.x >= GRID_SIZE) head.x = 0;
+      if (head.y < 0) head.y = GRID_SIZE - 1;
+      if (head.y >= GRID_SIZE) head.y = 0;
+
+      // Check for self-collision
+      if (snake.some((segment) => segment.x === head.x && segment.y === head.y)) {
         setGameState("lost");
         if (score > highScore) setHighScore(score);
         return;
