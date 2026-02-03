@@ -173,47 +173,66 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
                         }}
                         initialFocus
                         classNames={{
+                            // Use p-0 on the root and control padding on the PopoverContent.
                             root: 'p-0',
-                            months: 'flex justify-center',
+                            
+                            // Center the month block.
+                            months: 'flex flex-col sm:flex-row justify-center',
                             month: 'space-y-4',
-                            caption: 'flex justify-center relative items-center',
+
+                            // Style the caption (e.g., "Febrero 2024").
+                            caption: 'flex justify-center pt-1 relative items-center',
                             caption_label:
                               'text-lg font-semibold text-primary capitalize',
+                            
+                            // Style the navigation buttons.
                             nav: 'space-x-1 flex items-center',
                             nav_button:
-                              'h-8 w-8 rounded-full hover:bg-primary/10',
+                              'h-8 w-8 rounded-full bg-transparent hover:bg-primary/10 flex justify-center items-center',
                             nav_button_previous: 'absolute left-1',
                             nav_button_next: 'absolute right-1',
                           
-                            table: 'w-full border-collapse',
-                            head_row: 'grid grid-cols-7',
+                            // Use flex for rows to ensure proper alignment. This is the shadcn way.
+                            table: 'w-full border-collapse space-y-1',
+                            head_row: 'flex',
+                            row: 'flex w-full mt-2',
+
+                            // Style the weekday headers (LU, MA, etc.).
                             head_cell:
-                              'text-muted-foreground text-xs font-medium text-center uppercase',
+                              'text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]',
+                            
+                            // Style each day's container cell.
+                            cell: 'h-10 w-10 text-center text-sm p-0 relative flex items-center justify-center',
                           
-                            row: 'grid grid-cols-7 mt-2',
-                            cell: 'relative flex items-center justify-center',
-                          
+                            // Style the day button itself.
                             day:
                               'h-10 w-10 rounded-full text-sm font-normal hover:bg-primary/10',
                           
+                            // Style for the selected day.
                             day_selected:
-                              'bg-primary text-primary-foreground hover:bg-primary',
+                              'bg-primary text-primary-foreground hover:bg-primary/90 focus:bg-primary focus:text-primary-foreground',
                           
+                            // Style for today's date.
                             day_today:
-                              'border border-primary text-primary',
+                              'bg-accent text-accent-foreground',
                           
+                            // Make days outside the current month very subtle.
                             day_outside:
-                              'text-muted-foreground/30 pointer-events-none opacity-30',
+                              'text-muted-foreground/50 opacity-50',
+                            
+                            day_disabled: 'text-muted-foreground opacity-50',
+                            day_hidden: 'invisible',
                           }}
                           components={{
+                            // Use DayContent to inject custom elements without breaking layout.
                             DayContent: ({ date }) => {
+                              // Mark the 14th of any month with a heart.
                               const isFourteen = date.getDate() === 14;
                               return (
-                                <div className="flex items-center justify-center w-full h-full">
-                                  {isFourteen ? (
-                                    <Heart className="h-5 w-5 text-primary fill-primary" />
-                                  ) : (
-                                    date.getDate()
+                                <div className="flex items-center justify-center w-full h-full relative">
+                                  {date.getDate()}
+                                  {isFourteen && (
+                                    <Heart className="h-3 w-3 absolute text-primary/70 top-1 right-1" fill="currentColor" />
                                   )}
                                 </div>
                               );
