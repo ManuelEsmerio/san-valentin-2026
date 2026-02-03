@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { Progress } from "../ui/progress";
 
 const GRID_SIZE = 20;
-const CANVAS_SIZE = 400;
+const CANVAS_SIZE = 600;
 const TILE_SIZE = CANVAS_SIZE / GRID_SIZE;
 const TARGET_SCORE = 20;
 
@@ -143,7 +143,7 @@ export default function GameStage({ onSuccess }: GameStageProps) {
           segment.y * TILE_SIZE,
           TILE_SIZE * 0.9,
           TILE_SIZE * 0.9,
-          `hsla(var(--primary), ${opacity})`
+          `hsla(330, 100%, 78%, ${opacity})`
         );
       });
 
@@ -153,7 +153,7 @@ export default function GameStage({ onSuccess }: GameStageProps) {
         foodRef.current.y * TILE_SIZE,
         TILE_SIZE,
         TILE_SIZE,
-        "hsl(var(--primary))"
+        "hsl(330, 100%, 78%)"
       );
     };
 
@@ -217,13 +217,13 @@ export default function GameStage({ onSuccess }: GameStageProps) {
       <div className="w-full p-2 rounded-xl border-2 border-primary/20 bg-card/80">
         <div
           className={cn(
-            "flex flex-col items-center gap-6 rounded-lg border-4 border-primary/30 bg-card/90 px-6 py-10 shadow-inner relative overflow-hidden min-h-[400px] justify-center",
+            "flex flex-col items-center gap-6 rounded-lg border-4 border-primary/30 bg-card/90 px-6 py-10 shadow-inner relative overflow-hidden min-h-[600px] justify-center",
             "dark:bg-black/20"
           )}
         >
           {gameState === "idle" && (
             <div className="flex max-w-[480px] flex-col items-center gap-4 z-10 text-center animate-fade-in">
-              <div className="w-full h-48 bg-accent/30 dark:bg-accent/10 rounded-lg border border-primary/10 flex items-center justify-center relative overflow-hidden">
+              <div className="w-full h-64 bg-accent/30 dark:bg-accent/10 rounded-lg border border-primary/10 flex items-center justify-center relative overflow-hidden">
                 <div className="flex gap-1 absolute top-20 left-20">
                   <Heart className="text-primary/80 fill-primary/80" />
                   <Heart className="text-primary/60 fill-primary/60" />

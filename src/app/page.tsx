@@ -7,6 +7,7 @@ import GameStage from '@/components/valentines/game-stage';
 import TriviaStage from '@/components/valentines/trivia-stage';
 import RevelationStage from '@/components/valentines/revelation-stage';
 import { Progress } from '@/components/ui/progress';
+import { cn } from '@/lib/utils';
 
 type Stage = 'login' | 'welcome' | 'game' | 'trivia' | 'revelation';
 
@@ -44,9 +45,11 @@ export default function Home() {
     }
   };
 
+  const containerClass = stage === 'game' ? 'max-w-5xl' : 'max-w-lg';
+
   return (
-    <>
-      <div className="w-full max-w-lg text-center mb-6">
+    <div className="w-full flex flex-col items-center">
+      <div className={cn("w-full text-center mb-6", containerClass)}>
         {stage !== 'welcome' && stage !== 'revelation' && (
           <>
             <h1 className="text-foreground tracking-light text-[24px] sm:text-[40px] font-bold leading-tight px-4 pb-1">
@@ -60,7 +63,7 @@ export default function Home() {
       </div>
 
       {stage !== 'welcome' && stage !== 'revelation' && stage !== 'login' && (
-        <div className="w-full max-w-lg flex flex-col gap-3 p-4 bg-card/50 rounded-xl mb-6 border border-border">
+        <div className={cn("w-full flex flex-col gap-3 p-4 bg-card/50 rounded-xl mb-6 border border-border", containerClass)}>
           <div className="flex gap-6 justify-between">
             <p className="text-foreground/90 text-base font-medium leading-normal">
               Progreso del Desafío
@@ -74,7 +77,7 @@ export default function Home() {
       )}
 
 
-      <div className="w-full max-w-lg">{renderStage()}</div>
-    </>
+      <div className={cn("w-full", containerClass)}>{renderStage()}</div>
+    </div>
   );
 }

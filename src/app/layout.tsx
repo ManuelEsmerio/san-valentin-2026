@@ -41,9 +41,7 @@ export default function RootLayout({
           </div>
         </header>
         <main className="flex-1 flex flex-col items-center justify-center p-4 relative overflow-hidden">
-          <div className="w-full max-w-[960px] flex flex-col items-center">
-            {children}
-          </div>
+          {children}
         </main>
         <footer className="py-6 text-center text-muted-foreground text-sm">
           <p className="flex items-center justify-center">
