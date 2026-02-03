@@ -213,7 +213,7 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
     <div className="w-full flex flex-col gap-6 items-center">
       <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5">
         {imagePlaceholder && (
-          <div className="relative w-full aspect-[16/10] rounded-t-xl overflow-hidden">
+          <div className="relative w-full aspect-video rounded-t-xl overflow-hidden">
             <Image
               src={imagePlaceholder.imageUrl}
               alt={imagePlaceholder.description}
@@ -288,7 +288,7 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
 
       {answerStatus === 'unanswered' && (
         <Button onClick={handleNext} className="w-full max-w-sm h-12 text-lg font-bold">
-          {currentQuestion.type === 'open-ended' ? 'Siguiente' : 'Verificar'}
+          Siguiente
         </Button>
       )}
 
