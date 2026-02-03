@@ -13,7 +13,6 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
@@ -27,24 +26,22 @@ const formSchema = z.object({
   }),
 });
 
-function CustomDay({ date, ...props }: DayProps) {
+function CustomDay(props: DayProps) {
   if (props.modifiers.hidden) {
-    return <></>;
+    return <div className="h-8 w-8" />;
   }
 
-  if (!date) {
-    return <></>;
+  // Handle invalid dates being passed by react-day-picker for empty cells
+  if (!props.date) {
+    return <div className="h-8 w-8" />;
   }
 
-  const content = <span className="relative z-10">{format(date, 'd')}</span>;
+  const content = <span className="relative z-10">{format(props.date, 'd')}</span>;
 
   if (props.modifiers.selected) {
     return (
       <div
-        className={cn(
-          'relative flex h-8 w-8 cursor-pointer items-center justify-center text-white',
-          props.className
-        )}
+        className="relative flex h-8 w-8 cursor-pointer items-center justify-center text-white"
         {...props.buttonProps}
       >
         <span
@@ -53,9 +50,7 @@ function CustomDay({ date, ...props }: DayProps) {
         >
           favorite
         </span>
-        <span className="relative z-10 text-[10px] font-bold">
-          {content}
-        </span>
+        <span className="relative z-10 text-[10px] font-bold">{content}</span>
       </div>
     );
   }
@@ -70,8 +65,7 @@ function CustomDay({ date, ...props }: DayProps) {
           'cursor-pointer': !props.modifiers.disabled,
           'opacity-50 cursor-not-allowed': props.modifiers.disabled,
           'text-muted-foreground opacity-50': props.modifiers.outside,
-        },
-        props.className
+        }
       )}
     >
       {content}
@@ -79,8 +73,7 @@ function CustomDay({ date, ...props }: DayProps) {
   );
 }
 
-
-export default function LoginStage({ onSuccess }: LoginStageProps) {
+export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -179,58 +172,50 @@ export default function LoginStage({ onSuccess }: LoginStageProps) {
                   <label className="text-foreground text-base font-medium leading-normal pb-2">
                     Nuestra fecha
                   </label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant={'outline'}
-                          className={cn(
-                            'h-14 pl-12 pr-4 text-base bg-card focus:border-primary border-border justify-start font-normal text-left relative',
-                            !field.value && 'text-muted-foreground'
-                          )}
-                        >
-                          <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary/50">
-                            calendar_month
-                          </span>
-                          {field.value ? (
-                            format(field.value, 'dd / MM / yyyy')
-                          ) : (
-                            <span>DD / MM / YYYY</span>
-                          )}
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent
-                      className="w-auto p-0 bg-card border-primary/10 rounded-xl shadow-2xl"
-                      align="start"
-                    >
-                      <DayPicker
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        disabled={{ before: new Date(2020, 0, 1) }}
-                        defaultMonth={new Date(2025, 3)}
-                        locale={es}
-                        classNames={{
-                          root: 'p-4',
-                          caption: 'flex items-center justify-between mb-4',
-                          caption_label: 'text-primary font-bold',
-                          nav_button:
-                            'h-7 w-7 p-1 hover:bg-primary/5 rounded-full text-primary',
-                          head_row:
-                            'grid grid-cols-7 text-center text-xs font-medium text-muted-foreground mb-2',
-                          head_cell: 'w-auto font-normal',
-                          row: 'grid grid-cols-7',
-                          cell: 'p-0',
-                        }}
-                        components={{
-                          IconLeft: () => <ChevronLeft className="h-6 w-6" />,
-                          IconRight: () => <ChevronRight className="h-6 w-6" />,
-                          Day: CustomDay,
-                        }}
+                  <FormControl>
+                    <div className="relative">
+                      <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary/50">
+                        calendar_month
+                      </span>
+                      <Input
+                        readOnly
+                        className="h-14 pl-12 pr-4 text-base bg-card focus:border-primary border-border justify-start font-normal text-left"
+                        placeholder="DD / MM / YYYY"
+                        value={
+                          field.value
+                            ? format(field.value, 'dd / MM / yyyy')
+                            : ''
+                        }
                       />
-                    </PopoverContent>
-                  </Popover>
+                    </div>
+                  </FormControl>
+                  <div className="mt-2 p-4 bg-card border border-primary/10 rounded-xl shadow-2xl w-full">
+                    <DayPicker
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      disabled={{ before: new Date(2020, 0, 1) }}
+                      defaultMonth={new Date(2025, 3)}
+                      locale={es}
+                      classNames={{
+                        root: '',
+                        caption: 'flex items-center justify-between mb-4',
+                        caption_label: 'text-primary font-bold',
+                        nav_button:
+                          'h-7 w-7 p-1 hover:bg-primary/5 rounded-full text-primary',
+                        head_row:
+                          'grid grid-cols-7 text-center text-xs font-medium text-muted-foreground mb-2',
+                        head_cell: 'w-auto font-normal',
+                        row: 'grid grid-cols-7',
+                        cell: 'p-0',
+                      }}
+                      components={{
+                        IconLeft: () => <ChevronLeft className="h-6 w-6" />,
+                        IconRight: () => <ChevronRight className="h-6 w-6" />,
+                        Day: CustomDay,
+                      }}
+                    />
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
