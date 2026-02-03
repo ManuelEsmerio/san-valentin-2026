@@ -15,8 +15,7 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { cn } from '@/lib/utils';
-import { DayPicker, DayProps } from 'react-day-picker';
+import { Calendar } from '@/components/ui/calendar';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const formSchema = z.object({
@@ -25,56 +24,6 @@ const formSchema = z.object({
     required_error: 'Por favor, elige nuestra fecha especial.',
   }),
 });
-
-function CustomDay(props: DayProps) {
-  // Handle invalid dates or hidden days to prevent rendering errors.
-  if (props.modifiers.hidden || !props.date) {
-    return <></>;
-  }
-
-  // Ensure date is valid before formatting
-  if (isNaN(props.date.getTime())) {
-    return <></>;
-  }
-
-  const content = (
-    <span className="relative z-10">{format(props.date, 'd')}</span>
-  );
-
-  if (props.modifiers.selected) {
-    return (
-      <div
-        className="relative flex h-8 w-8 cursor-pointer items-center justify-center text-white"
-        {...props.buttonProps}
-      >
-        <span
-          className="material-symbols-outlined text-primary text-3xl absolute z-0"
-          style={{ fontVariationSettings: "'FILL' 1" }}
-        >
-          favorite
-        </span>
-        <span className="relative z-10 text-[10px] font-bold">{content}</span>
-      </div>
-    );
-  }
-
-  return (
-    <button
-      type="button"
-      {...props.buttonProps}
-      className={cn(
-        'flex h-8 w-8 items-center justify-center rounded-lg hover:bg-pink-50 dark:hover:bg-stone-700',
-        {
-          'cursor-pointer': !props.modifiers.disabled,
-          'opacity-50 cursor-not-allowed': props.modifiers.disabled,
-          'text-muted-foreground opacity-50': props.modifiers.outside,
-        }
-      )}
-    >
-      {content}
-    </button>
-  );
-}
 
 export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
   const { toast } = useToast();
@@ -175,47 +124,49 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
                   <label className="text-foreground text-base font-medium leading-normal pb-2">
                     Nuestra fecha
                   </label>
+                  <div className="relative">
+                    <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary/50 z-10">
+                      calendar_month
+                    </span>
+                    <Input
+                      readOnly
+                      className="h-14 pl-12 pr-4 text-base bg-card focus:border-primary border-border justify-start font-normal text-left"
+                      placeholder="DD / MM / YYYY"
+                      value={
+                        field.value
+                          ? format(field.value, 'dd / MM / yyyy')
+                          : ''
+                      }
+                    />
+                  </div>
                   <FormControl>
-                    <div className="relative">
-                      <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary/50">
-                        calendar_month
-                      </span>
-                      <Input
-                        readOnly
-                        className="h-14 pl-12 pr-4 text-base bg-card focus:border-primary border-border justify-start font-normal text-left"
-                        placeholder="DD / MM / YYYY"
-                        value={
-                          field.value
-                            ? format(field.value, 'dd / MM / yyyy')
-                            : ''
-                        }
+                    <div className="mt-2 p-4 bg-card border border-primary/10 rounded-xl shadow-inner w-full">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={{ before: new Date(2020, 0, 1) }}
+                        defaultMonth={new Date(2025, 3)}
+                        locale={es}
+                        classNames={{
+                          caption: 'flex items-center justify-between mb-4',
+                          caption_label: 'text-primary font-bold',
+                          nav_button:
+                            'h-7 w-7 p-1 hover:bg-primary/5 rounded-full text-primary',
+                          head_row: 'flex text-center text-xs font-medium text-muted-foreground mb-2 w-full',
+                          head_cell: 'font-normal w-full',
+                          row: 'flex w-full mt-0',
+                          day: 'h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-pink-50 dark:hover:bg-stone-700 rounded-lg',
+                          day_selected:
+                            'day-selected',
+                        }}
+                        components={{
+                          IconLeft: () => <ChevronLeft className="h-6 w-6" />,
+                          IconRight: () => <ChevronRight className="h-6 w-6" />,
+                        }}
                       />
                     </div>
                   </FormControl>
-                  <div className="mt-2 p-4 bg-card border border-primary/10 rounded-xl shadow-inner w-full">
-                    <DayPicker
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={{ before: new Date(2020, 0, 1) }}
-                      defaultMonth={new Date(2025, 3)}
-                      locale={es}
-                      classNames={{
-                        caption: 'flex items-center justify-between mb-4',
-                        caption_label: 'text-primary font-bold',
-                        nav_button:
-                          'h-7 w-7 p-1 hover:bg-primary/5 rounded-full text-primary',
-                        head: 'text-center text-xs font-medium text-muted-foreground mb-2 w-full',
-                        head_cell: 'font-normal w-8',
-                        cell: 'p-0',
-                      }}
-                      components={{
-                        IconLeft: () => <ChevronLeft className="h-6 w-6" />,
-                        IconRight: () => <ChevronRight className="h-6 w-6" />,
-                        Day: CustomDay,
-                      }}
-                    />
-                  </div>
                   <FormMessage />
                 </FormItem>
               )}

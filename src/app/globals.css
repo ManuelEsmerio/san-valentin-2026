@@ -81,4 +81,31 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Valentine Calendar Customization */
+  .day-selected,
+  .day-selected:focus,
+  .day-selected:hover {
+    background-color: transparent !important;
+    color: white !important;
+    font-weight: 700;
+    position: relative;
+    opacity: 1 !important;
+    font-size: 10px !important; /* For the number */
+    z-index: 2;
+  }
+  
+  .day-selected::before { /* Use before to be behind the text */
+    content: 'favorite';
+    font-family: 'Material Symbols Outlined';
+    font-variation-settings: "'FILL' 1";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.25rem;
+    line-height: 1;
+    z-index: -1;
+    color: hsl(var(--primary));
+  }
 }
