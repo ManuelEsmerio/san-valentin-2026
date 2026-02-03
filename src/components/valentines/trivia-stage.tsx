@@ -199,12 +199,13 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
     question: "¿A quién le huelen más las patas?",
     options: [
       "Tú",
-      "Tú",
+      "Tú, también",
       "Definitivamente tú",
       "No hay duda: tú"
     ],
     correctAnswer: [
       "Tú",
+      "Tú, también",
       "Definitivamente tú",
       "No hay duda: tú"
     ],
@@ -546,116 +547,121 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
   }
 
   return (
-    <div className="w-full flex flex-col gap-6 items-center">
-      <CircularProgress current={currentQuestionIndex + 1} total={questions.length} />
-
-      <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5">
-        {imagePlaceholder && (
-          <div className="relative w-full aspect-[21/9] rounded-t-xl overflow-hidden bg-black/20">
-            <Image
-              src={imagePlaceholder.imageUrl}
-              alt={imagePlaceholder.description}
-              data-ai-hint={imagePlaceholder.imageHint}
-              fill
-              className="object-contain"
-              priority
-            />
-            {currentQuestion.type === "multiple-choice" && currentQuestion.category && (
-              <div className="absolute bottom-4 left-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-bold">
-                {currentQuestion.category}
+    <>
+      <div className="w-full flex flex-col md:flex-row gap-8 items-center md:items-start">
+        <div className="flex-1 w-full flex flex-col gap-6 items-center">
+          <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5">
+            {imagePlaceholder && (
+              <div className="relative w-full aspect-[21/9] rounded-t-xl overflow-hidden bg-black/20">
+                <Image
+                  src={imagePlaceholder.imageUrl}
+                  alt={imagePlaceholder.description}
+                  data-ai-hint={imagePlaceholder.imageHint}
+                  fill
+                  className="object-contain"
+                  priority
+                />
+                {currentQuestion.type === "multiple-choice" && currentQuestion.category && (
+                  <div className="absolute bottom-4 left-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-bold">
+                    {currentQuestion.category}
+                  </div>
+                )}
               </div>
             )}
-          </div>
-        )}
-        <div className="p-6">
-          <h2 className="text-2xl font-bold text-center mb-2">{currentQuestion.question}</h2>
-          <p className="text-center text-muted-foreground mb-6">{currentQuestion.hint}</p>
+            <div className="p-6">
+              <h2 className="text-2xl font-bold text-center mb-2">{currentQuestion.question}</h2>
+              <p className="text-center text-muted-foreground mb-6">{currentQuestion.hint}</p>
 
-          {currentQuestion.type === 'multiple-choice' && (
-            <RadioGroup
-              onValueChange={handleAnswerChange}
-              value={answers[currentQuestion.id] || ""}
-              className="grid grid-cols-1 sm:grid-cols-2 gap-3"
-              disabled={answerStatus !== 'unanswered'}
-            >
-              {(currentQuestion as MultipleChoiceQuestion).options.map((option, index) => (
-                <Label 
-                  key={`${option}-${index}`}
-                  htmlFor={`${option}-${index}`}
-                  className={cn(
-                    "flex items-center space-x-3 p-4 rounded-lg border-2 border-border has-[input:checked]:border-primary has-[input:checked]:bg-primary/5 cursor-pointer transition-all",
-                    answerStatus !== 'unanswered' &&
-                      (Array.isArray((currentQuestion as MultipleChoiceQuestion).correctAnswer)
-                        ? (currentQuestion as MultipleChoiceQuestion).correctAnswer.includes(option)
-                        : (currentQuestion as MultipleChoiceQuestion).correctAnswer === option) &&
-                      "border-green-500 bg-green-500/5",
-                    answerStatus === 'incorrect' && answers[currentQuestion.id] === option && "border-destructive bg-destructive/5"
-                  )}
+              {currentQuestion.type === 'multiple-choice' && (
+                <RadioGroup
+                  onValueChange={handleAnswerChange}
+                  value={answers[currentQuestion.id] || ""}
+                  className="grid grid-cols-1 sm:grid-cols-2 gap-3"
+                  disabled={answerStatus !== 'unanswered'}
                 >
-                  <RadioGroupItem value={option} id={`${option}-${index}`} disabled={answerStatus !== 'unanswered'} />
-                  <span className="font-body text-base flex-1">{option}</span>
-                </Label>
-              ))}
-            </RadioGroup>
-          )}
+                  {(currentQuestion as MultipleChoiceQuestion).options.map((option, index) => (
+                    <Label 
+                      key={`${option}-${index}`}
+                      htmlFor={`${option}-${index}`}
+                      className={cn(
+                        "flex items-center space-x-3 p-4 rounded-lg border-2 border-border has-[input:checked]:border-primary has-[input:checked]:bg-primary/5 cursor-pointer transition-all",
+                        answerStatus !== 'unanswered' &&
+                          (Array.isArray((currentQuestion as MultipleChoiceQuestion).correctAnswer)
+                            ? (currentQuestion as MultipleChoiceQuestion).correctAnswer.includes(option)
+                            : (currentQuestion as MultipleChoiceQuestion).correctAnswer === option) &&
+                          "border-green-500 bg-green-500/5",
+                        answerStatus === 'incorrect' && answers[currentQuestion.id] === option && "border-destructive bg-destructive/5"
+                      )}
+                    >
+                      <RadioGroupItem value={option} id={`${option}-${index}`} disabled={answerStatus !== 'unanswered'} />
+                      <span className="font-body text-base flex-1">{option}</span>
+                    </Label>
+                  ))}
+                </RadioGroup>
+              )}
 
-          {currentQuestion.type === 'open-ended' && (
-            <div className="pt-2 [perspective:1000px]">
-                <div
-                    className={cn(
-                        "relative w-full min-h-[160px] [transform-style:preserve-3d] transition-transform duration-1000",
-                        flippedQuestions[currentQuestion.id] && "[transform:rotateY(180deg)]"
-                    )}
-                >
-                    <div className="absolute w-full h-full [backface-visibility:hidden]">
-                        <Textarea
-                        placeholder="Escribe tu respuesta aquí, mi chula..."
-                        className="min-h-[160px] text-base"
-                        value={answers[currentQuestion.id] || ""}
-                        onChange={(e) => handleAnswerChange(e.target.value)}
-                        disabled={!!flippedQuestions[currentQuestion.id]}
-                        />
-                    </div>
+              {currentQuestion.type === 'open-ended' && (
+                <div className="pt-2 [perspective:1000px]">
+                    <div
+                        className={cn(
+                            "relative w-full min-h-[160px] [transform-style:preserve-3d] transition-transform duration-1000",
+                            flippedQuestions[currentQuestion.id] && "[transform:rotateY(180deg)]"
+                        )}
+                    >
+                        <div className="absolute w-full h-full [backface-visibility:hidden]">
+                            <Textarea
+                            placeholder="Escribe tu respuesta aquí, mi chula..."
+                            className="min-h-[160px] text-base"
+                            value={answers[currentQuestion.id] || ""}
+                            onChange={(e) => handleAnswerChange(e.target.value)}
+                            disabled={!!flippedQuestions[currentQuestion.id]}
+                            />
+                        </div>
 
-                    <div className="absolute w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] bg-primary/10 p-6 rounded-lg flex flex-col justify-center items-center text-center">
-                        <p className="text-foreground/80 italic text-lg">
-                            &ldquo;{(currentQuestion as OpenEndedQuestion).creatorAnswer}&rdquo;
-                        </p>
+                        <div className="absolute w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] bg-primary/10 p-6 rounded-lg flex flex-col justify-center items-center text-center">
+                            <p className="text-foreground/80 italic text-lg">
+                                &ldquo;{(currentQuestion as OpenEndedQuestion).creatorAnswer}&rdquo;
+                            </p>
+                        </div>
                     </div>
                 </div>
+                )}
             </div>
-            )}
+          </div>
+
+          {answerStatus !== 'unanswered' ? (
+            <div className={cn(
+              "w-full p-4 rounded-lg flex items-center gap-4 animate-fade-in",
+              answerStatus === 'correct' ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-300' : 'bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-300'
+            )}>
+              {answerStatus === 'correct' ? <CheckCircle2 /> : <XCircle />}
+              <div className="flex-1">
+                <h4 className="font-bold">{answerStatus === 'correct' ? "¡Correcto!" : "¡Casi!"}</h4>
+                <p className="text-sm">{answerStatus === 'correct' ? "¡Esa es! Nunca olvidaré ese momento." : "No te preocupes, ¡lo importante es el amor!"}</p>
+              </div>
+              <Button onClick={handleNext} className="h-10 text-base font-bold shrink-0">
+                Siguiente <span className="material-symbols-outlined ml-2 text-base">arrow_forward</span>
+              </Button>
+            </div>
+          ) : (
+            <Button 
+                onClick={handleNext} 
+                className="w-full max-w-sm h-12 text-lg font-bold"
+                disabled={currentQuestion.type === 'open-ended' && !answers[currentQuestion.id] && !flippedQuestions[currentQuestion.id]}
+            >
+              {currentQuestion.type === 'open-ended' 
+                ? (flippedQuestions[currentQuestion.id] ? 'Continuar' : 'Revelar mi respuesta')
+                : 'Siguiente'
+              }
+            </Button>
+          )}
+        </div>
+
+        <div className="w-full md:w-auto">
+          <CircularProgress current={currentQuestionIndex + 1} total={questions.length} />
         </div>
       </div>
-
-      {answerStatus !== 'unanswered' ? (
-        <div className={cn(
-          "w-full p-4 rounded-lg flex items-center gap-4 animate-fade-in",
-          answerStatus === 'correct' ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-300' : 'bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-300'
-        )}>
-          {answerStatus === 'correct' ? <CheckCircle2 /> : <XCircle />}
-          <div className="flex-1">
-            <h4 className="font-bold">{answerStatus === 'correct' ? "¡Correcto!" : "¡Casi!"}</h4>
-            <p className="text-sm">{answerStatus === 'correct' ? "¡Esa es! Nunca olvidaré ese momento." : "No te preocupes, ¡lo importante es el amor!"}</p>
-          </div>
-          <Button onClick={handleNext} className="h-10 text-base font-bold shrink-0">
-            Siguiente <span className="material-symbols-outlined ml-2 text-base">arrow_forward</span>
-          </Button>
-        </div>
-      ) : (
-        <Button 
-            onClick={handleNext} 
-            className="w-full max-w-sm h-12 text-lg font-bold"
-            disabled={currentQuestion.type === 'open-ended' && !answers[currentQuestion.id] && !flippedQuestions[currentQuestion.id]}
-        >
-          {currentQuestion.type === 'open-ended' 
-            ? (flippedQuestions[currentQuestion.id] ? 'Continuar' : 'Revelar mi respuesta')
-            : 'Siguiente'
-          }
-        </Button>
-      )}
-
-
+      
       <RomanticLetterModal
         isOpen={!!letterToShow}
         letter={letterToShow}
@@ -666,6 +672,8 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
         isOpen={isPuzzleModalOpen}
         onSuccess={onSuccess}
       />
-    </div>
+    </>
   );
 }
+
+    
