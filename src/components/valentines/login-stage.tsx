@@ -158,7 +158,7 @@ export default function LoginStage({ onSuccess }: LoginStageProps) {
                         mode="single"
                         selected={field.value}
                         onSelect={field.onChange}
-                        disabled={(date) => date < new Date("2020-01-01")}
+                        disabled={(date) => date < new Date(2020, 0, 1)}
                         defaultMonth={new Date(2025, 3)}
                         locale={es}
                         classNames={{
@@ -182,6 +182,9 @@ export default function LoginStage({ onSuccess }: LoginStageProps) {
                           IconLeft: () => <ChevronLeft className="h-6 w-6" />,
                           IconRight: () => <ChevronRight className="h-6 w-6" />,
                           Day: ({ date, ...dayProps }: DayProps) => {
+                            if (!date) {
+                                return <div className="h-8 w-8"></div>;
+                            }
                             const content = <>{format(date, 'd')}</>;
                             const commonClasses = 'h-8 w-8 flex items-center justify-center rounded-lg cursor-pointer';
 
