@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import CountdownStage from '@/components/valentines/countdown-stage';
 import LoginStage from '@/components/valentines/login-stage';
 import WelcomeStage from '@/components/valentines/welcome-stage';
@@ -23,18 +23,6 @@ const stageInfo: Record<Stage, { step: number; title: string }> = {
 export default function Home() {
   const [showCountdown, setShowCountdown] = useState(true);
   const [stage, setStage] = useState<Stage>('login');
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.altKey && event.key.toLowerCase() === 'e') {
-        setShowCountdown(false);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, []);
 
   if (showCountdown) {
     return <CountdownStage onComplete={() => setShowCountdown(false)} />;
