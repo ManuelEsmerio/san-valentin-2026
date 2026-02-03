@@ -35,7 +35,10 @@ const HeartFirework = ({ baseDelay = 0 }: { baseDelay?: number }) => {
 };
 
 export default function RevelationStage() {
-  const finalImage = PlaceHolderImages.find((img) => img.id === "couple-photo");
+  const collageImg1 = PlaceHolderImages.find((img) => img.id === "letter-1-img-1");
+  const collageImg2 = PlaceHolderImages.find((img) => img.id === "letter-1-img-2");
+  const collageImg3 = PlaceHolderImages.find((img) => img.id === "letter-1-img-3");
+
   const [fireworks, setFireworks] = useState<any[]>([]);
 
   useEffect(() => {
@@ -79,17 +82,42 @@ export default function RevelationStage() {
           Has llegado al final del desafío.
         </p>
         
-        {finalImage && (
-          <div className="relative w-full aspect-video rounded-lg overflow-hidden shadow-lg bg-black/20">
-            <Image
-              src={finalImage.imageUrl}
-              alt={finalImage.description}
-              data-ai-hint={finalImage.imageHint}
-              fill
-              className="object-contain"
-            />
-          </div>
-        )}
+        <div className="w-full aspect-[4/3] grid grid-cols-3 grid-rows-2 gap-2">
+          {collageImg1 && (
+            <div className="col-span-2 row-span-2 relative rounded-lg overflow-hidden shadow-md bg-black/20">
+              <Image
+                src={collageImg1.imageUrl}
+                alt={collageImg1.description}
+                data-ai-hint={collageImg1.imageHint}
+                fill
+                className="object-contain"
+              />
+            </div>
+          )}
+          {collageImg2 && (
+            <div className="col-span-1 row-span-1 relative rounded-lg overflow-hidden shadow-md bg-black/20">
+              <Image
+                src={collageImg2.imageUrl}
+                alt={collageImg2.description}
+                data-ai-hint={collageImg2.imageHint}
+                fill
+                className="object-contain"
+              />
+            </div>
+          )}
+          {collageImg3 && (
+            <div className="col-span-1 row-span-1 relative rounded-lg overflow-hidden shadow-md bg-black/20">
+              <Image
+                src={collageImg3.imageUrl}
+                alt={collageImg3.description}
+                data-ai-hint={collageImg3.imageHint}
+                fill
+                className="object-contain"
+              />
+            </div>
+          )}
+        </div>
+        
         <div className="text-center bg-accent/50 p-6 rounded-lg">
           <p className="text-lg md:text-xl">
             Este es solo un pequeño recordatorio de todo lo que significas para

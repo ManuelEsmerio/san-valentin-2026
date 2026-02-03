@@ -51,7 +51,7 @@ export default function Home() {
     }
   };
 
-  const containerClass = (stage === 'game' || stage === 'trivia') ? 'max-w-5xl' : 'max-w-lg';
+  const containerClass = (stage === 'game' || stage === 'trivia') ? 'max-w-5xl' : (stage === 'revelation' ? 'max-w-2xl' : 'max-w-lg');
 
   return (
     <div className="w-full flex flex-col items-center">
