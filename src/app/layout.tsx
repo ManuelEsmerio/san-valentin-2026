@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import ThemeToggle from '@/components/valentines/theme-toggle';
+import MusicPlayer from '@/components/valentines/MusicPlayer';
 
 export const metadata: Metadata = {
   title: "Valentine's Challenge",
@@ -65,6 +66,7 @@ export default function RootLayout({
           </p>
         </footer>
         <Toaster />
+        <MusicPlayer />
       </body>
     </html>
   );
