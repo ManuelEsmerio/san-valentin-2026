@@ -10,8 +10,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['Alegreya', 'serif'],
-        headline: ['Belleza', 'sans-serif'],
+        body: ['"Plus Jakarta Sans"', 'sans-serif'],
+        headline: ['"Plus Jakarta Sans"', 'sans-serif'],
         code: ['monospace'],
       },
       colors: {
@@ -70,6 +70,7 @@ export default {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
+        xl: 'calc(var(--radius) + 4px)',
       },
       keyframes: {
         'accordion-down': {
@@ -98,7 +99,7 @@ export default {
         },
         'heart-beat': {
           '0%, 100%': { transform: 'scale(1)' },
-          '50%': { transform: 'scale(1.1)' },
+          '50%': { transform: 'scale(1.15)' },
         }
       },
       animation: {
@@ -106,7 +107,7 @@ export default {
         'accordion-up': 'accordion-up 0.2s ease-out',
         'fade-in': 'fade-in 0.5s ease-out forwards',
         'fade-out': 'fade-out 0.5s ease-in forwards',
-        'heart-beat': 'heart-beat 1s ease-in-out infinite'
+        'heart-beat': 'heart-beat 1.2s ease-in-out infinite'
       },
     },
   },

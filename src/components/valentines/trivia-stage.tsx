@@ -2,13 +2,6 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -74,16 +67,8 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="font-headline text-2xl">
-          Paso 3: Trivia de Nuestro Amor
-        </CardTitle>
-        <CardDescription className="font-body">
-          ¿Qué tanto recuerdas de nosotros?
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
+    <div className="w-full bg-card dark:bg-stone-900 rounded-xl shadow-xl overflow-hidden border border-primary/5">
+      <div className="px-4 sm:px-8 pb-10 pt-6">
         {!finished ? (
           <div className="space-y-6">
             <div className="space-y-2">
@@ -96,35 +81,38 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
                 className="space-y-2 pt-2"
               >
                 {currentQuestion.options.map((option) => (
-                  <div key={option} className="flex items-center space-x-2">
+                  <div key={option} className="flex items-center space-x-3">
                     <RadioGroupItem value={option} id={option} />
-                    <Label htmlFor={option} className="font-body">
+                    <Label htmlFor={option} className="font-body text-base">
                       {option}
                     </Label>
                   </div>
                 ))}
               </RadioGroup>
             </div>
-            <Button onClick={handleSubmit} className="w-full font-headline">
+            <Button onClick={handleSubmit} className="w-full h-12 text-lg font-bold">
               <Lightbulb className="mr-2 h-4 w-4" /> Responder
             </Button>
           </div>
         ) : (
-          <Alert className="animate-fade-in">
-            <AlertTitle className="font-headline">
+          <Alert className="animate-fade-in text-center">
+             <span className="material-symbols-outlined text-primary text-5xl">
+              check_circle
+            </span>
+            <AlertTitle className="font-headline mt-2">
               ¡Perfecto! ¡Sabía que lo sabrías todo!
             </AlertTitle>
-            <AlertDescription className="font-body space-y-4">
+            <AlertDescription className="font-body space-y-4 mt-4">
               <p>
                 Has completado el desafío. Ahora, la revelación final...
               </p>
-              <Button onClick={onSuccess} className="w-full font-headline">
+              <Button onClick={onSuccess} className="w-full h-12 text-lg font-bold">
                 Ver mi sorpresa
               </Button>
             </AlertDescription>
           </Alert>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

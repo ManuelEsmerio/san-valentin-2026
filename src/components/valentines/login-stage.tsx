@@ -9,19 +9,10 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Heart } from "lucide-react";
 
 const formSchema = z.object({
   nickname: z.string().min(1, "Dime quién eres..."),
@@ -64,16 +55,34 @@ export default function LoginStage({ onSuccess }: LoginStageProps) {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="font-headline text-2xl">
-          Desafío de 3 Pasos
-        </CardTitle>
-        <CardDescription className="font-body">
-          Para continuar, responde a estas preguntas.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
+    <div className="w-full bg-card dark:bg-stone-900 rounded-xl shadow-xl overflow-hidden border border-primary/5">
+      <div className="p-1">
+        <div className="w-full h-48 bg-gradient-to-br from-pink-50 to-white dark:from-stone-800 dark:to-stone-900 flex items-center justify-center rounded-lg">
+          <div className="flex flex-col items-center gap-2">
+            <span className="material-symbols-outlined text-primary text-6xl">
+              celebration
+            </span>
+            <div className="flex gap-2">
+              <span className="material-symbols-outlined text-primary/40 text-xl">
+                favorite
+              </span>
+              <span className="material-symbols-outlined text-primary/40 text-xl">
+                favorite
+              </span>
+              <span className="material-symbols-outlined text-primary/40 text-xl">
+                favorite
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="px-4 sm:px-8 pb-10 pt-6">
+        <h2 className="text-foreground text-3xl font-bold leading-tight tracking-[-0.015em] mb-2 text-center">
+          Hola Amor
+        </h2>
+        <p className="text-muted-foreground text-center mb-8">
+          Comencemos nuestro viaje juntos. Por favor, verifica tu amor.
+        </p>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
@@ -81,9 +90,20 @@ export default function LoginStage({ onSuccess }: LoginStageProps) {
               name="nickname"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-body">Tu apodo especial</FormLabel>
+                  <label className="text-foreground text-base font-medium leading-normal pb-2">
+                    ¿Cómo te digo?
+                  </label>
                   <FormControl>
-                    <Input placeholder="Ej: Mi amorcito" {...field} />
+                    <div className="relative">
+                      <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary/50">
+                        person_heart
+                      </span>
+                      <Input
+                        className="h-14 pl-12 pr-4 text-base bg-card focus:border-primary border-border"
+                        placeholder="Tu apodo especial"
+                        {...field}
+                      />
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -94,22 +114,39 @@ export default function LoginStage({ onSuccess }: LoginStageProps) {
               name="anniversary"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-body">
-                    Nuestra fecha de aniversario
-                  </FormLabel>
+                  <label className="text-foreground text-base font-medium leading-normal pb-2">
+                    Nuestra fecha
+                  </label>
                   <FormControl>
-                    <Input placeholder="Ej: 1 de enero" {...field} />
+                    <div className="relative">
+                      <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary/50">
+                        calendar_month
+                      </span>
+                      <Input
+                        className="h-14 pl-12 pr-4 text-base bg-card focus:border-primary border-border"
+                        placeholder="DD de Mes"
+                        {...field}
+                      />
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full font-headline">
-              <Heart className="mr-2 h-4 w-4" /> Entrar
-            </Button>
+            <div className="pt-4">
+              <Button
+                type="submit"
+                className="w-full h-14 px-4 text-lg font-bold shadow-lg shadow-primary/20"
+              >
+                <span className="truncate">Entrar</span>
+                <span className="material-symbols-outlined ml-2">
+                  arrow_forward
+                </span>
+              </Button>
+            </div>
           </form>
         </Form>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

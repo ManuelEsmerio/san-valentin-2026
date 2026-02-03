@@ -1,33 +1,26 @@
 "use client";
 
 import Image from "next/image";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { Heart } from "lucide-react";
 
 export default function RevelationStage() {
   const finalImage = PlaceHolderImages.find((img) => img.id === "couple-photo");
 
   return (
-    <Card className="overflow-hidden">
-      <CardHeader className="items-center text-center">
-        <Heart className="w-12 h-12 text-primary animate-heart-beat" />
-        <CardTitle className="font-headline text-3xl">
+    <div className="w-full bg-card dark:bg-stone-900 rounded-xl shadow-xl overflow-hidden border border-primary/5">
+      <div className="px-4 sm:px-8 pb-10 pt-6 flex flex-col items-center text-center gap-6">
+        <span className="material-symbols-outlined text-primary text-6xl animate-heart-beat">
+          favorite
+        </span>
+        <h2 className="text-foreground text-3xl font-bold leading-tight tracking-[-0.015em]">
           ¡Felicidades, mi amor!
-        </CardTitle>
-        <CardDescription className="font-body">
+        </h2>
+        <p className="text-muted-foreground -mt-4">
           Has llegado al final del desafío.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="flex flex-col items-center gap-6">
+        </p>
+        
         {finalImage && (
-          <div className="relative w-full aspect-[3/2] rounded-lg overflow-hidden shadow-lg">
+          <div className="relative w-full aspect-video rounded-lg overflow-hidden shadow-lg">
             <Image
               src={finalImage.imageUrl}
               alt={finalImage.description}
@@ -38,7 +31,7 @@ export default function RevelationStage() {
           </div>
         )}
         <div className="text-center bg-accent/50 p-6 rounded-lg">
-          <p className="font-body text-lg md:text-xl">
+          <p className="text-lg md:text-xl">
             Este es solo un pequeño recordatorio de todo lo que significas para
             mí y de lo increíble que es cada momento a tu lado.
           </p>
@@ -46,7 +39,7 @@ export default function RevelationStage() {
             💕 ¡Te amo infinito! 💕
           </p>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

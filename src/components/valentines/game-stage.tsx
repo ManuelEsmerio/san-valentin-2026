@@ -2,13 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Gamepad2 } from "lucide-react";
 
@@ -159,7 +152,7 @@ export default function GameStage({ onSuccess }: GameStageProps) {
         foodRef.current.y * TILE_SIZE,
         TILE_SIZE,
         TILE_SIZE,
-        "#FFC0CB"
+        "hsl(var(--primary))"
       );
     };
 
@@ -204,16 +197,8 @@ export default function GameStage({ onSuccess }: GameStageProps) {
   useEffect(resetGame, []);
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="font-headline text-2xl">
-          Paso 2: El Snake de Corazones
-        </CardTitle>
-        <CardDescription className="font-body">
-          ¡Atrapa {TARGET_SCORE} corazones para obtener una pista!
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="flex flex-col items-center gap-4">
+    <div className="w-full bg-card dark:bg-stone-900 rounded-xl shadow-xl overflow-hidden border border-primary/5">
+      <div className="p-4 sm:p-8 flex flex-col items-center gap-4">
         <div className="flex justify-between w-full items-center px-4 py-2 bg-muted rounded-md">
           <div className="font-body">
             Puntuación: {score} / {TARGET_SCORE}
@@ -227,6 +212,7 @@ export default function GameStage({ onSuccess }: GameStageProps) {
           width={CANVAS_SIZE}
           height={CANVAS_SIZE}
           className="rounded-lg border bg-card"
+          style={{maxWidth: '100%', height: 'auto'}}
         />
 
         {gameWon && (
@@ -239,7 +225,7 @@ export default function GameStage({ onSuccess }: GameStageProps) {
                 💌 Primera pista:{" "}
                 <strong>"Donde comenzó algo muy bonito…"</strong>
               </p>
-              <Button onClick={onSuccess} className="w-full font-headline">
+              <Button onClick={onSuccess} className="w-full h-12 text-lg font-bold">
                 Siguiente paso
               </Button>
             </AlertDescription>
@@ -256,14 +242,14 @@ export default function GameStage({ onSuccess }: GameStageProps) {
               <Button
                 onClick={resetGame}
                 variant="destructive"
-                className="w-full font-headline"
+                className="w-full h-12 text-lg font-bold"
               >
                 Reintentar
               </Button>
             </AlertDescription>
           </Alert>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

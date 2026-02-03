@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { Heart } from 'lucide-react';
 import LoginStage from '@/components/valentines/login-stage';
 import WelcomeStage from '@/components/valentines/welcome-stage';
 import GameStage from '@/components/valentines/game-stage';
@@ -10,8 +9,19 @@ import RevelationStage from '@/components/valentines/revelation-stage';
 
 type Stage = 'login' | 'welcome' | 'game' | 'trivia' | 'revelation';
 
+const stageInfo: Record<Stage, { step: number; title: string }> = {
+  login: { step: 1, title: 'The Beginning' },
+  welcome: { step: 1, title: 'Welcome' },
+  game: { step: 2, title: 'El Snake de Corazones' },
+  trivia: { step: 3, title: 'Trivia de Nuestro Amor' },
+  revelation: { step: 4, title: 'The Surprise' },
+};
+
 export default function Home() {
   const [stage, setStage] = useState<Stage>('login');
+
+  const currentStep = stageInfo[stage]?.step;
+  const currentTitle = stageInfo[stage]?.title;
 
   const renderStage = () => {
     switch (stage) {
@@ -22,7 +32,9 @@ export default function Home() {
       case 'game':
         return <GameStage key="game" onSuccess={() => setStage('trivia')} />;
       case 'trivia':
-        return <TriviaStage key="trivia" onSuccess={() => setStage('revelation')} />;
+        return (
+          <TriviaStage key="trivia" onSuccess={() => setStage('revelation')} />
+        );
       case 'revelation':
         return <RevelationStage key="revelation" />;
       default:
@@ -31,20 +43,41 @@ export default function Home() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4 md:p-8 bg-background text-foreground">
-      <div className="flex flex-col items-center text-center mb-8">
-        <Heart className="w-12 h-12 text-primary animate-heart-beat" />
-        <h1 className="font-headline text-4xl md:text-6xl mt-4 text-primary">
-          San Valentín Mágico
-        </h1>
-        <p className="font-body text-lg mt-2 text-muted-foreground">Un desafío para la persona que más amo.</p>
+    <>
+      <div className="text-center mb-8">
+        {stage !== 'welcome' && stage !== 'revelation' && (
+          <>
+            <h1 className="text-primary tracking-light text-[24px] sm:text-[32px] font-bold leading-tight px-4 pb-1">
+              Paso {currentStep} de 3
+            </h1>
+            <p className="text-muted-foreground text-lg font-medium">
+              {currentTitle}
+            </p>
+          </>
+        )}
       </div>
-      <div className="w-full max-w-md animate-fade-in">
-        {renderStage()}
-      </div>
-      <footer className="mt-8 text-center text-muted-foreground font-body text-sm">
-        <p>Hecho con mucho amor para ti 💖</p>
-      </footer>
-    </main>
+
+      <div className="w-full max-w-lg">{renderStage()}</div>
+
+      {stage !== 'welcome' && stage !== 'revelation' && (
+        <div className="mt-12 flex gap-2">
+          <div
+            className={`h-2 w-2 rounded-full transition-all ${
+              currentStep === 1 ? 'w-8 bg-primary' : 'bg-primary/20'
+            }`}
+          ></div>
+          <div
+            className={`h-2 w-2 rounded-full transition-all ${
+              currentStep === 2 ? 'w-8 bg-primary' : 'bg-primary/20'
+            }`}
+          ></div>
+          <div
+            className={`h-2 w-2 rounded-full transition-all ${
+              currentStep === 3 ? 'w-8 bg-primary' : 'bg-primary/20'
+            }`}
+          ></div>
+        </div>
+      )}
+    </>
   );
 }
