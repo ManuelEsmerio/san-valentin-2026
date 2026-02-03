@@ -27,13 +27,14 @@ const formSchema = z.object({
 });
 
 function CustomDay(props: DayProps) {
-  if (props.modifiers.hidden) {
+  // Handle invalid dates or hidden days to prevent rendering errors.
+  if (props.modifiers.hidden || !props.date) {
     return <></>;
   }
 
-  // Handle invalid dates being passed by react-day-picker for empty cells
-  if (!props.date) {
-    return <div className="h-8 w-8"></div>;
+  // Ensure date is valid before formatting
+  if (isNaN(props.date.getTime())) {
+    return <></>;
   }
 
   const content = (
