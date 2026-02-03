@@ -383,9 +383,12 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
 
 
   const setupTrivia = () => {
-    const sortedMcq = [...multipleChoiceQuestions].sort((a,b) => a.id - b.id);
-    const shuffledMcq = shuffleArray(sortedMcq);
-    const allQuestions = [...shuffledMcq, ...openEndedQuestions];
+    // Explicitly combine shuffled Multiple Choice Questions with Open Ended questions at the end
+    const allQuestions = [
+      ...shuffleArray([...multipleChoiceQuestions]),
+      ...openEndedQuestions
+    ];
+    
     setQuestions(allQuestions);
     setCurrentQuestionIndex(0);
     setAnswers({});
