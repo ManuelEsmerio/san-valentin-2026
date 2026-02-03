@@ -6,7 +6,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Calendar as CalendarIcon } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -31,11 +30,9 @@ const formSchema = z.object({
   anniversary: z.string().min(1, 'Por favor, elige nuestra fecha especial.'),
 });
 
-const specialDate = new Date(2025, 3, 13); // April 13, 2025
-
 export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
   const { toast } = useToast();
-  const [month, setMonth] = useState(new Date(2025, 3));
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -125,7 +122,10 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
                   <label className="text-foreground text-base font-medium leading-normal pb-2">
                     Nuestra fecha especial
                   </label>
-                  <Popover>
+                  <Popover
+                    open={isCalendarOpen}
+                    onOpenChange={setIsCalendarOpen}
+                  >
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
@@ -140,33 +140,49 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
                           </span>
                            <span className='pl-8'>
                             {field.value ? (
-                                format(field.value, 'PPP', { locale: es })
+                                format(new Date(field.value.split('/').reverse().join('-')+'T12:00:00'), 'PPP', { locale: es })
                             ) : (
                                 <span>Elige una fecha</span>
                             )}
                            </span>
-                          
                         </Button>
                       </FormControl>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
+                    <PopoverContent className="w-auto p-4 bg-background border border-border rounded-xl" align="start">
                       <Calendar
                         mode="single"
                         locale={es}
                         selected={field.value ? new Date(field.value.split('/').reverse().join('-') + 'T12:00:00') : undefined}
-                        onSelect={(date) =>
-                          field.onChange(date ? format(date, 'dd/MM/yyyy') : '')
-                        }
-                        month={month}
-                        onMonthChange={setMonth}
-                        modifiers={{ special_date: specialDate }}
-                        modifiersClassNames={{
-                          special_date: 'rdp-day_special_date',
+                        onSelect={(date) => {
+                            field.onChange(date ? format(date, 'dd/MM/yyyy') : '');
+                            setIsCalendarOpen(false);
+                        }}
+                        month={new Date(2025, 3)}
+                        formatters={{
+                          formatShortWeekday: (day) => format(day, 'EEEEEE', { locale: es }).slice(0, 2),
                         }}
                         disabled={(date) =>
                           date > new Date('2026-01-01') || date < new Date('2024-01-01')
                         }
                         initialFocus
+                        classNames={{
+                          root: 'p-0',
+                          month: 'space-y-4',
+                          caption: 'flex flex-col items-start relative mb-4 h-12',
+                          caption_label: 'text-base font-medium capitalize',
+                          nav: 'space-x-1 flex items-center absolute top-7',
+                          nav_button: 'h-7 w-7 bg-transparent p-0 opacity-80 hover:opacity-100',
+                          table: 'w-full border-collapse',
+                          head_row: 'flex',
+                          head_cell: 'text-muted-foreground rounded-md w-8 font-normal text-[0.8rem] capitalize',
+                          row: 'flex w-full mt-2',
+                          cell: 'h-8 w-8 text-center text-sm p-0 relative',
+                          day: 'h-8 w-8 p-0 font-normal aria-selected:opacity-100 rounded-md',
+                          day_selected:
+                            'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground',
+                          day_today: 'bg-accent text-accent-foreground',
+                          day_outside: 'text-muted-foreground/50',
+                        }}
                       />
                     </PopoverContent>
                   </Popover>

@@ -78,29 +78,4 @@
   body {
     @apply bg-background text-foreground border-border;
   }
-
-  .rdp-day_special_date {
-    position: relative;
-    font-weight: bold;
-    color: hsl(var(--primary-foreground)) !important;
-  }
-
-  .rdp-day_special_date::before {
-    content: 'favorite';
-    font-family: 'Material Symbols Outlined';
-    font-variation-settings: "'FILL' 1";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 2.5rem;
-    line-height: 1;
-    z-index: -1;
-    color: hsl(var(--primary));
-  }
-
-  .rdp-day_special_date.rdp-day_today,
-  .rdp-day_special_date:hover {
-    background-color: transparent !important;
-  }
 }
