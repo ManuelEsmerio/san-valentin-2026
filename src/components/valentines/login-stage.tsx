@@ -33,10 +33,12 @@ function CustomDay(props: DayProps) {
 
   // Handle invalid dates being passed by react-day-picker for empty cells
   if (!props.date) {
-    return <></>;
+    return <div className="h-8 w-8"></div>;
   }
 
-  const content = <span className="relative z-10">{format(props.date, 'd')}</span>;
+  const content = (
+    <span className="relative z-10">{format(props.date, 'd')}</span>
+  );
 
   if (props.modifiers.selected) {
     return (
@@ -198,15 +200,12 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
                       defaultMonth={new Date(2025, 3)}
                       locale={es}
                       classNames={{
-                        root: '',
                         caption: 'flex items-center justify-between mb-4',
                         caption_label: 'text-primary font-bold',
                         nav_button:
                           'h-7 w-7 p-1 hover:bg-primary/5 rounded-full text-primary',
-                        head_row:
-                          'grid grid-cols-7 text-center text-xs font-medium text-muted-foreground mb-2',
-                        head_cell: 'w-auto font-normal',
-                        row: 'grid grid-cols-7',
+                        head: 'text-center text-xs font-medium text-muted-foreground mb-2 w-full',
+                        head_cell: 'font-normal w-8',
                         cell: 'p-0',
                       }}
                       components={{
