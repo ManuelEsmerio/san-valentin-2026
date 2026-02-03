@@ -169,9 +169,9 @@ export default function CountdownStage({ onComplete }: CountdownStageProps) {
           </Button>
         </div>
       </div>
-      <div className="absolute bottom-4 left-4 right-4 z-10 text-center text-white/30 text-xs animate-pulse">
+      {/* <div className="absolute bottom-4 left-4 right-4 z-10 text-center text-white/30 text-xs animate-pulse">
         <p>Tip: En móvil, mantén presionada la pantalla por 7 segundos para una sorpresa. En escritorio: Alt + E.</p>
-      </div>
+      </div> */}
     </div>
   );
 }
