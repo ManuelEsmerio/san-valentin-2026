@@ -8,12 +8,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
-import { CheckCircle2, Heart, Lightbulb, RotateCcw, XCircle } from "lucide-react";
-import { Progress } from "../ui/progress";
+import { CheckCircle2, Lightbulb, RotateCcw, XCircle } from "lucide-react";
 import RomanticLetterModal from "./RomanticLetterModal";
 import { PlaceHolderImages, type ImagePlaceholder } from "@/lib/placeholder-images";
 import { cn } from "@/lib/utils";
-import AdventureModal from "./AdventureModal";
+import FifteenPuzzleModal from "./FifteenPuzzleModal";
 
 type TriviaStageProps = {
   onSuccess: () => void;
@@ -137,7 +136,7 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
   
   const [letterToShow, setLetterToShow] = useState<{ title: string; content: string[]; images: ImagePlaceholder[] } | null>(null);
   const [shownLetters, setShownLetters] = useState<Record<number, boolean>>({});
-  const [showAdventureModal, setShowAdventureModal] = useState(false);
+  const [isPuzzleModalOpen, setPuzzleModalOpen] = useState(false);
   const [flippedQuestions, setFlippedQuestions] = useState<Record<number, boolean>>({});
 
 
@@ -150,7 +149,7 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
     setAnswerStatus('unanswered');
     setStage("playing");
     setShownLetters({});
-    setShowAdventureModal(false);
+    setPuzzleModalOpen(false);
     setFlippedQuestions({});
   };
 
@@ -173,7 +172,6 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
   }, [score, shownLetters, stage]);
 
   const currentQuestion = questions[currentQuestionIndex];
-  const progress = (currentQuestionIndex / questions.length) * 100;
   const imagePlaceholder = PlaceHolderImages.find(img => img.id === currentQuestion?.image);
 
 
@@ -269,15 +267,11 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
                     <span className="material-symbols-outlined text-primary text-5xl">check_circle</span>
                     <AlertTitle className="font-headline mt-2 text-xl text-green-600">¡Perfecto! ¡Sabía que lo sabrías todo!</AlertTitle>
                     <AlertDescription className="font-body space-y-4 mt-4 text-foreground/80">
-                      <p>Has completado el desafío. Ahora, una última pregunta...</p>
-                      <Button onClick={() => setShowAdventureModal(true)} className="w-full h-12 text-lg font-bold">Continuar</Button>
+                      <p>Has completado el desafío. Ahora, un último juego te separa de la sorpresa final.</p>
+                      <Button onClick={() => setPuzzleModalOpen(true)} className="w-full h-12 text-lg font-bold">Continuar</Button>
                     </AlertDescription>
                 </Alert>
             </div>
-            <AdventureModal 
-              isOpen={showAdventureModal}
-              onConfirm={onSuccess}
-            />
         </div>
       )
   }
@@ -401,9 +395,9 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
         onClose={() => setLetterToShow(null)}
       />
 
-      <AdventureModal 
-        isOpen={showAdventureModal}
-        onConfirm={onSuccess}
+      <FifteenPuzzleModal 
+        isOpen={isPuzzleModalOpen}
+        onSuccess={onSuccess}
       />
     </div>
   );

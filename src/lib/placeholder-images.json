@@ -139,6 +139,12 @@
       "imageHint": "peaceful moment"
     },
     {
+      "id": "puzzle-image",
+      "description": "Imagen para el rompecabezas deslizante de 15 piezas.",
+      "imageUrl": "/image/puzzle-image.jpg",
+      "imageHint": "couple embrace"
+    },
+    {
       "id": "adventure-modal-img",
       "description": "Imagen para la modal de aventura.",
       "imageUrl": "/image/adventure-modal-img.jpg",
