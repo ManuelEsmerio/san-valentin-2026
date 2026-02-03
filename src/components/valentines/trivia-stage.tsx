@@ -498,7 +498,6 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
                 >
                     ¡Estoy lista!
                 </Button>
-                <Button onClick={onSuccess} variant="outline">Saltar Desafío</Button>
             </div>
         </div>
       </div>
@@ -737,9 +736,6 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
             }
           </Button>
         )}
-        <div className="w-full text-center">
-            <Button onClick={onSuccess} variant="link" className="text-muted-foreground text-xs">Saltar desafío (para pruebas)</Button>
-        </div>
       </div>
       
       <RomanticLetterModal

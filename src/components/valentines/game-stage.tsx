@@ -311,7 +311,6 @@ export default function GameStage({ onSuccess }: GameStageProps) {
                 >
                     EMPEZAR JUEGO
                 </Button>
-                <Button onClick={onSuccess} variant="outline">Saltar Desafío</Button>
               </div>
             </div>
           )}
@@ -350,9 +349,6 @@ export default function GameStage({ onSuccess }: GameStageProps) {
                 >
                     {gameState === 'won' ? 'Ver Pista' : 'Reintentar'}
                 </Button>
-                {gameState === 'lost' && (
-                    <Button onClick={onSuccess} variant="outline">Saltar Desafío</Button>
-                )}
               </div>
               {gameState === "won" && <VictoryHearts />}
             </div>

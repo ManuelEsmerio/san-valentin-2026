@@ -221,7 +221,6 @@ export default function FifteenPuzzleModal({ isOpen, onSuccess }: FifteenPuzzleM
                             <RotateCcw className="h-4 w-4" />
                             Reiniciar Juego
                         </Button>
-                        <Button onClick={onSuccess} variant="outline">Saltar Desafío</Button>
                       </div>
                   </div>
               </div>
@@ -231,16 +230,20 @@ export default function FifteenPuzzleModal({ isOpen, onSuccess }: FifteenPuzzleM
                    <ShieldQuestion className="text-destructive h-12 w-12 mx-auto mb-4" />
                    <h2 className="text-2xl font-bold text-foreground mb-2">¡Casi lo logras!</h2>
                    <p className="text-muted-foreground mb-6">
-                      Has superado el límite de movimientos. Pero no te preocupes, el próximo intento será un poco más fácil.
+                      {losses < 3 
+                        ? "Has superado el límite de movimientos. Pero no te preocupes, el próximo intento será un poco más fácil."
+                        : "Parece que este rompecabezas es muy complicado. Puedes intentarlo una vez más (será mucho más fácil) o saltar directamente a la pista final."}
                    </p>
                    <div className="flex flex-col sm:flex-row gap-3">
                       <Button onClick={handleRestart} className="w-full h-12 text-base font-bold">
                           <RotateCcw className="mr-2 h-4 w-4" />
                           Reintentar
                       </Button>
-                      <Button onClick={onSuccess} variant="secondary" className="w-full h-12 text-base font-bold">
-                          Saltar Desafío
-                      </Button>
+                      {losses >= 3 && (
+                        <Button onClick={onSuccess} variant="secondary" className="w-full h-12 text-base font-bold">
+                            Saltar Desafío
+                        </Button>
+                      )}
                    </div>
               </div>
           )}

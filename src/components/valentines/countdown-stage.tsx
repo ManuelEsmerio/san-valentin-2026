@@ -37,7 +37,7 @@ export default function CountdownStage({ onComplete }: CountdownStageProps) {
 
   useEffect(() => {
     // The target date is set ONCE when the effect runs.
-    const targetDate = new Date(new Date().getTime() + 30 * 1000);
+    const targetDate = new Date('2025-02-14T00:00:00');
     let timer: NodeJS.Timeout;
 
     const updateCountdown = () => {
