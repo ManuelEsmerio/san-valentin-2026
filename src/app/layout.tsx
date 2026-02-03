@@ -36,9 +36,9 @@ export default function RootLayout({
             <span className="material-symbols-outlined text-primary/10 absolute top-[25%] right-[5%] text-5xl opacity-50">favorite</span>
             <span className="material-symbols-outlined text-primary/10 absolute bottom-[15%] left-[20%] text-6xl opacity-50">favorite</span>
             <span className="material-symbols-outlined text-primary/10 absolute bottom-[25%] right-[15%] text-8xl opacity-50">favorite</span>
-            <span className="text-yellow-400/50 absolute top-[20%] left-[40%] text-2xl animate-pulse">✨</span>
-            <span className="text-yellow-400/50 absolute top-[60%] right-[30%] text-xl animate-pulse">✨</span>
-            <span className="text-yellow-400/50 absolute bottom-[30%] left-[50%] text-3xl animate-pulse">✨</span>
+            <span className="material-symbols-outlined text-primary/10 absolute top-[20%] left-[40%] text-2xl animate-pulse">favorite</span>
+            <span className="material-symbols-outlined text-primary/10 absolute top-[60%] right-[30%] text-xl animate-pulse">favorite</span>
+            <span className="material-symbols-outlined text-primary/10 absolute bottom-[30%] left-[50%] text-3xl animate-pulse">favorite</span>
         </div>
         <header className="flex items-center justify-between px-4 sm:px-10 py-6 w-full">
           <div className="flex items-center gap-2">
