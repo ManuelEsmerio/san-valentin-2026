@@ -34,8 +34,8 @@ export default function CountdownStage({ onComplete }: CountdownStageProps) {
 
   const calculateTimeLeft = (): TimeLeft => {
     const now = new Date();
-    // The target date is February 14th of the current year.
-    const targetDate = new Date(now.getFullYear(), 1, 14);
+    // TEST: The target date is 30 seconds from now.
+    const targetDate = new Date(now.getTime() + 30 * 1000);
 
     const difference = +targetDate - +now;
     let timeLeft: TimeLeft;
