@@ -7,6 +7,7 @@ import { Heart, Lock, Trophy, Target, ChevronUp, ChevronDown, ChevronLeft, Chevr
 import { cn } from "@/lib/utils";
 import { Progress } from "../ui/progress";
 import MapModal from "./MapModal";
+import KeywordModal from "./KeywordModal";
 
 const GRID_SIZE = 20;
 const CANVAS_SIZE = 600;
@@ -25,7 +26,9 @@ export default function GameStage({ onSuccess }: GameStageProps) {
   const [highScore, setHighScore] = useState(0);
   const [gameState, setGameState] = useState<GameState>("idle");
   const gameLoopRef = useRef<number>();
+  
   const [isMapModalOpen, setMapModalOpen] = useState(false);
+  const [isKeywordModalOpen, setKeywordModalOpen] = useState(false);
 
   const snakeRef = useRef([{ x: 10, y: 10 }]);
   const foodRef = useRef({ x: 15, y: 15 });
@@ -202,6 +205,21 @@ export default function GameStage({ onSuccess }: GameStageProps) {
       window.clearTimeout(gameLoopRef.current);
     };
   }, [gameState, score, highScore]);
+
+  const handleOpenKeywordModal = () => {
+    setMapModalOpen(false);
+    setKeywordModalOpen(true);
+  };
+  
+  const handleReturnToMap = () => {
+    setKeywordModalOpen(false);
+    setMapModalOpen(true);
+  }
+
+  const handleKeywordSuccess = () => {
+    setKeywordModalOpen(false);
+    onSuccess();
+  }
 
   const heartsNeeded = TARGET_SCORE - score;
   const hintProgress = (score / TARGET_SCORE) * 100;
@@ -384,10 +402,16 @@ export default function GameStage({ onSuccess }: GameStageProps) {
       <MapModal 
         isOpen={isMapModalOpen}
         onClose={() => setMapModalOpen(false)}
-        onSuccess={onSuccess}
+        onNextChallenge={handleOpenKeywordModal}
         coordinates={coordinates}
         googleMapsUrl={googleMapsUrl}
         iframeUrl={iframeUrl}
+      />
+
+      <KeywordModal
+        isOpen={isKeywordModalOpen}
+        onSuccess={handleKeywordSuccess}
+        onBack={handleReturnToMap}
       />
     </div>
   );

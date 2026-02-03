@@ -8,13 +8,13 @@ import { useEffect, useState } from 'react';
 type MapModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: () => void;
+  onNextChallenge: () => void;
   coordinates: string;
   googleMapsUrl: string;
   iframeUrl: string;
 };
 
-export default function MapModal({ isOpen, onClose, onSuccess, coordinates, googleMapsUrl, iframeUrl }: MapModalProps) {
+export default function MapModal({ isOpen, onClose, onNextChallenge, coordinates, googleMapsUrl, iframeUrl }: MapModalProps) {
   const [isShowing, setIsShowing] = useState(false);
 
   useEffect(() => {
@@ -29,11 +29,6 @@ export default function MapModal({ isOpen, onClose, onSuccess, coordinates, goog
   if (!isShowing) {
     return null;
   }
-
-  const handleContinue = () => {
-    onSuccess();
-    onClose();
-  };
 
   return (
     <div
@@ -57,7 +52,7 @@ export default function MapModal({ isOpen, onClose, onSuccess, coordinates, goog
             </div>
             
             <p className="text-muted-foreground mb-4">
-                ¡Felicidades! Has encontrado la primera pista. Aquí tienes las coordenadas de una sorpresa especial.
+                Felicidades, acabas de superar el primer obstáculo. Todavía quedan más, y tu recompensa es ir a este punto y recoger la pista que necesitas para avanzar.
             </p>
 
             <div className="relative w-full aspect-video rounded-lg overflow-hidden shadow-lg bg-black/10 border border-border mb-4">
@@ -85,7 +80,7 @@ export default function MapModal({ isOpen, onClose, onSuccess, coordinates, goog
                         Abrir en Google Maps
                     </a>
                 </Button>
-                <Button onClick={handleContinue} className="w-full h-12 text-base font-bold">
+                <Button onClick={onNextChallenge} className="w-full h-12 text-base font-bold">
                     Siguiente Desafío
                 </Button>
             </div>

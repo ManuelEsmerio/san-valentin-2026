@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CountdownStage from '@/components/valentines/countdown-stage';
 import LoginStage from '@/components/valentines/login-stage';
 import WelcomeStage from '@/components/valentines/welcome-stage';
@@ -23,9 +23,40 @@ const stageInfo: Record<Stage, { step: number; title: string }> = {
 export default function Home() {
   const [showCountdown, setShowCountdown] = useState(true);
   const [stage, setStage] = useState<Stage>('login');
+  const [isClient, setIsClient] = useState(false);
 
-  if (showCountdown) {
+  useEffect(() => {
+    // This effect runs once on mount to confirm we are on the client.
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    // This effect runs after we know we're on the client.
+    if (isClient) {
+      const savedStage = localStorage.getItem('valentines-app-stage') as Stage | null;
+      if (savedStage && stageInfo[savedStage]) {
+        // If there's a saved stage, use it and don't show the countdown.
+        setStage(savedStage);
+        setShowCountdown(false);
+      }
+    }
+  }, [isClient]);
+
+  const setStageAndSave = (newStage: Stage) => {
+    if (isClient) {
+      localStorage.setItem('valentines-app-stage', newStage);
+    }
+    setStage(newStage);
+  };
+
+  // Only show countdown if the state is still true and no stage has been loaded from storage.
+  if (showCountdown && isClient) {
     return <CountdownStage onComplete={() => setShowCountdown(false)} />;
+  }
+
+  // A simple loading state to prevent flash of content before client-side check is complete.
+  if (!isClient) {
+    return null; 
   }
 
   const currentStep = stageInfo[stage]?.step;
@@ -35,19 +66,19 @@ export default function Home() {
   const renderStage = () => {
     switch (stage) {
       case 'login':
-        return <LoginStage key="login" onSuccess={() => setStage('welcome')} />;
+        return <LoginStage key="login" onSuccess={() => setStageAndSave('welcome')} />;
       case 'welcome':
-        return <WelcomeStage key="welcome" onSuccess={() => setStage('game')} />;
+        return <WelcomeStage key="welcome" onSuccess={() => setStageAndSave('game')} />;
       case 'game':
-        return <GameStage key="game" onSuccess={() => setStage('trivia')} />;
+        return <GameStage key="game" onSuccess={() => setStageAndSave('trivia')} />;
       case 'trivia':
         return (
-          <TriviaStage key="trivia" onSuccess={() => setStage('revelation')} />
+          <TriviaStage key="trivia" onSuccess={() => setStageAndSave('revelation')} />
         );
       case 'revelation':
         return <RevelationStage key="revelation" />;
       default:
-        return <LoginStage key="login" onSuccess={() => setStage('welcome')} />;
+        return <LoginStage key="login" onSuccess={() => setStageAndSave('welcome')} />;
     }
   };
 
