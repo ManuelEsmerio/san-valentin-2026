@@ -1,9 +1,8 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Map, MapPin, BarChart2, RotateCcw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -55,8 +54,6 @@ export default function FifteenPuzzleModal({ isOpen, onSuccess }: FifteenPuzzleM
   const [moves, setMoves] = useState(0);
   const { toast } = useToast();
   
-  const puzzleImage = useMemo(() => PlaceHolderImages.find(img => img.id === 'puzzle-image'), []);
-
   useEffect(() => {
     if (isOpen) {
       setIsShowing(true);
@@ -95,11 +92,13 @@ export default function FifteenPuzzleModal({ isOpen, onSuccess }: FifteenPuzzleM
       setMoves(prev => prev + 1);
 
       if (checkIfSolved(newTiles)) {
-        setIsSolved(true);
-        toast({
-            title: "¡Rompecabezas Resuelto!",
-            description: "Has revelado la última pista. ¡Felicidades!",
-        });
+        setTimeout(() => {
+            setIsSolved(true);
+            toast({
+                title: "¡Rompecabezas Resuelto!",
+                description: "Has revelado la última pista. ¡Felicidades!",
+            });
+        }, 300);
       }
     }
   };
@@ -136,34 +135,31 @@ export default function FifteenPuzzleModal({ isOpen, onSuccess }: FifteenPuzzleM
       >
         {!isSolved ? (
             <div className="p-6 md:p-8 text-center">
-                <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white mb-3">
-                    Un último juego...
-                </h1>
-                <p className="text-primary font-medium text-lg leading-relaxed mb-8">
-                    Ordena la imagen para revelar la pista final de tu sorpresa.
-                </p>
+                <div className="mb-8">
+                    <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white mb-3">
+                        Un último juego...
+                    </h1>
+                    <p className="text-primary font-medium text-lg leading-relaxed">
+                        Ordena los números para revelar la pista final de tu sorpresa.
+                    </p>
+                </div>
                 <div className="bg-pink-50 dark:bg-zinc-800/50 p-3 rounded-2xl max-w-sm mx-auto shadow-inner">
                   <div className="grid grid-cols-4 gap-2 aspect-square">
                       {tiles.map((tileValue, index) => {
-                          const isEMPTY_TILE = tileValue === EMPTY_TILE;
-                          const correctRow = Math.floor(tileValue / GRID_SIZE);
-                          const correctCol = tileValue % GRID_SIZE;
-                          
+                          const isEmpty = tileValue === EMPTY_TILE;
                           return (
                               <div
-                                  key={index}
+                                  key={tileValue}
                                   onClick={() => handleTileClick(index)}
                                   className={cn(
-                                      "bg-cover bg-no-repeat rounded-lg md:rounded-xl transition-all duration-200 ease-in-out",
-                                      !isEMPTY_TILE && "cursor-pointer hover:brightness-110 hover:scale-[.98] shadow-md",
-                                      isEMPTY_TILE && "bg-white/50 dark:bg-zinc-700/50 border-2 border-dashed border-primary/20"
+                                      "flex items-center justify-center rounded-lg md:rounded-xl text-xl font-bold transition-all duration-200 ease-in-out select-none",
+                                      !isEmpty
+                                          ? "bg-primary text-white shadow-md cursor-pointer hover:brightness-110 hover:scale-[.98]"
+                                          : "empty bg-white/50 dark:bg-zinc-700/50 border-2 border-dashed border-primary/20 cursor-default",
                                   )}
-                                  style={{
-                                      backgroundImage: !isEMPTY_TILE && puzzleImage ? `url(${puzzleImage.imageUrl})` : 'none',
-                                      backgroundPosition: `${(correctCol * 100) / (GRID_SIZE - 1)}% ${(correctRow * 100) / (GRID_SIZE - 1)}%`,
-                                      backgroundSize: `${GRID_SIZE * 100}% ${GRID_SIZE * 100}%`,
-                                  }}
-                              />
+                              >
+                                  {!isEmpty ? tileValue + 1 : ''}
+                              </div>
                           );
                       })}
                   </div>
