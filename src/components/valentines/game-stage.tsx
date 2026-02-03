@@ -12,7 +12,6 @@ import KeywordModal from "./KeywordModal";
 const GRID_SIZE = 20;
 const CANVAS_SIZE = 600;
 const TILE_SIZE = CANVAS_SIZE / GRID_SIZE;
-const TARGET_SCORE = 2;
 
 type GameStageProps = {
   onSuccess: () => void;
@@ -25,6 +24,7 @@ export default function GameStage({ onSuccess }: GameStageProps) {
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
   const [gameState, setGameState] = useState<GameState>("idle");
+  const [targetScore, setTargetScore] = useState(35);
   const gameLoopRef = useRef<number>();
   
   const [isMapModalOpen, setMapModalOpen] = useState(false);
@@ -114,6 +114,14 @@ export default function GameStage({ onSuccess }: GameStageProps) {
       if (snake.some((segment) => segment.x === head.x && segment.y === head.y)) {
         setGameState("lost");
         if (score > highScore) setHighScore(score);
+        
+        // Difficulty adjustment logic
+        setTargetScore(prevTarget => {
+          if (prevTarget > 25) return prevTarget - 5;
+          if (prevTarget === 25) return 10;
+          return 10; // Stays at 10
+        });
+
         return;
       }
 
@@ -123,7 +131,7 @@ export default function GameStage({ onSuccess }: GameStageProps) {
         const newScore = score + 1;
         setScore(newScore);
 
-        if (newScore >= TARGET_SCORE) {
+        if (newScore >= targetScore) {
           setGameState("won");
           if (newScore > highScore) setHighScore(newScore);
           return;
@@ -204,7 +212,7 @@ export default function GameStage({ onSuccess }: GameStageProps) {
       window.removeEventListener("keydown", handleKeyDown);
       window.clearTimeout(gameLoopRef.current);
     };
-  }, [gameState, score, highScore]);
+  }, [gameState, score, highScore, targetScore]);
 
   const handleOpenKeywordModal = () => {
     setMapModalOpen(false);
@@ -221,8 +229,8 @@ export default function GameStage({ onSuccess }: GameStageProps) {
     onSuccess();
   }
 
-  const heartsNeeded = TARGET_SCORE - score;
-  const hintProgress = (score / TARGET_SCORE) * 100;
+  const heartsNeeded = targetScore - score;
+  const hintProgress = (score / targetScore) * 100;
 
   return (
     <div className="w-full flex flex-col items-center gap-6">
@@ -248,7 +256,7 @@ export default function GameStage({ onSuccess }: GameStageProps) {
                 <Target className="w-5 h-5"/>
                 <p className="text-foreground text-sm font-medium leading-normal">Meta</p>
             </div>
-            <p className="text-foreground tracking-light text-4xl font-bold leading-tight">{TARGET_SCORE}</p>
+            <p className="text-foreground tracking-light text-4xl font-bold leading-tight">{targetScore}</p>
         </div>
       </div>
 
@@ -279,7 +287,7 @@ export default function GameStage({ onSuccess }: GameStageProps) {
                 Ready to Play?
               </p>
               <p className="text-muted-foreground text-sm font-normal leading-normal max-w-xs">
-                Recoge {TARGET_SCORE} corazones para desbloquear la primera pista de
+                Recoge {targetScore} corazones para desbloquear la primera pista de
                 tu regalo de San Valentín.
               </p>
               <p className="text-muted-foreground text-xs mt-2 hidden md:block">
@@ -319,7 +327,7 @@ export default function GameStage({ onSuccess }: GameStageProps) {
               <p className="text-muted-foreground mt-2 mb-6">
                 {gameState === "won"
                   ? "Has recolectado todos los corazones."
-                  : "No te preocupes, ¡inténtalo de nuevo!"}
+                  : `No te preocupes, ¡inténtalo de nuevo! La nueva meta es ${targetScore} corazones.`}
               </p>
               <Button
                 onClick={gameState === 'won' ? () => setMapModalOpen(true) : startGame}
@@ -391,7 +399,7 @@ export default function GameStage({ onSuccess }: GameStageProps) {
             </h3>
           </div>
           <p className="text-center text-sm text-foreground/70">
-            {score < TARGET_SCORE
+            {score < targetScore
               ? `Necesitas ${heartsNeeded} corazones más para revelar la primera ubicación de nuestra cita especial.`
               : "¡Pista desbloqueada! Completa el juego para verla."}
           </p>
