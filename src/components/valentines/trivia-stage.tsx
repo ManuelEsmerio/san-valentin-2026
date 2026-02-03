@@ -66,7 +66,7 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
     type: 'multiple-choice',
     question: '¿Quién canta peor?',
     options: ['Yo', 'Tú', 'Ambos desafinamos', 'Nadie, somos estrellas'],
-    correctAnswer: 'Yo',
+    correctAnswer: 'Ambos desafinamos',
     image: 'trivia-3',
     hint: 'El karaoke nunca miente 🎤',
   },
@@ -75,21 +75,21 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
     type: 'multiple-choice',
     question: '¿Quién cocina mejor?',
     options: ['Yo', 'Tú', 'Ambos', 'Nadie, pedimos comida'],
-    correctAnswer: 'Tú',
+    correctAnswer: 'Ambos',
     image: 'trivia-4',
     hint: 'El sazón nunca falla 🍳',
   },
   {
-    id: 5,
+    id: 6,
     type: 'multiple-choice',
     question: '¿Quién nunca lava el baño?',
     options: ['Yo', 'Tú', 'Ambos lo evitamos', 'Siempre lo hace otro'],
-    correctAnswer: 'Yo',
+    correctAnswer: 'Tú',
     image: 'trivia-5',
     hint: 'La misión imposible del aseo 🚽',
   },
   {
-    id: 6,
+    id: 7,
     type: 'multiple-choice',
     question: '¿Quién ronca más fuerte?',
     options: ['Yo', 'Tú', 'Ambos', 'Nadie'],
@@ -98,7 +98,7 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
     hint: 'El concierto nocturno 🎶😴',
   },
   {
-    id: 7,
+    id: 8,
     type: 'multiple-choice',
     question: '¿Quién es más distraído?',
     options: ['Yo', 'Tú', 'Ambos', 'Nadie'],
@@ -107,34 +107,34 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
     hint: 'El clásico: ‘¿y mis llaves?’ 🔑',
   },
   {
-    id: 8,
+    id: 9,
     type: 'multiple-choice',
     question: '¿Quién es más enojón?',
     options: ['Yo', 'Tú', 'Ambos', 'Nadie'],
-    correctAnswer: 'Tú',
+    correctAnswer: 'Ambos',
     image: 'trivia-8',
     hint: 'El que hace más caras 😡',
   },
   {
-    id: 9,
+    id: 11,
     type: 'multiple-choice',
     question: '¿Quién llora de la nada al ver videos de animalitos?',
     options: ['Yo', 'Tú', 'Ambos', 'Nadie'],
-    correctAnswer: 'Yo',
+    correctAnswer: 'Tú',
     image: 'trivia-9',
     hint: 'Los animalitos siempre ganan 🐶🐱',
   },
   {
-    id: 10,
+    id: 12,
     type: 'multiple-choice',
     question: '¿Quién tiene una obsesión con las chichis del otro?',
     options: ['Yo', 'Tú', 'Ambos', 'Nadie'],
-    correctAnswer: 'Yo',
+    correctAnswer: 'Ambos',
     image: 'trivia-10',
     hint: 'Una obsesión divertida 🤭',
   },
   {
-    id: 11,
+    id: 13,
     type: "multiple-choice",
     question: "¿Qué es lo que más valoro de nuestra relación?",
     options: [
@@ -148,7 +148,7 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
     hint: "Es la base de todo."
   },
   {
-    id: 12,
+    id: 14,
     type: "multiple-choice",
     question: "¿Cómo describirías nuestra relación?",
     options: [
@@ -167,7 +167,7 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
     hint: "No hay respuesta incorrecta aquí."
   },
   {
-    id: 13,
+    id: 16,
     type: "multiple-choice",
     question: "¿A quién le huelen más las patas?",
     options: [
@@ -186,7 +186,7 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
     hint: "Ni el aromatizante pudo contra eso 😂🦶"
   },
   {
-    id: 14,
+    id: 17,
     type: "multiple-choice",
     question: "¿Quién dura más tiempo en el baño?",
     options: [
@@ -200,7 +200,7 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
     hint: "Según tú: ‘ya casi’ 🚿📱"
   },
   {
-    id: 16,
+    id: 18,
     type: "multiple-choice",
     question: "¿Quién es más pedorro?",
     options: [
@@ -214,7 +214,7 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
     hint: "El amor todo lo soporta… incluso eso 💨😂"
   },
   {
-    id: 17,
+    id: 19,
     type: "multiple-choice",
     question: "¿Qué momento simple disfruto más contigo?",
     options: [
@@ -228,7 +228,7 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
     hint: "Lo simple también es especial."
   },
   {
-    id: 18,
+    id: 21,
     type: "multiple-choice",
     question: "¿Qué significa para mí compartir este juego contigo?",
     options: [
@@ -242,7 +242,7 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
     hint: "Nada aquí es casual."
   },
   {
-    id: 19,
+    id: 22,
     type: "multiple-choice",
     question: "¿A quién le da más hueva bañarse?",
     options: [
@@ -260,7 +260,7 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
 
 const openEndedQuestions: OpenEndedQuestion[] = [
     {
-        id: 20,
+        id: 23,
         type: 'open-ended',
         question: '¿Qué es lo que más valoras cuando te sientes en calma conmigo?',
         creatorAnswer: 'Valoro que, aun con malentendidos, conversaciones incómodas o silencios, sigamos eligiendo quedarnos un momento más y no salir corriendo cuando algo duele.',
@@ -268,7 +268,7 @@ const openEndedQuestions: OpenEndedQuestion[] = [
         hint: 'Una pregunta sobre el presente y la paz.'
     },
     {
-        id: 21,
+        id: 24,
         type: 'open-ended',
         question: '¿Qué sientes que nos ha costado más últimamente?',
         creatorAnswer: 'Siento que nos ha costado escucharnos de verdad, sin sentir que tenemos que defendernos o estar a la defensiva todo el tiempo.',
@@ -276,7 +276,7 @@ const openEndedQuestions: OpenEndedQuestion[] = [
         hint: 'Una reflexión sobre nuestra comunicación.'
     },
     {
-        id: 22,
+        id: 25,
         type: 'open-ended',
         question: '¿Qué necesitarías hoy para sentirte tranquila, sin presión?',
         creatorAnswer: 'Estar presente, apoyar en lo que esté en mis manos y respetar tu ritmo, sin exigencias ni promesas vacías.',
@@ -307,6 +307,14 @@ const LETTERS = {
     imageIds: ["letter-2-img-1", "letter-2-img-2", "letter-2-img-3"],
   },
   15: {
+    title: "Lo que quiero contigo…",
+    content: [
+      "Compartir risas, crear más recuerdos y seguir eligiéndonos todos los días,",
+      "en los días malos, cuando estemos cansados y sintamos que no podemos más, saber que estamos el uno para el otro, para apoyarnos y darnos la mano en esos momentos, sin importar lo que venga. 💕",
+    ],
+    imageIds: ["letter-3-img-1", "letter-3-img-2", "letter-3-img-3"],
+  },
+  20: {
     title: "Lo que quiero contigo…",
     content: [
       "Compartir risas, crear más recuerdos y seguir eligiéndonos todos los días,",
