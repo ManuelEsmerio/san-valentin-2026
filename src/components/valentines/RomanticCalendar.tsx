@@ -10,13 +10,12 @@ import { Button } from '@/components/ui/button';
 type RomanticCalendarProps = {
   selected?: Date;
   onSelect: (date: Date) => void;
-  specialDay?: number;
 };
 
 // Sunday is 0, Monday is 1, etc.
 const WEEK_STARTS_ON = 1; // Start week on Monday
 
-export default function RomanticCalendar({ selected, onSelect, specialDay = 14 }: RomanticCalendarProps) {
+export default function RomanticCalendar({ selected, onSelect }: RomanticCalendarProps) {
   const [currentMonth, setCurrentMonth] = useState(selected || new Date());
 
   const firstDayOfMonth = startOfMonth(currentMonth);
@@ -71,7 +70,6 @@ export default function RomanticCalendar({ selected, onSelect, specialDay = 14 }
         ))}
         {daysInMonth.map((day) => {
           const isSelected = selected && isSameDay(day, selected);
-          const isSpecialDay = day.getDate() === specialDay;
           const isCurrentMonthDay = isSameMonth(day, currentMonth);
 
           return (
@@ -83,11 +81,10 @@ export default function RomanticCalendar({ selected, onSelect, specialDay = 14 }
                   'h-10 w-10 flex items-center justify-center rounded-full text-sm font-normal transition-colors',
                   'hover:bg-primary/10',
                   !isCurrentMonthDay && 'text-muted-foreground/30 pointer-events-none',
-                  isSelected && 'bg-primary text-primary-foreground hover:bg-primary',
-                  isSpecialDay && !isSelected && 'text-primary'
+                  isSelected && 'bg-primary text-primary-foreground hover:bg-primary'
                 )}
               >
-                {isSpecialDay ? (
+                {isSelected ? (
                   <Heart className="h-5 w-5" fill="currentColor" />
                 ) : (
                   format(day, 'd')

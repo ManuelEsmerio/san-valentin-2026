@@ -168,7 +168,6 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
                             field.onChange(date);
                             setIsCalendarOpen(false);
                         }}
-                        specialDay={13}
                       />
                     </PopoverContent>
                   </Popover>
