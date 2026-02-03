@@ -16,7 +16,6 @@ import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale/es';
 import { Calendar } from '@/components/ui/calendar';
-import { cn } from '@/lib/utils';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const formSchema = z.object({
@@ -42,7 +41,6 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
       values.nickname.trim().toLowerCase() === 'mi chula';
 
     const correctDate = new Date('2025-04-13T00:00:00');
-    // Adjust for timezone differences by comparing year, month, and day
     const selectedDate = values.anniversary;
 
     const isDateCorrect =
@@ -134,20 +132,19 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
                       defaultMonth={new Date(2025, 3)}
                       locale={es}
                       weekStartsOn={1}
+                      showOutsideDays
                       formatters={{
+                        formatCaption: (month) =>
+                          format(month, 'LLLL yyyy', { locale: es }),
                         formatWeekdayName: (day) =>
-                          format(day, 'EEEEEE', { locale: es }).toLowerCase(),
+                          format(day, 'EE', { locale: es }).toLowerCase(),
                       }}
                       classNames={{
-                        caption: 'flex justify-center text-center relative items-center mb-4',
-                        caption_label: 'text-primary font-bold text-lg capitalize',
-                        nav: 'flex items-center',
-                        nav_button:
-                          'h-7 w-7 bg-transparent p-0 opacity-80 hover:opacity-100',
-                        nav_button_previous: 'absolute left-1',
-                        nav_button_next: 'absolute right-1',
-                        head_cell: 'w-9 text-center font-medium text-muted-foreground text-sm',
-                        cell: 'h-9 w-9 text-center text-sm p-0',
+                        caption_label:
+                          'text-primary font-bold text-lg capitalize',
+                        head_cell:
+                          'w-full text-center font-medium text-muted-foreground text-sm normal-case',
+                        cell: 'w-full text-center text-sm p-0',
                         day: 'w-9 h-9 hover:bg-accent rounded-lg transition-colors',
                         day_today: 'font-bold',
                         day_outside: 'text-muted-foreground opacity-50',
