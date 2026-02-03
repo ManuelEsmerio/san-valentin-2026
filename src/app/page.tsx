@@ -24,6 +24,7 @@ export default function Home() {
   const [showCountdown, setShowCountdown] = useState(true);
   const [stage, setStage] = useState<Stage>('login');
   const [isClient, setIsClient] = useState(false);
+  const [triviaProgress, setTriviaProgress] = useState<{current: number, total: number} | null>(null);
 
   useEffect(() => {
     // This effect runs once on mount to confirm we are on the client.
@@ -41,6 +42,12 @@ export default function Home() {
       }
     }
   }, [isClient]);
+
+  useEffect(() => {
+    if (stage !== 'trivia') {
+      setTriviaProgress(null);
+    }
+  }, [stage]);
 
   const setStageAndSave = (newStage: Stage) => {
     if (isClient) {
@@ -73,7 +80,11 @@ export default function Home() {
         return <GameStage key="game" onSuccess={() => setStageAndSave('trivia')} />;
       case 'trivia':
         return (
-          <TriviaStage key="trivia" onSuccess={() => setStageAndSave('revelation')} />
+          <TriviaStage
+            key="trivia"
+            onSuccess={() => setStageAndSave('revelation')}
+            onProgress={setTriviaProgress}
+          />
         );
       case 'revelation':
         return <RevelationStage key="revelation" />;
@@ -101,18 +112,24 @@ export default function Home() {
 
       {stage !== 'welcome' && stage !== 'revelation' && stage !== 'login' && (
         <div className={cn("w-full flex flex-col gap-3 p-4 bg-card/50 rounded-xl mb-6 border border-border", containerClass)}>
-          <div className="flex gap-6 justify-between">
+          <div className="flex gap-4 justify-between items-center">
             <p className="text-foreground/90 text-base font-medium leading-normal">
               Progreso del Desafío
             </p>
-            <p className="text-primary text-sm font-bold leading-normal">
-              {currentStep-1} de 3 Completados
-            </p>
+            <div className="flex items-center gap-4">
+              {stage === 'trivia' && triviaProgress && (
+                <div className="bg-background/80 border border-border rounded-full px-3 py-1 text-xs font-medium text-muted-foreground shadow-sm">
+                  Pregunta <span className="font-bold text-foreground">{triviaProgress.current}</span> de <span className="font-bold text-foreground">{triviaProgress.total}</span>
+                </div>
+              )}
+              <p className="text-primary text-sm font-bold leading-normal">
+                {currentStep-1} de 3 Completados
+              </p>
+            </div>
           </div>
           <Progress value={progress} className="h-3"/>
         </div>
       )}
-
 
       <div className={cn("w-full", containerClass)}>{renderStage()}</div>
     </div>
