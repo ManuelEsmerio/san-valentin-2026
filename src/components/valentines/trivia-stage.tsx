@@ -303,7 +303,7 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
           {currentQuestion.type === 'open-ended' && (
             <div className="pt-2">
               <Textarea 
-                placeholder="Escribe tu respuesta aquí, mi amor..."
+                placeholder="Escribe tu respuesta aquí, mi chula..."
                 className="min-h-[120px] text-base"
                 value={answers[currentQuestion.id] || ""}
                 onChange={(e) => handleAnswerChange(e.target.value)}

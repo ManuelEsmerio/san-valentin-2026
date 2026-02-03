@@ -6,7 +6,7 @@ import MusicPlayer from '@/components/valentines/MusicPlayer';
 
 export const metadata: Metadata = {
   title: "Para Mariana",
-  description: 'Un desafío de 3 pasos para mi amor.',
+  description: 'Un desafío de 3 pasos para mi chula.',
 };
 
 export default function RootLayout({

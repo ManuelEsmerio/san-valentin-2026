@@ -62,7 +62,7 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
     } else {
       toast({
         variant: 'destructive',
-        title: 'Inténtalo de nuevo, mi amor',
+        title: 'Inténtalo de nuevo, mi chula',
         description:
           'Una de las respuestas no es correcta, pero sé que la sabes. 😉',
       });
@@ -93,7 +93,7 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
       </div>
       <div className="px-4 sm:px-8 pb-10 pt-6">
         <h2 className="text-foreground text-3xl font-bold leading-tight tracking-[-0.015em] mb-2 text-center">
-          Hola Amor
+          Holaaa Chula
         </h2>
         <p className="text-muted-foreground text-center mb-8">
           Comencemos nuestro viaje juntos. Por favor, verifica tu amor.
@@ -130,7 +130,7 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <label className="text-foreground text-base font-medium leading-normal pb-2">
-                    Nuestra fecha especial
+                    Nuestra proxima fecha especial
                   </label>
                   <Popover
                     open={isCalendarOpen}

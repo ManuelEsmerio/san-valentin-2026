@@ -73,7 +73,7 @@ export default function RevelationStage() {
           favorite
         </span>
         <h2 className="text-foreground text-3xl font-bold leading-tight tracking-[-0.015em]">
-          ¡Felicidades, mi amor!
+          ¡Felicidades, mi chula!
         </h2>
         <p className="text-muted-foreground -mt-4">
           Has llegado al final del desafío.

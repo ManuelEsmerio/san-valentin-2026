@@ -108,7 +108,7 @@ export default function CountdownStage({ onComplete }: CountdownStageProps) {
 
   const handleDisabledClick = () => {
     toast({
-        title: 'Un poco de paciencia, mi amor',
+        title: 'Un poco de paciencia, mi chula',
         description: 'Este regalo se podrá ver cuando el contador llegue a 0.',
     });
   };
