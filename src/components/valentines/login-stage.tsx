@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const formSchema = z.object({
   nickname: z.string().min(1, 'Dime quién eres...'),
@@ -161,6 +162,18 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
                         initialFocus
                         locale={es}
                         defaultMonth={new Date(2025, 3)}
+                        classNames={{
+                          caption: 'flex justify-between items-center mb-4 px-1',
+                          caption_label: 'text-primary font-bold text-lg',
+                          nav_button:
+                            'h-8 w-8 p-0 bg-transparent hover:bg-primary/5 rounded-full text-primary disabled:opacity-50',
+                          nav_button_previous: '',
+                          nav_button_next: '',
+                        }}
+                        components={{
+                          IconLeft: (props) => <ChevronLeft {...props} />,
+                          IconRight: (props) => <ChevronRight {...props} />,
+                        }}
                       />
                     </PopoverContent>
                   </Popover>
