@@ -67,7 +67,7 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
   };
 
   return (
-    <div className="w-full bg-card dark:bg-stone-900 rounded-xl shadow-xl overflow-hidden border border-primary/5">
+    <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5">
       <div className="px-4 sm:px-8 pb-10 pt-6">
         {!finished ? (
           <div className="space-y-6">

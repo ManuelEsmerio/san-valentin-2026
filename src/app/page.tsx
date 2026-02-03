@@ -45,7 +45,7 @@ export default function Home() {
     }
   };
 
-  const containerClass = stage === 'game' ? 'max-w-5xl' : 'max-w-lg';
+  const containerClass = (stage === 'game' || stage === 'trivia') ? 'max-w-5xl' : 'max-w-lg';
 
   return (
     <div className="w-full flex flex-col items-center">
