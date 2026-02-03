@@ -13,16 +13,10 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale/es';
-import { Calendar } from '@/components/ui/calendar';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const formSchema = z.object({
   nickname: z.string().min(1, 'Dime quién eres...'),
-  anniversary: z.date({
-    required_error: 'Por favor, elige nuestra fecha especial.',
-  }),
+  anniversary: z.string().min(1, 'Por favor, escribe nuestra fecha especial.'),
 });
 
 export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
@@ -32,7 +26,7 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       nickname: '',
-      anniversary: undefined,
+      anniversary: '',
     },
   });
 
@@ -40,14 +34,8 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
     const isNicknameCorrect =
       values.nickname.trim().toLowerCase() === 'mi chula';
 
-    const correctDate = new Date('2025-04-13T00:00:00');
-    const selectedDate = values.anniversary;
-
-    const isDateCorrect =
-      selectedDate &&
-      selectedDate.getFullYear() === correctDate.getFullYear() &&
-      selectedDate.getMonth() === correctDate.getMonth() &&
-      selectedDate.getDate() === correctDate.getDate();
+    // To allow continuing, we'll check for the string format
+    const isDateCorrect = values.anniversary.trim() === '13/04/2025';
 
     if (isNicknameCorrect && isDateCorrect) {
       onSuccess();
@@ -120,42 +108,23 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
               control={form.control}
               name="anniversary"
               render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <label className="text-foreground text-base font-medium leading-normal text-center pb-2">
+                <FormItem>
+                  <label className="text-foreground text-base font-medium leading-normal pb-2">
                     Nuestra fecha
                   </label>
-                  <div className="mt-2 p-0 sm:p-4 bg-card border-none sm:border sm:border-primary/10 rounded-xl sm:shadow-inner">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      defaultMonth={new Date(2025, 3)}
-                      locale={es}
-                      weekStartsOn={1}
-                      showOutsideDays
-                      formatters={{
-                        formatCaption: (month) =>
-                          format(month, 'LLLL yyyy', { locale: es }),
-                        formatWeekdayName: (day) =>
-                          format(day, 'EE', { locale: es }).toLowerCase(),
-                      }}
-                      classNames={{
-                        caption_label:
-                          'text-primary font-bold text-lg capitalize',
-                        head_cell:
-                          'w-full text-center font-medium text-muted-foreground text-sm normal-case',
-                        cell: 'w-full text-center text-sm p-0',
-                        day: 'w-9 h-9 hover:bg-accent rounded-lg transition-colors',
-                        day_today: 'font-bold',
-                        day_outside: 'text-muted-foreground opacity-50',
-                      }}
-                      components={{
-                        IconLeft: () => <ChevronLeft className="h-4 w-4" />,
-                        IconRight: () => <ChevronRight className="h-4 w-4" />,
-                      }}
-                    />
-                  </div>
-                  <FormMessage className="text-center pt-2" />
+                  <FormControl>
+                    <div className="relative">
+                      <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary/50">
+                        calendar_month
+                      </span>
+                      <Input
+                        className="h-14 pl-12 pr-4 text-base bg-card focus:border-primary border-border"
+                        placeholder="DD/MM/YYYY"
+                        {...field}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
