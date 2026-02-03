@@ -36,11 +36,11 @@ const HeartFirework = ({ baseDelay = 0 }: { baseDelay?: number }) => {
 
 export default function RevelationStage() {
   const finalImage = PlaceHolderImages.find((img) => img.id === "couple-photo");
-  const [fireworks, setFireworks] = useState([]);
+  const [fireworks, setFireworks] = useState<any[]>([]);
 
   useEffect(() => {
     // This avoids hydration errors by running only on the client
-    const generatedFireworks = Array.from({ length: 15 }).map((_, i) => ({
+    const generatedFireworks: any[] = Array.from({ length: 15 }).map((_, i) => ({
       id: i,
       style: {
         top: `${Math.random() * 100}%`,
@@ -80,13 +80,13 @@ export default function RevelationStage() {
         </p>
         
         {finalImage && (
-          <div className="relative w-full aspect-video rounded-lg overflow-hidden shadow-lg">
+          <div className="relative w-full aspect-video rounded-lg overflow-hidden shadow-lg bg-black/20">
             <Image
               src={finalImage.imageUrl}
               alt={finalImage.description}
               data-ai-hint={finalImage.imageHint}
               fill
-              className="object-cover"
+              className="object-contain"
             />
           </div>
         )}

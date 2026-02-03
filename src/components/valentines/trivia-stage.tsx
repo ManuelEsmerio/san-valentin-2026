@@ -243,13 +243,13 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
     <div className="w-full flex flex-col gap-6 items-center">
       <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5">
         {imagePlaceholder && (
-          <div className="relative w-full aspect-[21/9] rounded-t-xl overflow-hidden">
+          <div className="relative w-full aspect-[21/9] rounded-t-xl overflow-hidden bg-black/20">
             <Image
               src={imagePlaceholder.imageUrl}
               alt={imagePlaceholder.description}
               data-ai-hint={imagePlaceholder.imageHint}
               fill
-              className="object-cover"
+              className="object-contain"
               priority
             />
             {currentQuestion.type === "multiple-choice" && currentQuestion.category && (

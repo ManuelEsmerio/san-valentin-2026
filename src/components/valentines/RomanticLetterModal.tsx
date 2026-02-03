@@ -51,31 +51,31 @@ export default function RomanticLetterModal({ isOpen, letter, onClose }: Romanti
         <div className="p-6 sm:p-8 text-center">
           {letter.images && letter.images.length >= 3 && (
             <div className="mb-6 grid grid-cols-3 grid-rows-2 gap-2 w-full aspect-[4/3]">
-              <div className="col-span-2 row-span-2 relative rounded-lg overflow-hidden shadow-md">
+              <div className="col-span-2 row-span-2 relative rounded-lg overflow-hidden shadow-md bg-black/20">
                 <Image
                   src={letter.images[0].imageUrl}
                   alt={letter.images[0].description}
                   data-ai-hint={letter.images[0].imageHint}
                   fill
-                  className="object-cover"
+                  className="object-contain"
                 />
               </div>
-              <div className="col-span-1 row-span-1 relative rounded-lg overflow-hidden shadow-md">
+              <div className="col-span-1 row-span-1 relative rounded-lg overflow-hidden shadow-md bg-black/20">
                 <Image
                   src={letter.images[1].imageUrl}
                   alt={letter.images[1].description}
                   data-ai-hint={letter.images[1].imageHint}
                   fill
-                  className="object-cover"
+                  className="object-contain"
                 />
               </div>
-              <div className="col-span-1 row-span-1 relative rounded-lg overflow-hidden shadow-md">
+              <div className="col-span-1 row-span-1 relative rounded-lg overflow-hidden shadow-md bg-black/20">
                 <Image
                   src={letter.images[2].imageUrl}
                   alt={letter.images[2].description}
                   data-ai-hint={letter.images[2].imageHint}
                   fill
-                  className="object-cover"
+                  className="object-contain"
                 />
               </div>
             </div>
