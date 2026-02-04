@@ -253,229 +253,231 @@ export default function GameStage({ onSuccess, user }: GameStageProps) {
   const overallProgress = (completedChallenges / totalChallenges) * 100;
 
   return (
-    <div className="w-full flex flex-col items-center gap-6 animate-fade-in">
-        <header className="w-full flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="text-center md:text-left">
-                <p className="text-primary font-bold tracking-[0.2em] text-xs uppercase mb-1">Desafío 01</p>
-                <h1 className="text-4xl md:text-5xl font-bold text-foreground">
-                    Snake <span className="text-primary italic">Romance</span>
-                </h1>
-            </div>
-            <div className="bg-card/50 dark:bg-zinc-800/30 rounded-2xl p-5 w-full md:w-96 border border-border">
-                <div className="flex justify-between items-end mb-3">
-                    <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Progreso Total</span>
-                    <span className="text-primary font-bold italic">{completedChallenges} de {totalChallenges} Completados</span>
-                </div>
-                <Progress value={overallProgress} className="h-2"/>
-            </div>
-        </header>
+    <>
+      <div className="w-full flex flex-col items-center gap-6 animate-fade-in">
+          <header className="w-full flex flex-col md:flex-row justify-between items-center gap-6">
+              <div className="text-center md:text-left">
+                  <p className="text-primary font-bold tracking-[0.2em] text-xs uppercase mb-1">Desafío 01</p>
+                  <h1 className="text-4xl md:text-5xl font-bold text-foreground">
+                      Snake <span className="text-primary italic">Romance</span>
+                  </h1>
+              </div>
+              <div className="bg-card/50 dark:bg-zinc-800/30 rounded-2xl p-5 w-full md:w-96 border border-border">
+                  <div className="flex justify-between items-end mb-3">
+                      <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Progreso Total</span>
+                      <span className="text-primary font-bold italic">{completedChallenges} de {totalChallenges} Completados</span>
+                  </div>
+                  <Progress value={overallProgress} className="h-2"/>
+              </div>
+          </header>
 
-      <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <div className="lg:col-span-8">
-            <div
-            className={cn(
-                "flex flex-col items-center justify-center gap-6 rounded-2xl bg-card/80 p-2 border-2 border-primary/10 relative overflow-hidden aspect-square"
-            )}
+        <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="lg:col-span-8">
+              <div
+              className={cn(
+                  "flex flex-col items-center justify-center gap-6 rounded-2xl bg-card/80 p-2 border-2 border-primary/10 relative overflow-hidden aspect-square"
+              )}
+              >
+                  <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:30px_30px]"></div>
+
+                  {gameState === "idle" && (
+                      <div className="flex flex-col items-center gap-4 z-10 text-center animate-fade-in p-8">
+                          <div className="relative bg-background w-20 h-20 rounded-3xl flex items-center justify-center shadow-lg border border-primary/10">
+                              <Gamepad2 className="text-primary h-10 w-10"/>
+                          </div>
+                          <h3 className="text-2xl font-bold text-foreground pt-4">
+                              Heart Snake Board
+                          </h3>
+                          <p className="max-w-xs text-muted-foreground">
+                              Para seguir avanzando, debes de completar este desafío.
+                          </p>
+                          <Button
+                              onClick={openInstructions}
+                              className="mt-6 h-12 px-8 rounded-xl text-base font-bold tracking-wider shadow-lg shadow-primary/20"
+                              size="lg"
+                          >
+                              Empezar Desafío
+                          </Button>
+                      </div>
+                  )}
+
+                  {(gameState === "playing" || gameState === "won" || gameState === "lost") && (
+                      <canvas
+                      ref={canvasRef}
+                      width={CANVAS_SIZE}
+                      height={CANVAS_SIZE}
+                      className={cn(
+                          "rounded-lg bg-pink-100/20 dark:bg-pink-900/10 transition-opacity duration-500",
+                          (gameState === "lost" || gameState === "won") && "opacity-10",
+                          "w-full h-auto aspect-square"
+                      )}
+                      />
+                  )}
+
+                  {(gameState === "won" || gameState === "lost") && (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4 animate-fade-in z-20">
+                      <h3 className="text-2xl font-bold text-foreground">
+                          {gameState === "won"
+                          ? "¡Felicidades, lo lograste!"
+                          : "¡Oh no! Fin del juego"}
+                      </h3>
+                      <p className="text-muted-foreground mt-2 mb-6">
+                          {gameState === "won"
+                          ? "Has recolectado todos los corazones."
+                          : `No te preocupes, ¡inténtalo de nuevo! La nueva meta es ${targetScore} corazones.`}
+                      </p>
+                      <div className="flex flex-col sm:flex-row items-center gap-4">
+                          <Button
+                              onClick={gameState === 'won' ? () => setMapModalOpen(true) : startGame}
+                              className="min-w-[200px] h-12 px-6 text-base font-bold tracking-wider"
+                          >
+                              {gameState === 'won' ? 'Ver Pista' : 'Reintentar'}
+                          </Button>
+                      </div>
+                      {gameState === "won" && <VictoryHearts />}
+                      </div>
+                  )}
+              </div>
+          </div>
+
+          <div className="lg:col-span-4 space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-3xl flex flex-col items-center justify-center text-center">
+                      <SimpleCircularProgress progress={(score / targetScore) * 100} size={80} strokeWidth={8}>
+                          <Heart className="h-6 w-6 text-primary" />
+                      </SimpleCircularProgress>
+                      <span className="mt-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Recolectados</span>
+                      <span className="text-2xl font-bold text-foreground">{score}</span>
+                  </div>
+                  <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-3xl flex flex-col items-center justify-center text-center">
+                      <SimpleCircularProgress progress={100} size={80} strokeWidth={8}>
+                           <span className="material-symbols-outlined text-primary text-3xl">flag</span>
+                      </SimpleCircularProgress>
+                       <span className="mt-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Meta</span>
+                      <span className="text-2xl font-bold text-foreground">{targetScore}</span>
+                  </div>
+              </div>
+
+              <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-5 rounded-2xl flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                          <Trophy className="w-6 h-6"/>
+                      </div>
+                      <div>
+                          <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground block">Mejor Récord</span>
+                          <span className="text-lg font-bold text-foreground">{highScore} Puntos</span>
+                      </div>
+                  </div>
+              </div>
+
+              <div className={cn(
+                  "bg-card/50 dark:bg-zinc-800/30 p-6 rounded-3xl border-2 border-dashed transition-colors",
+                  gameState === 'won' ? "border-green-500/50" : "border-primary/20"
+              )}>
+                  <div className="flex items-center gap-3 mb-4">
+                      <div className={cn(
+                          "w-8 h-8 rounded-full flex items-center justify-center transition-colors",
+                          gameState === 'won' ? "bg-green-500/10 text-green-500" : "bg-muted text-muted-foreground"
+                      )}>
+                          {gameState === 'won' ? <LockOpen className="w-4 h-4"/> : <Lock className="w-4 h-4"/>}
+                      </div>
+                      <h3 className={cn(
+                          "font-bold transition-colors",
+                          gameState === 'won' ? "text-green-600 dark:text-green-400" : "text-foreground"
+                      )}>
+                          {gameState === 'won' ? 'Pista 1: Desbloqueada' : 'Pista 1: Bloqueada'}
+                      </h3>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-6 italic">
+                      "En el centro de lo que parece vacío, encontrarás lo que buscas..."
+                  </p>
+                  <div className="space-y-2">
+                      <div className="flex justify-between text-[10px] font-bold uppercase tracking-tighter text-muted-foreground mb-1">
+                          <span>{gameState === 'won' ? 'DESBLOQUEADO' : 'DESBLOQUEO'}</span>
+                          <span>{Math.round(hintProgress)}%</span>
+                      </div>
+                      <Progress value={hintProgress} className={cn("h-1.5", gameState === 'won' && "[&>div]:bg-green-500")} />
+                  </div>
+              </div>
+              
+              <div className="p-4 bg-primary/5 rounded-2xl border border-primary/10">
+                  <div className="flex gap-2 items-center text-xs font-medium text-primary">
+                      <Info className="h-4 w-4 shrink-0"/>
+                      Usa las flechas del teclado para guiar al corazón.
+                  </div>
+              </div>
+          </div>
+        </div>
+
+
+        {gameState === 'playing' && (
+          <div className="md:hidden mt-4 grid grid-cols-3 gap-3 w-48">
+            <div />
+            <Button
+              variant="secondary"
+              size="icon"
+              className="h-14 w-14 rounded-full"
+              onClick={() => {
+                if (directionRef.current.y === 0) directionRef.current = { x: 0, y: -1 };
+              }}
             >
-                <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:30px_30px]"></div>
-
-                {gameState === "idle" && (
-                    <div className="flex flex-col items-center gap-4 z-10 text-center animate-fade-in p-8">
-                        <div className="relative bg-background w-20 h-20 rounded-3xl flex items-center justify-center shadow-lg border border-primary/10">
-                            <Gamepad2 className="text-primary h-10 w-10"/>
-                        </div>
-                        <h3 className="text-2xl font-bold text-foreground pt-4">
-                            Heart Snake Board
-                        </h3>
-                        <p className="max-w-xs text-muted-foreground">
-                            Para seguir avanzando, debes de completar este desafío.
-                        </p>
-                        <Button
-                            onClick={openInstructions}
-                            className="mt-6 h-12 px-8 rounded-xl text-base font-bold tracking-wider shadow-lg shadow-primary/20"
-                            size="lg"
-                        >
-                            Empezar Desafío
-                        </Button>
-                    </div>
-                )}
-
-                {(gameState === "playing" || gameState === "won" || gameState === "lost") && (
-                    <canvas
-                    ref={canvasRef}
-                    width={CANVAS_SIZE}
-                    height={CANVAS_SIZE}
-                    className={cn(
-                        "rounded-lg bg-pink-100/20 dark:bg-pink-900/10 transition-opacity duration-500",
-                        (gameState === "lost" || gameState === "won") && "opacity-10",
-                        "w-full h-auto aspect-square"
-                    )}
-                    />
-                )}
-
-                {(gameState === "won" || gameState === "lost") && (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4 animate-fade-in z-20">
-                    <h3 className="text-2xl font-bold text-foreground">
-                        {gameState === "won"
-                        ? "¡Felicidades, lo lograste!"
-                        : "¡Oh no! Fin del juego"}
-                    </h3>
-                    <p className="text-muted-foreground mt-2 mb-6">
-                        {gameState === "won"
-                        ? "Has recolectado todos los corazones."
-                        : `No te preocupes, ¡inténtalo de nuevo! La nueva meta es ${targetScore} corazones.`}
-                    </p>
-                    <div className="flex flex-col sm:flex-row items-center gap-4">
-                        <Button
-                            onClick={gameState === 'won' ? () => setMapModalOpen(true) : startGame}
-                            className="min-w-[200px] h-12 px-6 text-base font-bold tracking-wider"
-                        >
-                            {gameState === 'won' ? 'Ver Pista' : 'Reintentar'}
-                        </Button>
-                    </div>
-                    {gameState === "won" && <VictoryHearts />}
-                    </div>
-                )}
-            </div>
-        </div>
-
-        <div className="lg:col-span-4 space-y-6">
-            <div className="grid grid-cols-2 gap-4">
-                <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-3xl flex flex-col items-center justify-center text-center">
-                    <SimpleCircularProgress progress={(score / targetScore) * 100} size={80} strokeWidth={8}>
-                        <Heart className="h-6 w-6 text-primary" />
-                    </SimpleCircularProgress>
-                    <span className="mt-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Recolectados</span>
-                    <span className="text-2xl font-bold text-foreground">{score}</span>
-                </div>
-                <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-3xl flex flex-col items-center justify-center text-center">
-                    <SimpleCircularProgress progress={100} size={80} strokeWidth={8}>
-                         <span className="material-symbols-outlined text-primary text-3xl">flag</span>
-                    </SimpleCircularProgress>
-                     <span className="mt-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Meta</span>
-                    <span className="text-2xl font-bold text-foreground">{targetScore}</span>
-                </div>
-            </div>
-
-            <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-5 rounded-2xl flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                        <Trophy className="w-6 h-6"/>
-                    </div>
-                    <div>
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground block">Mejor Récord</span>
-                        <span className="text-lg font-bold text-foreground">{highScore} Puntos</span>
-                    </div>
-                </div>
-            </div>
-
-            <div className={cn(
-                "bg-card/50 dark:bg-zinc-800/30 p-6 rounded-3xl border-2 border-dashed transition-colors",
-                gameState === 'won' ? "border-green-500/50" : "border-primary/20"
-            )}>
-                <div className="flex items-center gap-3 mb-4">
-                    <div className={cn(
-                        "w-8 h-8 rounded-full flex items-center justify-center transition-colors",
-                        gameState === 'won' ? "bg-green-500/10 text-green-500" : "bg-muted text-muted-foreground"
-                    )}>
-                        {gameState === 'won' ? <LockOpen className="w-4 h-4"/> : <Lock className="w-4 h-4"/>}
-                    </div>
-                    <h3 className={cn(
-                        "font-bold transition-colors",
-                        gameState === 'won' ? "text-green-600 dark:text-green-400" : "text-foreground"
-                    )}>
-                        {gameState === 'won' ? 'Pista 1: Desbloqueada' : 'Pista 1: Bloqueada'}
-                    </h3>
-                </div>
-                <p className="text-sm text-muted-foreground mb-6 italic">
-                    "En el centro de lo que parece vacío, encontrarás lo que buscas..."
-                </p>
-                <div className="space-y-2">
-                    <div className="flex justify-between text-[10px] font-bold uppercase tracking-tighter text-muted-foreground mb-1">
-                        <span>{gameState === 'won' ? 'DESBLOQUEADO' : 'DESBLOQUEO'}</span>
-                        <span>{Math.round(hintProgress)}%</span>
-                    </div>
-                    <Progress value={hintProgress} className={cn("h-1.5", gameState === 'won' && "[&>div]:bg-green-500")} />
-                </div>
-            </div>
-            
-            <div className="p-4 bg-primary/5 rounded-2xl border border-primary/10">
-                <div className="flex gap-2 items-center text-xs font-medium text-primary">
-                    <Info className="h-4 w-4 shrink-0"/>
-                    Usa las flechas del teclado para guiar al corazón.
-                </div>
-            </div>
-        </div>
+              <ChevronUp className="h-8 w-8" />
+            </Button>
+            <div />
+            <Button
+              variant="secondary"
+              size="icon"
+              className="h-14 w-14 rounded-full"
+              onClick={() => {
+                if (directionRef.current.x === 0) directionRef.current = { x: -1, y: 0 };
+              }}
+            >
+              <ChevronLeft className="h-8 w-8" />
+            </Button>
+            <div />
+            <Button
+              variant="secondary"
+              size="icon"
+              className="h-14 w-14 rounded-full"
+              onClick={() => {
+                if (directionRef.current.x === 0) directionRef.current = { x: 1, y: 0 };
+              }}
+            >
+              <ChevronRight className="h-8 w-8" />
+            </Button>
+            <div />
+            <Button
+              variant="secondary"
+              size="icon"
+              className="h-14 w-14 rounded-full"
+              onClick={() => {
+                if (directionRef.current.y === 0) directionRef.current = { x: 0, y: 1 };
+              }}
+            >
+              <ChevronDown className="h-8 w-8" />
+            </Button>
+            <div />
+          </div>
+        )}
+        
+        <Dialog open={isInstructionsModalOpen} onOpenChange={setInstructionsModalOpen}>
+          <DialogContent className="sm:max-w-xl">
+              <DialogHeader>
+                  <DialogTitle className="text-2xl text-center font-bold">Desafío 1: Snake Romance</DialogTitle>
+                   <DialogDescription asChild>
+                      <div className="text-center pt-4 space-y-3 text-base text-muted-foreground">
+                          <div>Usa las flechas del teclado (o los botones en pantalla) para mover la serpiente de corazones.</div>
+                          <div>El objetivo es recolectar <span className="font-bold text-primary">{targetScore}</span> corazones sin chocar contigo misma.</div>
+                          <div className="pt-2">¡Mucha suerte, mi chula!</div>
+                      </div>
+                  </DialogDescription>
+              </DialogHeader>
+              <DialogFooter className="pt-4">
+                  <Button onClick={startGame} className="w-full h-12 text-lg font-bold">¡Vamos!</Button>
+              </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
-
-
-      {gameState === 'playing' && (
-        <div className="md:hidden mt-4 grid grid-cols-3 gap-3 w-48">
-          <div />
-          <Button
-            variant="secondary"
-            size="icon"
-            className="h-14 w-14 rounded-full"
-            onClick={() => {
-              if (directionRef.current.y === 0) directionRef.current = { x: 0, y: -1 };
-            }}
-          >
-            <ChevronUp className="h-8 w-8" />
-          </Button>
-          <div />
-          <Button
-            variant="secondary"
-            size="icon"
-            className="h-14 w-14 rounded-full"
-            onClick={() => {
-              if (directionRef.current.x === 0) directionRef.current = { x: -1, y: 0 };
-            }}
-          >
-            <ChevronLeft className="h-8 w-8" />
-          </Button>
-          <div />
-          <Button
-            variant="secondary"
-            size="icon"
-            className="h-14 w-14 rounded-full"
-            onClick={() => {
-              if (directionRef.current.x === 0) directionRef.current = { x: 1, y: 0 };
-            }}
-          >
-            <ChevronRight className="h-8 w-8" />
-          </Button>
-          <div />
-          <Button
-            variant="secondary"
-            size="icon"
-            className="h-14 w-14 rounded-full"
-            onClick={() => {
-              if (directionRef.current.y === 0) directionRef.current = { x: 0, y: 1 };
-            }}
-          >
-            <ChevronDown className="h-8 w-8" />
-          </Button>
-          <div />
-        </div>
-      )}
-      
-      <Dialog open={isInstructionsModalOpen} onOpenChange={setInstructionsModalOpen}>
-        <DialogContent className="sm:max-w-xl">
-            <DialogHeader>
-                <DialogTitle className="text-2xl text-center font-bold">Desafío 1: Snake Romance</DialogTitle>
-                 <DialogDescription asChild>
-                    <div className="text-center pt-4 space-y-3 text-base text-muted-foreground">
-                        <div>Usa las flechas del teclado (o los botones en pantalla) para mover la serpiente de corazones.</div>
-                        <div>El objetivo es recolectar <span className="font-bold text-primary">{targetScore}</span> corazones sin chocar contigo misma.</div>
-                        <div className="pt-2">¡Mucha suerte, mi chula!</div>
-                    </div>
-                </DialogDescription>
-            </DialogHeader>
-            <DialogFooter className="pt-4">
-                <Button onClick={startGame} className="w-full h-12 text-lg font-bold">¡Vamos!</Button>
-            </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
       <MapModal 
         isOpen={isMapModalOpen}
@@ -491,6 +493,6 @@ export default function GameStage({ onSuccess, user }: GameStageProps) {
         onSuccess={handleKeywordSuccess}
         onBack={handleReturnToMap}
       />
-    </div>
+    </>
   );
 }
