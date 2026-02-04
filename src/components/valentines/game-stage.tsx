@@ -274,7 +274,7 @@ export default function GameStage({ onSuccess, user }: GameStageProps) {
         <div className="lg:col-span-8">
             <div
             className={cn(
-                "flex flex-col items-center justify-center gap-6 rounded-2xl bg-card/80 p-2 border-2 border-primary/10 relative overflow-hidden aspect-[4/3] md:aspect-[16/10]"
+                "flex flex-col items-center justify-center gap-6 rounded-2xl bg-card/80 p-2 border-2 border-primary/10 relative overflow-hidden aspect-square"
             )}
             >
                 <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:30px_30px]"></div>
