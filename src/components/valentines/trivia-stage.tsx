@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
-import { CheckCircle2, RotateCcw, XCircle } from "lucide-react";
+import { CheckCircle2, RotateCcw, XCircle, Info } from "lucide-react";
 import RomanticLetterModal from "./RomanticLetterModal";
 import {
   PlaceHolderImages,
@@ -17,6 +17,7 @@ import {
 } from "@/lib/placeholder-images";
 import { cn } from "@/lib/utils";
 import CircularProgress from "./CircularProgress";
+import { Progress } from "../ui/progress";
 
 type TriviaStageProps = {
   onSuccess: () => void;
@@ -272,122 +273,169 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
   }
 
   const imagePlaceholder = PlaceHolderImages.find((img) => img.id === currentQuestion.image);
+  const totalChallenges = 5;
+  const completedChallenges = 2; // This is challenge 3
+  const overallProgress = (completedChallenges / totalChallenges) * 100;
 
   return (
     <>
-      <div className="w-full flex flex-col items-center gap-6">
-        <div className="w-full flex flex-col lg:flex-row items-start gap-8">
-            {imagePlaceholder && (
-                <div className="w-full lg:w-5/12 lg:sticky lg:top-24">
-                    <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-black/20 shadow-xl border border-primary/10">
-                        <Image
-                            src={`${imagePlaceholder.imageUrl}?v=2`}
-                            alt={imagePlaceholder.description}
-                            data-ai-hint={imagePlaceholder.imageHint}
-                            fill
-                            className="object-contain"
-                            priority
-                        />
-                         {currentQuestion.type === "multiple-choice" && currentQuestion.category && (
-                            <div className="absolute bottom-4 left-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-bold">
-                            {currentQuestion.category}
-                            </div>
-                        )}
-                    </div>
-                </div>
-            )}
-
-            <div className={cn("w-full flex flex-col gap-6", imagePlaceholder ? "lg:w-7/12" : "lg:w-full")}>
-                <div className="flex justify-center">
-                     <CircularProgress current={currentQuestionIndex + 1} total={questions.length} />
-                </div>
-                <div className="bg-card rounded-xl shadow-lg border border-border p-6">
-                    <h2 className="text-2xl font-bold text-center mb-2">{currentQuestion.question}</h2>
-                    <p className="text-center text-muted-foreground mb-6">{currentQuestion.hint}</p>
-
-                    {currentQuestion.type === 'multiple-choice' && (
-                        <RadioGroup
-                            onValueChange={(value) => setAnswers(prev => ({ ...prev, [currentQuestion.id]: value }))}
-                            value={answers[currentQuestion.id] || ""}
-                            className="grid grid-cols-1 sm:grid-cols-2 gap-3"
-                            disabled={answerStatus !== 'unanswered'}
-                        >
-                            {currentQuestion.options.map((option, index) => (
-                            <Label 
-                                key={`${option}-${index}`}
-                                htmlFor={`${option}-${index}`}
-                                className={cn(
-                                "flex items-center space-x-3 p-4 rounded-lg border-2 border-border has-[input:checked]:border-primary has-[input:checked]:bg-primary/5 cursor-pointer transition-all",
-                                answerStatus !== 'unanswered' &&
-                                    (Array.isArray(currentQuestion.correctAnswer)
-                                    ? currentQuestion.correctAnswer.includes(option)
-                                    : currentQuestion.correctAnswer === option) &&
-                                    "border-green-500 bg-green-500/5",
-                                answerStatus === 'incorrect' && answers[currentQuestion.id] === option && "border-destructive bg-destructive/5"
-                                )}
-                            >
-                                <RadioGroupItem value={option} id={`${option}-${index}`} disabled={answerStatus !== 'unanswered'} />
-                                <span className="font-body text-base flex-1">{option}</span>
-                            </Label>
-                            ))}
-                        </RadioGroup>
-                    )}
-                    {currentQuestion.type === 'open-ended' && (
-                        <div className="pt-2 [perspective:1000px]">
-                            <div
-                                className={cn(
-                                    "relative w-full min-h-[160px] [transform-style:preserve-3d] transition-transform duration-1000",
-                                    flippedQuestions[currentQuestion.id] && "[transform:rotateY(180deg)]"
-                                )}
-                            >
-                                <div className="absolute w-full h-full [backface-visibility:hidden]">
-                                    <Textarea
-                                    placeholder="Escribe tu respuesta aquí, mi chula..."
-                                    className="min-h-[160px] text-base"
-                                    value={answers[currentQuestion.id] || ""}
-                                    onChange={(e) => setAnswers(prev => ({ ...prev, [currentQuestion.id]: e.target.value }))}
-                                    disabled={!!flippedQuestions[currentQuestion.id]}
-                                    />
-                                </div>
-
-                                <div className="absolute w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] bg-primary/10 p-6 rounded-lg flex flex-col justify-center items-center text-center">
-                                    <p className="text-foreground/80 italic text-lg">
-                                        &ldquo;{currentQuestion.creatorAnswer}&rdquo;
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            </div>
-        </div>
-
-        {answerStatus !== 'unanswered' ? (
-          <div className={cn(
-            "w-full p-4 rounded-lg flex items-center gap-4 animate-fade-in",
-            answerStatus === 'correct' ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-300' : 'bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-300'
-          )}>
-            {answerStatus === 'correct' ? <CheckCircle2 /> : <XCircle />}
-            <div className="flex-1">
-              <h4 className="font-bold">{answerStatus === 'correct' ? "¡Correcto!" : "¡Casi!"}</h4>
-              <p className="text-sm">{answerStatus === 'correct' ? "¡Esa es! Nunca olvidaré ese momento." : "No te preocupes, ¡lo importante es el amor!"}</p>
-            </div>
-            <Button onClick={handleNext} className="h-10 text-base font-bold shrink-0">
-              Siguiente <span className="material-symbols-outlined ml-2 text-base">arrow_forward</span>
-            </Button>
+      <div className="w-full flex flex-col items-center gap-6 animate-fade-in">
+        <header className="w-full flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="text-center md:text-left">
+            <p className="text-primary font-bold tracking-[0.2em] text-xs uppercase mb-1">Desafío 03</p>
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground">
+              Trivia de <span className="text-primary italic">Recuerdos</span>
+            </h1>
           </div>
-        ) : (
-          <Button 
-              onClick={handleNext} 
-              className="w-full max-w-sm h-12 text-lg font-bold"
-              disabled={currentQuestion.type === 'open-ended' && !answers[currentQuestion.id] && !flippedQuestions[currentQuestion.id]}
-          >
-            {currentQuestion.type === 'open-ended' 
-              ? (flippedQuestions[currentQuestion.id] ? 'Continuar' : 'Revelar mi respuesta')
-              : 'Siguiente'
-            }
-          </Button>
-        )}
+          <div className="bg-card/50 dark:bg-zinc-800/30 rounded-xl p-4 w-full md:w-96 border border-border">
+            <div className="flex justify-between items-center text-xs font-medium text-muted-foreground mb-2">
+              <p>PROGRESO TOTAL</p>
+              <p className="text-foreground font-bold">{completedChallenges} de {totalChallenges} Completados</p>
+            </div>
+            <Progress value={overallProgress} className="h-1.5" />
+          </div>
+        </header>
+
+        <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* Left Column: Trivia Content */}
+          <div className="lg:col-span-8">
+            <div className="relative overflow-hidden flex flex-col gap-4 rounded-2xl bg-card p-4 sm:p-6 border-2 border-primary/10 h-full">
+              <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:30px_30px]"></div>
+
+              <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-black/10 shadow-lg border border-border">
+                {imagePlaceholder && (
+                  <Image
+                      src={`${imagePlaceholder.imageUrl}?v=2`}
+                      alt={imagePlaceholder.description}
+                      data-ai-hint={imagePlaceholder.imageHint}
+                      fill
+                      className="object-contain"
+                      priority
+                  />
+                )}
+              </div>
+              
+              <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-xl flex-1 flex flex-col">
+                <div className="text-center mb-6">
+                  <h2 className="text-2xl font-bold">{currentQuestion.question}</h2>
+                  <p className="text-muted-foreground mt-2">{currentQuestion.hint}</p>
+                </div>
+                
+                <div className="flex-1">
+                  {currentQuestion.type === 'multiple-choice' && (
+                    <RadioGroup
+                        onValueChange={(value) => setAnswers(prev => ({ ...prev, [currentQuestion.id]: value }))}
+                        value={answers[currentQuestion.id] || ""}
+                        className="grid grid-cols-1 sm:grid-cols-2 gap-3"
+                        disabled={answerStatus !== 'unanswered'}
+                    >
+                      {currentQuestion.options.map((option, index) => (
+                        <Label 
+                            key={`${option}-${index}`}
+                            htmlFor={`${option}-${index}`}
+                            className={cn(
+                              "flex items-center space-x-3 p-4 rounded-lg border-2 border-border has-[input:checked]:border-primary has-[input:checked]:bg-primary/5 cursor-pointer transition-all",
+                              answerStatus !== 'unanswered' &&
+                                  (Array.isArray(currentQuestion.correctAnswer)
+                                  ? currentQuestion.correctAnswer.includes(option)
+                                  : currentQuestion.correctAnswer === option) &&
+                                  "border-green-500 bg-green-500/5",
+                              answerStatus === 'incorrect' && answers[currentQuestion.id] === option && "border-destructive bg-destructive/5"
+                            )}
+                        >
+                          <RadioGroupItem value={option} id={`${option}-${index}`} disabled={answerStatus !== 'unanswered'} />
+                          <span className="font-body text-base flex-1">{option}</span>
+                        </Label>
+                      ))}
+                    </RadioGroup>
+                  )}
+                  {currentQuestion.type === 'open-ended' && (
+                    <div className="pt-2 [perspective:1000px] h-full">
+                      <div
+                          className={cn(
+                              "relative w-full h-full [transform-style:preserve-3d] transition-transform duration-1000",
+                              flippedQuestions[currentQuestion.id] && "[transform:rotateY(180deg)]"
+                          )}
+                      >
+                        <div className="absolute w-full h-full [backface-visibility:hidden]">
+                          <Textarea
+                              placeholder="Escribe tu respuesta aquí, mi chula..."
+                              className="min-h-[160px] h-full text-base"
+                              value={answers[currentQuestion.id] || ""}
+                              onChange={(e) => setAnswers(prev => ({ ...prev, [currentQuestion.id]: e.target.value }))}
+                              disabled={!!flippedQuestions[currentQuestion.id]}
+                          />
+                        </div>
+
+                        <div className="absolute w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] bg-primary/10 p-6 rounded-lg flex flex-col justify-center items-center text-center">
+                          <p className="text-foreground/80 italic text-lg">
+                              &ldquo;{currentQuestion.creatorAnswer}&rdquo;
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Right Column: Stats & Actions */}
+          <div className="lg:col-span-4 space-y-4">
+            <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-2xl flex flex-col items-center justify-center text-center">
+              <CircularProgress current={currentQuestionIndex + 1} total={questions.length} />
+            </div>
+
+            <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-2xl flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                  <CheckCircle2 className="w-5 h-5" />
+                </div>
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground block">Correctas</span>
+                  <span className="text-lg font-bold text-foreground">{score}</span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="p-3 bg-primary/5 rounded-lg border border-primary/10">
+              <div className="flex gap-2 items-center text-xs font-medium text-primary">
+                <Info className="h-4 w-4 shrink-0"/>
+                Lee con atención y elige la mejor opción.
+              </div>
+            </div>
+
+            {/* Action Button/Feedback */}
+            <div className="pt-4">
+              {answerStatus !== 'unanswered' ? (
+                <div className={cn(
+                  "w-full p-4 rounded-lg flex items-center gap-4 animate-fade-in",
+                  answerStatus === 'correct' ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-300' : 'bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-300'
+                )}>
+                  {answerStatus === 'correct' ? <CheckCircle2 /> : <XCircle />}
+                  <div className="flex-1">
+                    <h4 className="font-bold">{answerStatus === 'correct' ? "¡Correcto!" : "¡Casi!"}</h4>
+                    <p className="text-sm">{answerStatus === 'correct' ? "¡Esa es! Nunca olvidaré ese momento." : "No te preocupes, ¡lo importante es el amor!"}</p>
+                  </div>
+                  <Button onClick={handleNext} className="h-10 text-base font-bold shrink-0">
+                    Siguiente <span className="material-symbols-outlined ml-2 text-base">arrow_forward</span>
+                  </Button>
+                </div>
+              ) : (
+                <Button 
+                    onClick={handleNext} 
+                    className="w-full h-12 text-lg font-bold"
+                    disabled={currentQuestion.type === 'open-ended' && !answers[currentQuestion.id] && !flippedQuestions[currentQuestion.id]}
+                >
+                  {currentQuestion.type === 'open-ended' 
+                    ? (flippedQuestions[currentQuestion.id] ? 'Continuar' : 'Revelar mi respuesta')
+                    : 'Siguiente'
+                  }
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
       
       <RomanticLetterModal
@@ -395,10 +443,8 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
         letter={letterToShow}
         onClose={() => {
           setLetterToShow(null);
-          // Only advance if a letter was shown after an answer was submitted
           const isMCQ = questions[currentQuestionIndex].type === "multiple-choice";
           const isLastMCQ = isMCQ && questions[currentQuestionIndex + 1]?.type === "open-ended";
-
           if (isLastMCQ || answerStatus !== 'unanswered') {
               goToNextQuestion();
           }
