@@ -255,7 +255,6 @@ export default function MemoryGameStage({ onSuccess, user }: Props) {
                   </div>
                 </div>
               )}
-               {isGameOver && <GameOverlay status={gameState} />}
             </div>
           </div>
 
@@ -329,6 +328,7 @@ export default function MemoryGameStage({ onSuccess, user }: Props) {
               </div>
           </div>
         </div>
+        {isGameOver && <GameOverlay status={gameState} />}
       </div>
 
       <Dialog open={isInstructionsOpen} onOpenChange={setInstructionsOpen}>

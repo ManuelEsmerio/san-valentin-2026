@@ -292,7 +292,7 @@ export default function CatchHeartsStage({ onSuccess, user }: { onSuccess: () =>
 
   return (
     <>
-      <div className="w-full flex flex-col items-center gap-6 animate-fade-in">
+      <div className="w-full relative flex flex-col items-center gap-6 animate-fade-in">
         <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div className="lg:col-span-8">
             <div className="relative overflow-hidden aspect-square flex flex-col items-center justify-center gap-6 rounded-2xl bg-card p-0 border-2 border-primary/10">
@@ -317,7 +317,6 @@ export default function CatchHeartsStage({ onSuccess, user }: { onSuccess: () =>
                   (gameState === "lost" || gameState === "won") && "opacity-10"
                 )} />
               )}
-              <GameOverlay status={gameState} onStart={handleWin} onRetry={startGame} score={score} highScore={highScore} />
             </div>
           </div>
 
@@ -391,6 +390,7 @@ export default function CatchHeartsStage({ onSuccess, user }: { onSuccess: () =>
             </div>
           </div>
         </div>
+        <GameOverlay status={gameState} onStart={handleWin} onRetry={startGame} score={score} highScore={highScore} />
       </div>
       
       <Dialog open={isInstructionsModalOpen} onOpenChange={setInstructionsModalOpen}>
