@@ -308,7 +308,6 @@ export default function GameStage({ onSuccess, user }: GameStageProps) {
                 size="lg"
               >
                 EMPEZAR JUEGO
-                <ChevronRight className="ml-2 h-5 w-5" />
               </Button>
             </div>
           )}
@@ -422,19 +421,19 @@ export default function GameStage({ onSuccess, user }: GameStageProps) {
       )}
       
       <Dialog open={isInstructionsModalOpen} onOpenChange={setInstructionsModalOpen}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-xl">
             <DialogHeader>
-                <DialogTitle className="text-2xl text-center">Desafío 1: Snake Game</DialogTitle>
+                <DialogTitle className="text-2xl text-center font-bold">Desafío 1: Snake Game</DialogTitle>
                  <DialogDescription asChild>
-                    <div className="text-center pt-4 space-y-2 text-sm text-muted-foreground">
+                    <div className="text-center pt-4 space-y-3 text-base text-muted-foreground">
                         <div>Usa las flechas del teclado (o los botones en pantalla) para mover la serpiente de corazones.</div>
                         <div>El objetivo es recolectar <span className="font-bold text-primary">{targetScore}</span> corazones sin chocar contigo misma.</div>
                         <div className="pt-2">¡Mucha suerte, mi chula!</div>
                     </div>
                 </DialogDescription>
             </DialogHeader>
-            <DialogFooter>
-                <Button onClick={startGame} className="w-full h-12 text-lg">¡Vamos!</Button>
+            <DialogFooter className="pt-4">
+                <Button onClick={startGame} className="w-full h-12 text-lg font-bold">¡Vamos!</Button>
             </DialogFooter>
         </DialogContent>
       </Dialog>
