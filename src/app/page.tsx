@@ -12,7 +12,7 @@ const stageInfo: Record<Stage, { step: number; title: string; subtitle: string }
   login: { step: 0, title: 'El Inicio', subtitle: 'Verifica tu amor para comenzar.' },
   welcome: { step: 0, title: 'Un Momento', subtitle: '' },
   game: { step: 1, title: 'Desafío 1: Snake Romance', subtitle: '' },
-  'catch-hearts': { step: 2, title: 'Desafío 2: Atrapa los Corazones', subtitle: 'Demuestra tu agilidad.' },
+  'catch-hearts': { step: 2, title: 'Desafío 2: Atrapa los Detalles del Amor', subtitle: 'Cada detalle cuenta en esta lluvia de amor.' },
   trivia: { step: 3, title: 'Desafío 3: Trivia', subtitle: 'Demuestra cuánto nos conocemos' },
   'memory-game': { step: 4, title: 'Desafío 4: Memoria de Recuerdos', subtitle: 'Encuentra los pares.' },
   puzzle: { step: 5, title: 'Desafío 5: Puzzle Fifteen', subtitle: 'Ordena los números para revelar la pista final' },
