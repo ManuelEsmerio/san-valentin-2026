@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -10,7 +11,10 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { CheckCircle2, RotateCcw, XCircle } from "lucide-react";
 import RomanticLetterModal from "./RomanticLetterModal";
-import { PlaceHolderImages, type ImagePlaceholder } from "@/lib/placeholder-images";
+import {
+  PlaceHolderImages,
+  type ImagePlaceholder,
+} from "@/lib/placeholder-images";
 import { cn } from "@/lib/utils";
 import CircularProgress from "./CircularProgress";
 
@@ -30,266 +34,51 @@ type MultipleChoiceQuestion = {
 };
 
 type OpenEndedQuestion = {
-    id: number;
-    type: 'open-ended';
-    question: string;
-    creatorAnswer: string;
-    image: string;
-    hint: string;
+  id: number;
+  type: "open-ended";
+  question: string;
+  creatorAnswer: string;
+  image: string;
+  hint: string;
 };
 
 type TriviaQuestion = MultipleChoiceQuestion | OpenEndedQuestion;
 type AnswerStatus = "unanswered" | "correct" | "incorrect";
 
+// Data moved outside component to prevent redeclaration
 const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
-  {
-    id: 1,
-    type: "multiple-choice",
-    question: "¿Quién es más competitivo en juegos de mesa?",
-    options: ["Yo", "Tú", "Los dos", "Ninguno"],
-    correctAnswer: "Yo",
-    image: "trivia-1",
-    hint: "Siempre hay alguien que no quiere perder 🎲",
-  },
-  {
-    id: 2,
-    type: "multiple-choice",
-    question: "¿Quién se roba más seguido la cobija?",
-    options: ["Yo", "Tú", "Ambos", "Nadie"],
-    correctAnswer: "Tú",
-    image: "trivia-2",
-    hint: "La lucha nocturna por sobrevivir al frío 🛏️",
-  },
-  {
-    id: 3,
-    type: "multiple-choice",
-    question: "¿Quién canta peor?",
-    options: ["Yo", "Tú", "Ambos desafinamos", "Nadie, somos estrellas"],
-    correctAnswer: "Ambos desafinamos",
-    image: "trivia-3",
-    hint: "El karaoke nunca miente 🎤",
-  },
-  {
-    id: 4,
-    type: "multiple-choice",
-    question: "¿Quién cocina mejor?",
-    options: ["Yo", "Tú", "Ambos", "Nadie, pedimos comida"],
-    correctAnswer: "Ambos",
-    image: "trivia-4",
-    hint: "El sazón nunca falla 🍳",
-  },
-  {
-    id: 6,
-    type: "multiple-choice",
-    question: "¿Quién nunca lava el baño?",
-    options: ["Yo", "Tú", "Ambos lo evitamos", "Siempre lo hace otro"],
-    correctAnswer: "Tú",
-    image: "trivia-6",
-    hint: "La misión imposible del aseo 🚽",
-  },
-  {
-    id: 7,
-    type: "multiple-choice",
-    question: "¿Quién ronca más fuerte?",
-    options: ["Yo", "Tú", "Ambos", "Nadie"],
-    correctAnswer: "Tú",
-    image: "trivia-7",
-    hint: "El concierto nocturno 🎶😴",
-  },
-  {
-    id: 8,
-    type: "multiple-choice",
-    question: "¿Quién es más distraído?",
-    options: ["Yo", "Tú", "Ambos", "Nadie"],
-    correctAnswer: "Yo",
-    image: "trivia-8",
-    hint: "El clásico: ‘¿y mis llaves?’ 🔑",
-  },
-  {
-    id: 9,
-    type: "multiple-choice",
-    question: "¿Quién es más enojón?",
-    options: ["Yo", "Tú", "Ambos", "Nadie"],
-    correctAnswer: "Ambos",
-    image: "trivia-9",
-    hint: "El que hace más caras 😡",
-  },
-  {
-    id: 11,
-    type: "multiple-choice",
-    question: "¿Quién llora de la nada al ver videos de animalitos?",
-    options: ["Yo", "Tú", "Ambos", "Nadie"],
-    correctAnswer: "Tú",
-    image: "trivia-11",
-    hint: "Los animalitos siempre ganan 🐶🐱",
-  },
-  {
-    id: 12,
-    type: "multiple-choice",
-    question: "¿Quién tiene una obsesión con las chichis del otro?",
-    options: ["Yo", "Tú", "Ambos", "Nadie"],
-    correctAnswer: "Ambos",
-    image: "trivia-12",
-    hint: "Una obsesión divertida 🤭",
-  },
-  {
-    id: 13,
-    type: "multiple-choice",
-    question: "¿Qué es lo que más valoro de nuestra relación?",
-    options: ["La confianza", "La comunicación", "Las acciones", "Todo lo anterior"],
-    correctAnswer: "Todo lo anterior",
-    image: "trivia-13",
-    hint: "Es la base de todo.",
-  },
-  {
-    id: 14,
-    type: "multiple-choice",
-    question: "¿Cómo describirías nuestra relación?",
-    options: ["Divertida", "Única", "Auténtica", "Todas las anteriores"],
-    correctAnswer: ["Divertida", "Única", "Auténtica", "Todas las anteriores"],
-    image: "trivia-14",
-    hint: "No hay respuesta incorrecta aquí.",
-  },
-  {
-    id: 16,
-    type: "multiple-choice",
-    question: "¿A quién le huelen más las patas?",
-    options: ["Tú", "Tú, también", "Definitivamente tú", "No hay duda: tú"],
-    correctAnswer: ["Tú", "Tú, también", "Definitivamente tú", "No hay duda: tú"],
-    image: "trivia-16",
-    hint: "Ni el aromatizante pudo contra eso 😂🦶",
-  },
-  {
-    id: 17,
-    type: "multiple-choice",
-    question: "¿Quién dura más tiempo en el baño?",
-    options: ["Tú", "Tú (con el celular)", "Tú, pero dices que ya sales", "Todas las anteriores"],
-    correctAnswer: "Todas las anteriores",
-    image: "trivia-17",
-    hint: "Según tú: ‘ya casi’ 🚿📱",
-  },
-  {
-    id: 18,
-    type: "multiple-choice",
-    question: "¿Quién es más pedorro?",
-    options: ["Tú", "Tú, pero lo niegas", "Tú y luego te haces el sorprendido", "Todas aplican"],
-    correctAnswer: "Todas aplican",
-    image: "trivia-18",
-    hint: "El amor todo lo soporta… incluso eso 💨😂",
-  },
-  {
-    id: 19,
-    type: "multiple-choice",
-    question: "¿Qué momento simple disfruto más contigo?",
-    options: ["Platicar sin prisa", "Reírnos de tonterías", "Estar en silencio", "Todo lo anterior"],
-    correctAnswer: "Todo lo anterior",
-    image: "trivia-19",
-    hint: "Lo simple también es especial.",
-  },
-  {
-    id: 21,
-    type: "multiple-choice",
-    question: "¿Qué significa para mí compartir este juego contigo?",
-    options: ["Un recuerdo", "Un detalle", "Un momento", "Un poco de todo"],
-    correctAnswer: "Un poco de todo",
-    image: "trivia-21",
-    hint: "Nada aquí es casual.",
-  },
-  {
-    id: 22,
-    type: "multiple-choice",
-    question: "¿A quién le da más hueva bañarse?",
-    options: ["Tú", "Tú (pero dices que ahorita)", "Tú, pero mañana seguro sí", "Todas las anteriores 👀"],
-    correctAnswer: "Todas las anteriores 👀",
-    image: "trivia-22",
-    hint: "El agua no muerde… pero parece que sí 😂🚿",
-  },
-  {
-    id: 23,
-    type: "multiple-choice",
-    question: "¿Qué es lo que más nos gusta hacer juntos?",
-    options: ["Ver películas", "Salir a comer", "Viajar", "Todo lo anterior"],
-    correctAnswer: "Todo lo anterior",
-    image: "trivia-23",
-    hint: "La mejor compañía para cualquier plan 🍿",
-  },
-  {
-    id: 24,
-    type: "multiple-choice",
-    question: "¿Cómo describirías nuestra relación?",
-    options: ["Divertida", "Única", "Auténtica", "Todas las anteriores"],
-    correctAnswer: ["Divertida", "Única", "Auténtica", "Todas las anteriores"],
-    image: "trivia-24",
-    hint: "No hay respuesta incorrecta aquí.",
-  },
+  { id: 1, type: 'multiple-choice', question: '¿Quién es más competitivo en juegos de mesa?', options: ['Yo', 'Tú', 'Los dos', 'Ninguno'], correctAnswer: 'Yo', image: 'trivia-1', hint: 'Siempre hay alguien que no quiere perder 🎲' },
+  { id: 2, type: 'multiple-choice', question: '¿Quién se roba más seguido la cobija?', options: ['Yo', 'Tú', 'Ambos', 'Nadie'], correctAnswer: 'Tú', image: 'trivia-2', hint: 'La lucha nocturna por sobrevivir al frío 🛏️' },
+  { id: 3, type: 'multiple-choice', question: '¿Quién canta peor?', options: ['Yo', 'Tú', 'Ambos desafinamos', 'Nadie, somos estrellas'], correctAnswer: 'Ambos desafinamos', image: 'trivia-3', hint: 'El karaoke nunca miente 🎤' },
+  { id: 4, type: 'multiple-choice', question: '¿Quién cocina mejor?', options: ['Yo', 'Tú', 'Ambos', 'Nadie, pedimos comida'], correctAnswer: 'Ambos', image: 'trivia-4', hint: 'El sazón nunca falla 🍳' },
+  { id: 6, type: 'multiple-choice', question: '¿Quién nunca lava el baño?', options: ['Yo', 'Tú', 'Ambos lo evitamos', 'Siempre lo hace otro'], correctAnswer: 'Tú', image: 'trivia-6', hint: 'La misión imposible del aseo 🚽' },
+  { id: 7, type: 'multiple-choice', question: '¿Quién ronca más fuerte?', options: ['Yo', 'Tú', 'Ambos', 'Nadie'], correctAnswer: 'Tú', image: 'trivia-7', hint: 'El concierto nocturno 🎶😴' },
+  { id: 8, type: 'multiple-choice', question: '¿Quién es más distraído?', options: ['Yo', 'Tú', 'Ambos', 'Nadie'], correctAnswer: 'Yo', image: 'trivia-8', hint: 'El clásico: ‘¿y mis llaves?’ 🔑' },
+  { id: 9, type: 'multiple-choice', question: '¿Quién es más enojón?', options: ['Yo', 'Tú', 'Ambos', 'Nadie'], correctAnswer: 'Ambos', image: 'trivia-9', hint: 'El que hace más caras 😡' },
+  { id: 11, type: 'multiple-choice', question: '¿Quién llora de la nada al ver videos de animalitos?', options: ['Yo', 'Tú', 'Ambos', 'Nadie'], correctAnswer: 'Tú', image: 'trivia-11', hint: 'Los animalitos siempre ganan 🐶🐱' },
+  { id: 12, type: 'multiple-choice', question: '¿Quién tiene una obsesión con las chichis del otro?', options: ['Yo', 'Tú', 'Ambos', 'Nadie'], correctAnswer: 'Ambos', image: 'trivia-12', hint: 'Una obsesión divertida 🤭' },
+  { id: 13, type: 'multiple-choice', question: '¿Qué es lo que más valoro de nuestra relación?', options: ['La confianza', 'La comunicación', 'Las acciones', 'Todo lo anterior'], correctAnswer: 'Todo lo anterior', image: 'trivia-13', hint: 'Es la base de todo.' },
+  { id: 14, type: 'multiple-choice', question: '¿Cómo describirías nuestra relación?', options: ['Divertida', 'Única', 'Auténtica', 'Todas las anteriores'], correctAnswer: ['Divertida', 'Única', 'Auténtica', 'Todas las anteriores'], image: 'trivia-14', hint: 'No hay respuesta incorrecta aquí.' },
+  { id: 16, type: 'multiple-choice', question: '¿A quién le huelen más las patas?', options: ['Tú', 'Tú, también', 'Definitivamente tú', 'No hay duda: tú'], correctAnswer: ['Tú', 'Tú, también', 'Definitivamente tú', 'No hay duda: tú'], image: 'trivia-16', hint: 'Ni el aromatizante pudo contra eso 😂🦶' },
+  { id: 17, type: 'multiple-choice', question: '¿Quién dura más tiempo en el baño?', options: ['Tú', 'Tú (con el celular)', 'Tú, pero dices que ya sales', 'Todas las anteriores'], correctAnswer: 'Todas las anteriores', image: 'trivia-17', hint: 'Según tú: ‘ya casi’ 🚿📱' },
+  { id: 18, type: 'multiple-choice', question: '¿Quién es más pedorro?', options: ['Tú', 'Tú, pero lo niegas', 'Tú y luego te haces el sorprendido', 'Todas aplican'], correctAnswer: 'Todas aplican', image: 'trivia-18', hint: 'El amor todo lo soporta… incluso eso 💨😂' },
+  { id: 19, type: 'multiple-choice', question: '¿Qué momento simple disfruto más contigo?', options: ['Platicar sin prisa', 'Reírnos de tonterías', 'Estar en silencio', 'Todo lo anterior'], correctAnswer: 'Todo lo anterior', image: 'trivia-19', hint: 'Lo simple también es especial.' },
+  { id: 22, type: "multiple-choice", question: "¿A quién le da más hueva bañarse?", options: ["Tú", "Tú (pero dices que ahorita)", "Tú, pero mañana seguro sí", "Todas las anteriores 👀"], correctAnswer: "Todas las anteriores 👀", image: "trivia-22", hint: "El agua no muerde… pero parece que sí 😂🚿",},
+  { id: 23, type: "multiple-choice", question: "¿Qué es lo que más nos gusta hacer juntos?", options: ["Ver películas", "Salir a comer", "Viajar", "Todo lo anterior"], correctAnswer: "Todo lo anterior", image: "trivia-23", hint: "La mejor compañía para cualquier plan 🍿",},
+  { id: 24, type: "multiple-choice", question: "¿Cómo describirías nuestra relación?", options: ["Divertida", "Única", "Auténtica", "Todas las anteriores"], correctAnswer: ["Divertida", "Única", "Auténtica", "Todas las anteriores"], image: "trivia-24", hint: "No hay respuesta incorrecta aquí.",},
+  { id: 21, type: "multiple-choice", question: "¿Qué significa para mí compartir este juego contigo?", options: ["Un recuerdo", "Un detalle", "Un momento", "Un poco de todo"], correctAnswer: "Un poco de todo", image: "trivia-21", hint: "Nada aquí es casual.",},
 ];
-
 const openEndedQuestions: OpenEndedQuestion[] = [
-    {
-        id: 25,
-        type: 'open-ended',
-        question: '¿Qué es lo que más valoras cuando te sientes en calma conmigo?',
-        creatorAnswer: 'Valoro que, aun con malentendidos, conversaciones incómodas o silencios, sigamos eligiendo quedarnos un momento más y no salir corriendo cuando algo duele.',
-        image: 'open-ended-1',
-        hint: 'Una pregunta sobre el presente y la paz.'
-    },
-    {
-        id: 26,
-        type: 'open-ended',
-        question: '¿Qué sientes que nos ha costado más últimamente?',
-        creatorAnswer: 'Siento que nos ha costado escucharnos de verdad, sin sentir que tenemos que defendernos o estar a la defensiva todo el tiempo.',
-        image: 'open-ended-2',
-        hint: 'Una reflexión sobre nuestra comunicación.'
-    },
-    {
-        id: 27,
-        type: 'open-ended',
-        question: '¿Qué necesitarías hoy para sentirte tranquila, sin presión?',
-        creatorAnswer: 'Estar presente, apoyar en lo que esté en mis manos y respetar tu ritmo, sin exigencias ni promesas vacías.',
-        image: 'open-ended-3',
-        hint: 'Una pregunta sobre el presente y la paz.'
-    }
+    { id: 25, type: 'open-ended', question: '¿Qué es lo que más valoras cuando te sientes en calma conmigo?', creatorAnswer: 'Valoro que, aun con malentendidos, conversaciones incómodas o silencios, sigamos eligiendo quedarnos un momento más y no salir corriendo cuando algo duele.', image: 'open-ended-1', hint: 'Una pregunta sobre el presente y la paz.' },
+    { id: 26, type: 'open-ended', question: '¿Qué sientes que nos ha costado más últimamente?', creatorAnswer: 'Siento que nos ha costado escucharnos de verdad, sin sentir que tenemos que defendernos o estar a la defensiva todo el tiempo.', image: 'open-ended-2', hint: 'Una reflexión sobre nuestra comunicación.' },
+    { id: 27, type: 'open-ended', question: '¿Qué necesitarías hoy para sentirte tranquila, sin presión?', creatorAnswer: 'Estar presente, apoyar en lo que esté en mis manos y respetar tu ritmo, sin exigencias ni promesas vacías.', image: 'open-ended-3', hint: 'Una pregunta sobre el presente y la paz.' }
 ];
 
 const LETTERS: Record<number, { title: string; content: string[]; imageIds: string[] }> = {
-  5: {
-    title: "Lo que más amo de ti…",
-    content: [
-      "Tu sonrisa, tu cariño y tu manera tan hermosa de querer hacen que cada día valga la pena. 💖",
-      "Aunque a veces no estemos de acuerdo y peleemos, yo te elijo a ti.",
-      "Gracias por tu paciencia, por entenderme cuando me cuesta explicarme, por quedarte incluso cuando no es fácil y por elegirnos una y otra vez.",
-      "A tu lado aprendí que el amor también es calma, apoyo y complicidad, y que también son pláticas incómodas, discusiones y peleas, pero siempre volver a escogernos.",
-    ],
-    imageIds: ["letter-1-img-1", "letter-1-img-2", "letter-1-img-3"],
-  },
-  10: {
-    title: "Mi recuerdo más preciado…",
-    content: [
-      "Tal vez no fue perfecto, pero fue real.",
-      "Los días que me quedé en Lagos solo con tal de verte, cuando todavía no conocía nada, pero sí tenía claro que quería conocerte a ti.",
-      "Tanto, que dormí en el suelo en casa de Edgar, hicimos carne asada y fueron días muy bonitos que siempre voy a apreciar profundamente.",
-      "Desde ese momento supe que algo especial estaba empezando entre nosotros. ✨",
-    ],
-    imageIds: ["letter-2-img-1", "letter-2-img-2", "letter-2-img-3"],
-  },
-  15: {
-    title: "Lo que quiero contigo…",
-    content: [
-      "Compartir risas, crear más recuerdos y seguir eligiéndonos todos los días,",
-      "en los días malos, cuando estemos cansados y sintamos que no podemos más, saber que estamos el uno para el otro, para apoyarnos y darnos la mano en esos momentos, sin importar lo que venga. 💕",
-    ],
-    imageIds: ["letter-3-img-1", "letter-3-img-2", "letter-3-img-3"],
-  },
-  20: {
-    title: "Lo que nos unió a pesar de la distancia…",
-    content: [
-      "Al principio, todo era pantalla y voz. Pero cada videollamada nos acercaba más, como si el tiempo y la distancia se hicieran pequeños cuando te veía sonreír.",
-      "Hablábamos de todo y de nada, y aun así cada conversación me hacía sentir más cerca de ti.",
-      "A veces me quedaba despierto solo para verte un ratito más, aunque fuera cansado, aunque fuera tarde… porque tú valías la pena.",
-      "Esas llamadas fueron el inicio de algo que hoy es mucho más grande: nosotros. 💞",
-    ],
-    imageIds: ["letter-4-img-1", "letter-4-img-2", "letter-4-img-3"],
-  },
+  5: { title: 'Lo que más amo de ti…', content: ['Tu sonrisa, tu cariño y tu manera tan hermosa de querer hacen que cada día valga la pena. 💖', 'Aunque a veces no estemos de acuerdo y peleemos, yo te elijo a ti.', 'Gracias por tu paciencia, por entenderme cuando me cuesta explicarme, por quedarte incluso cuando no es fácil y por elegirnos una y otra vez.', 'A tu lado aprendí que el amor también es calma, apoyo y complicidad, y que también son pláticas incómodas, discusiones y peleas, pero siempre volver a escogernos.'], imageIds: ['letter-1-img-1', 'letter-1-img-2', 'letter-1-img-3'] },
+  10: { title: 'Mi recuerdo más preciado…', content: ['Tal vez no fue perfecto, pero fue real.', 'Los días que me quedé en Lagos solo con tal de verte, cuando todavía no conocía nada, pero sí tenía claro que quería conocerte a ti.', 'Tanto, que dormí en el suelo en casa de Edgar, hicimos carne asada y fueron días muy bonitos que siempre voy a apreciar profundamente.', 'Desde ese momento supe que algo especial estaba empezando entre nosotros. ✨'], imageIds: ['letter-2-img-1', 'letter-2-img-2', 'letter-2-img-3'] },
+  15: { title: 'Lo que quiero contigo…', content: ['Compartir risas, crear más recuerdos y seguir eligiéndonos todos los días,', 'en los días malos, cuando estemos cansados y sintamos que no podemos más, saber que estamos el uno para el otro, para apoyarnos y darnos la mano en esos momentos, sin importar lo que venga. 💕'], imageIds: ['letter-3-img-1', 'letter-3-img-2', 'letter-3-img-3'] },
+  20: { title: 'Lo que nos unió a pesar de la distancia…', content: ['Al principio, todo era pantalla y voz. Pero cada videollamada nos acercaba más, como si el tiempo y la distancia se hicieran pequeños cuando te veía sonreír.', 'Hablábamos de todo y de nada, y aun así cada conversación me hacía sentir más cerca de ti.', 'A veces me quedaba despierto solo para verte un ratito más, aunque fuera cansado, aunque fuera tarde… porque tú valías la pena.', 'Esas llamadas fueron el inicio de algo que hoy es mucho más grande: nosotros. 💞'], imageIds: ['letter-4-img-1', 'letter-4-img-2', 'letter-4-img-3'] },
 };
 
 const MIN_CORRECT_ANSWERS = 8;
@@ -300,21 +89,66 @@ const shuffleArray = (array: any[]) => {
   while (currentIndex !== 0) {
     randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex--;
-    [array[currentIndex], array[randomIndex]] = [
-      array[randomIndex], array[currentIndex]];
+    [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
   }
   return array;
-}
+};
+
+const IntroScreen = memo(({ onStart }: { onStart: () => void }) => (
+  <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5 animate-fade-in">
+    <div className="p-6 sm:p-10 text-center flex flex-col items-center gap-4">
+      <span className="material-symbols-outlined text-primary text-6xl" style={{ fontVariationSettings: "'FILL' 1" }}>quiz</span>
+      <h2 className="text-foreground text-3xl font-bold leading-tight tracking-[-0.015em]">¡Bien hecho, mi chula!</h2>
+      <p className="text-muted-foreground max-w-md">Superaste el primer desafío y conseguiste la pista. Ahora, una trivia para demostrar cuánto nos conocemos. ¿Estás lista?</p>
+      <div className="flex flex-col sm:flex-row items-center gap-4 mt-4">
+        <Button onClick={onStart} className="h-12 px-8 text-lg font-bold shadow-lg shadow-primary/20" size="lg">¡Estoy lista!</Button>
+      </div>
+    </div>
+  </div>
+));
+IntroScreen.displayName = 'IntroScreen';
+
+const FailedScreen = memo(({ score, onRetry }: { score: number, onRetry: () => void }) => (
+    <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5">
+        <div className="px-4 sm:px-8 pb-10 pt-6 text-center">
+            <Alert className="animate-fade-in text-center border-destructive/50 text-destructive">
+                <span className="material-symbols-outlined text-5xl">sentiment_dissatisfied</span>
+                <AlertTitle className="font-headline mt-2 text-xl">¡Oh no! No pasaste la prueba.</AlertTitle>
+                <AlertDescription className="font-body space-y-4 mt-4 text-foreground/80">
+                    <p>Obtuviste {score} de {multipleChoiceQuestions.length}. Pero no te preocupes, el amor es también dar segundas oportunidades. ¡Inténtalo de nuevo!</p>
+                    <Button onClick={onRetry} className="w-full h-12 text-lg font-bold"><RotateCcw className="mr-2 h-4 w-4" /> Reintentar</Button>
+                </AlertDescription>
+            </Alert>
+        </div>
+    </div>
+));
+FailedScreen.displayName = 'FailedScreen';
+
+const FinishedScreen = memo(() => (
+    <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5">
+        <div className="px-4 sm:px-8 pb-10 pt-6">
+            <Alert className="animate-fade-in text-center border-green-500/50">
+                <span className="material-symbols-outlined text-primary text-5xl">check_circle</span>
+                <AlertTitle className="font-headline mt-2 text-xl text-green-600">¡Perfecto! ¡Sabía que lo sabrías todo!</AlertTitle>
+                <AlertDescription className="font-body space-y-4 mt-4 text-foreground/80">
+                    <p>Has completado el desafío. Cargando el siguiente paso...</p>
+                </AlertDescription>
+            </Alert>
+        </div>
+    </div>
+));
+FinishedScreen.displayName = 'FinishedScreen';
+
 
 export default function TriviaStage({ onSuccess }: TriviaStageProps) {
   const [questions, setQuestions] = useState<TriviaQuestion[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [score, setScore] = useState(0);
-  const [answerStatus, setAnswerStatus] = useState<AnswerStatus>('unanswered');
+  const [answerStatus, setAnswerStatus] = useState<AnswerStatus>("unanswered");
   const [stage, setStage] = useState<"intro" | "playing" | "failed" | "finished">("intro");
   const { toast } = useToast();
-  
+
   const [letterToShow, setLetterToShow] = useState<{ title: string; content: string[]; images: ImagePlaceholder[] } | null>(null);
   const [shownLetters, setShownLetters] = useState<Record<number, boolean>>({});
   const [flippedQuestions, setFlippedQuestions] = useState<Record<number, boolean>>({});
@@ -326,7 +160,7 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
     setCurrentQuestionIndex(0);
     setAnswers({});
     setScore(0);
-    setAnswerStatus('unanswered');
+    setAnswerStatus("unanswered");
     setStage("intro");
     setShownLetters({});
     setFlippedQuestions({});
@@ -335,28 +169,20 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
   useEffect(() => {
     setupTrivia();
   }, [setupTrivia]);
-  
+
   const showLetter = useCallback((letterKey: keyof typeof LETTERS) => {
-    if (LETTERS[letterKey] && !shownLetters[letterKey]) {
-      const letterData = LETTERS[letterKey];
-      const letterImages = letterData.imageIds
-        .map(id => PlaceHolderImages.find(img => img.id === id))
-        .filter((img): img is ImagePlaceholder => !!img);
-        
-      setLetterToShow({ ...letterData, images: letterImages });
-      setShownLetters(prev => ({ ...prev, [letterKey]: true }));
-      return true;
-    }
-    return false;
-  }, [shownLetters]);
+      if (LETTERS[letterKey] && !shownLetters[letterKey]) {
+        const letterData = LETTERS[letterKey];
+        const letterImages = letterData.imageIds.map(id => PlaceHolderImages.find(img => img.id === id)).filter((img): img is ImagePlaceholder => !!img);
+        setLetterToShow({ ...letterData, images: letterImages });
+        setShownLetters(prev => ({ ...prev, [letterKey]: true }));
+        return true;
+      }
+      return false;
+    }, [shownLetters]);
 
   const goToNextQuestion = useCallback(() => {
     setAnswerStatus("unanswered");
-
-    if (currentQuestionIndex === LAST_MCQ_INDEX) {
-      if (showLetter(20)) return;
-    }
-
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
@@ -366,16 +192,20 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
         setStage("failed");
       }
     }
-  }, [currentQuestionIndex, questions.length, score, showLetter]);
-
+  }, [currentQuestionIndex, questions.length, score]);
+  
   const handleNext = useCallback(() => {
-    if (answerStatus !== 'unanswered') {
-      goToNextQuestion();
-      return;
-    }
-
     const currentQuestion = questions[currentQuestionIndex];
     if (!currentQuestion) return;
+
+    if (answerStatus !== "unanswered") {
+        const isLastMCQ = currentQuestion.type === "multiple-choice" && questions[currentQuestionIndex + 1]?.type === "open-ended";
+        if (isLastMCQ) {
+            if (showLetter(20)) return; // Show letter, then on close it will advance
+        }
+        goToNextQuestion();
+        return;
+    }
 
     if (currentQuestion.type === 'open-ended') {
       if (flippedQuestions[currentQuestion.id]) {
@@ -418,242 +248,119 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
     }
   }, [answerStatus, answers, currentQuestionIndex, flippedQuestions, goToNextQuestion, questions, score, showLetter, toast]);
 
+
   const handleRetry = useCallback(() => {
     setupTrivia();
   }, [setupTrivia]);
 
   useEffect(() => {
     if (stage === "finished") {
-        const timer = setTimeout(() => {
-            onSuccess();
-        }, 3000); // 3-second delay before moving to the next stage
-        return () => clearTimeout(timer);
+      const timer = setTimeout(() => {
+        onSuccess();
+      }, 3000);
+      return () => clearTimeout(timer);
     }
   }, [stage, onSuccess]);
 
+  if (stage === "intro") return <IntroScreen onStart={() => setStage("playing")} />;
+  if (stage === "failed") return <FailedScreen score={score} onRetry={handleRetry} />;
+  if (stage === "finished") return <FinishedScreen />;
 
-  if (stage === "intro") {
-    return (
-      <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5 animate-fade-in">
-        <div className="p-6 sm:p-10 text-center flex flex-col items-center gap-4">
-            <span className="material-symbols-outlined text-primary text-6xl" style={{ fontVariationSettings: "'FILL' 1" }}>
-                quiz
-            </span>
-            <h2 className="text-foreground text-3xl font-bold leading-tight tracking-[-0.015em]">
-                ¡Bien hecho, mi chula!
-            </h2>
-            <p className="text-muted-foreground max-w-md">
-                Superaste el primer desafío y conseguiste la pista. Ahora, una trivia para demostrar cuánto nos conocemos. ¿Estás lista?
-            </p>
-            <div className="flex flex-col sm:flex-row items-center gap-4 mt-4">
-                <Button
-                    onClick={() => setStage('playing')}
-                    className="h-12 px-8 text-lg font-bold shadow-lg shadow-primary/20"
-                    size="lg"
-                >
-                    ¡Estoy lista!
-                </Button>
-            </div>
-        </div>
-      </div>
-    );
-  }
-  
-  if (stage === "failed") {
-    return (
-      <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5">
-        <div className="px-4 sm:px-8 pb-10 pt-6 text-center">
-            <Alert className="animate-fade-in text-center border-destructive/50 text-destructive">
-                <span className="material-symbols-outlined text-5xl">sentiment_dissatisfied</span>
-                <AlertTitle className="font-headline mt-2 text-xl">¡Oh no! No pasaste la prueba.</AlertTitle>
-                <AlertDescription className="font-body space-y-4 mt-4 text-foreground/80">
-                    <p>Obtuviste {score} de {multipleChoiceQuestions.length}. Pero no te preocupes, el amor es también dar segundas oportunidades. ¡Inténtalo de nuevo!</p>
-                    <Button onClick={handleRetry} className="w-full h-12 text-lg font-bold"><RotateCcw className="mr-2 h-4 w-4" /> Reintentar</Button>
-                </AlertDescription>
-            </Alert>
-        </div>
-      </div>
-    )
-  }
-
-  if (stage === "finished") {
-     return (
-        <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5">
-            <div className="px-4 sm:px-8 pb-10 pt-6">
-                <Alert className="animate-fade-in text-center border-green-500/50">
-                    <span className="material-symbols-outlined text-primary text-5xl">check_circle</span>
-                    <AlertTitle className="font-headline mt-2 text-xl text-green-600">¡Perfecto! ¡Sabía que lo sabrías todo!</AlertTitle>
-                    <AlertDescription className="font-body space-y-4 mt-4 text-foreground/80">
-                        <p>Has completado el desafío. Cargando el siguiente paso...</p>
-                    </AlertDescription>
-                </Alert>
-            </div>
-        </div>
-      )
-  }
-  
   const currentQuestion = questions[currentQuestionIndex];
-  if (!currentQuestion || stage !== 'playing' || !questions.length) {
-    return null;
+  if (!currentQuestion || stage !== "playing" || !questions.length) {
+    return null; // Or a loading state
   }
-  
-  const imagePlaceholder = PlaceHolderImages.find(img => img.id === currentQuestion.image);
+
+  const imagePlaceholder = PlaceHolderImages.find((img) => img.id === currentQuestion.image);
 
   return (
     <>
       <div className="w-full flex flex-col items-center gap-6">
-        {imagePlaceholder ? (
-          <div className="w-full flex flex-col md:flex-row items-start md:items-center gap-8">
-            <div className="w-full md:flex-1">
-              <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5">
-                <div className="relative w-full aspect-video rounded-t-xl overflow-hidden bg-black/20">
-                  <Image
-                    src={`${imagePlaceholder.imageUrl}?v=2`}
-                    alt={imagePlaceholder.description}
-                    data-ai-hint={imagePlaceholder.imageHint}
-                    fill
-                    className="object-contain"
-                    priority
-                  />
-                  {currentQuestion.type === "multiple-choice" && currentQuestion.category && (
-                    <div className="absolute bottom-4 left-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-bold">
-                      {currentQuestion.category}
-                    </div>
-                  )}
-                </div>
-                <div className="p-6">
-                  <h2 className="text-2xl font-bold text-center mb-2">{currentQuestion.question}</h2>
-                  <p className="text-center text-muted-foreground mb-6">{currentQuestion.hint}</p>
-                  
-                  {currentQuestion.type === 'multiple-choice' && (
-                    <RadioGroup
-                      onValueChange={(value) => setAnswers(prev => ({ ...prev, [currentQuestion.id]: value }))}
-                      value={answers[currentQuestion.id] || ""}
-                      className="grid grid-cols-1 sm:grid-cols-2 gap-3"
-                      disabled={answerStatus !== 'unanswered'}
-                    >
-                      {currentQuestion.options.map((option, index) => (
-                        <Label 
-                          key={`${option}-${index}`}
-                          htmlFor={`${option}-${index}`}
-                          className={cn(
-                            "flex items-center space-x-3 p-4 rounded-lg border-2 border-border has-[input:checked]:border-primary has-[input:checked]:bg-primary/5 cursor-pointer transition-all",
-                            answerStatus !== 'unanswered' &&
-                              (Array.isArray(currentQuestion.correctAnswer)
-                                ? currentQuestion.correctAnswer.includes(option)
-                                : currentQuestion.correctAnswer === option) &&
-                              "border-green-500 bg-green-500/5",
-                            answerStatus === 'incorrect' && answers[currentQuestion.id] === option && "border-destructive bg-destructive/5"
-                          )}
-                        >
-                          <RadioGroupItem value={option} id={`${option}-${index}`} disabled={answerStatus !== 'unanswered'} />
-                          <span className="font-body text-base flex-1">{option}</span>
-                        </Label>
-                      ))}
-                    </RadioGroup>
-                  )}
-                  {currentQuestion.type === 'open-ended' && (
-                    <div className="pt-2 [perspective:1000px]">
-                      <div
-                          className={cn(
-                              "relative w-full min-h-[160px] [transform-style:preserve-3d] transition-transform duration-1000",
-                              flippedQuestions[currentQuestion.id] && "[transform:rotateY(180deg)]"
-                          )}
-                      >
-                          <div className="absolute w-full h-full [backface-visibility:hidden]">
-                              <Textarea
-                              placeholder="Escribe tu respuesta aquí, mi chula..."
-                              className="min-h-[160px] text-base"
-                              value={answers[currentQuestion.id] || ""}
-                              onChange={(e) => setAnswers(prev => ({ ...prev, [currentQuestion.id]: e.target.value }))}
-                              disabled={!!flippedQuestions[currentQuestion.id]}
-                              />
-                          </div>
-
-                          <div className="absolute w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] bg-primary/10 p-6 rounded-lg flex flex-col justify-center items-center text-center">
-                              <p className="text-foreground/80 italic text-lg">
-                                  &ldquo;{currentQuestion.creatorAnswer}&rdquo;
-                              </p>
-                          </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="w-full md:w-auto flex justify-center md:pl-8">
-                <CircularProgress current={currentQuestionIndex + 1} total={questions.length} />
-            </div>
-          </div>
-        ) : (
-          <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5">
-            <div className="flex flex-col-reverse md:flex-row items-center p-6 md:p-8 gap-8">
-              <div className="w-full flex-1">
-                <h2 className="text-2xl font-bold mb-2">{currentQuestion.question}</h2>
-                <p className="text-muted-foreground mb-6">{currentQuestion.hint}</p>
-
-                {currentQuestion.type === 'multiple-choice' && (
-                  <RadioGroup
-                    onValueChange={(value) => setAnswers(prev => ({ ...prev, [currentQuestion.id]: value }))}
-                    value={answers[currentQuestion.id] || ""}
-                    className="grid grid-cols-1 sm:grid-cols-2 gap-3"
-                    disabled={answerStatus !== 'unanswered'}
-                  >
-                    {currentQuestion.options.map((option, index) => (
-                      <Label 
-                        key={`${option}-${index}`}
-                        htmlFor={`${option}-${index}`}
-                        className={cn(
-                          "flex items-center space-x-3 p-4 rounded-lg border-2 border-border has-[input:checked]:border-primary has-[input:checked]:bg-primary/5 cursor-pointer transition-all",
-                          answerStatus !== 'unanswered' &&
-                            (Array.isArray(currentQuestion.correctAnswer)
-                              ? currentQuestion.correctAnswer.includes(option)
-                              : currentQuestion.correctAnswer === option) &&
-                            "border-green-500 bg-green-500/5",
-                          answerStatus === 'incorrect' && answers[currentQuestion.id] === option && "border-destructive bg-destructive/5"
+        <div className="w-full flex flex-col lg:flex-row items-start gap-8">
+            {imagePlaceholder && (
+                <div className="w-full lg:w-5/12 lg:sticky lg:top-24">
+                    <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-black/20 shadow-xl border border-primary/10">
+                        <Image
+                            src={`${imagePlaceholder.imageUrl}?v=2`}
+                            alt={imagePlaceholder.description}
+                            data-ai-hint={imagePlaceholder.imageHint}
+                            fill
+                            className="object-contain"
+                            priority
+                        />
+                         {currentQuestion.type === "multiple-choice" && currentQuestion.category && (
+                            <div className="absolute bottom-4 left-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-bold">
+                            {currentQuestion.category}
+                            </div>
                         )}
-                      >
-                        <RadioGroupItem value={option} id={`${option}-${index}`} disabled={answerStatus !== 'unanswered'} />
-                        <span className="font-body text-base flex-1">{option}</span>
-                      </Label>
-                    ))}
-                  </RadioGroup>
-                )}
+                    </div>
+                </div>
+            )}
 
-                {currentQuestion.type === 'open-ended' && (
-                  <div className="pt-2 [perspective:1000px]">
-                      <div
-                          className={cn(
-                              "relative w-full min-h-[160px] [transform-style:preserve-3d] transition-transform duration-1000",
-                              flippedQuestions[currentQuestion.id] && "[transform:rotateY(180deg)]"
-                          )}
-                      >
-                          <div className="absolute w-full h-full [backface-visibility:hidden]">
-                              <Textarea
-                              placeholder="Escribe tu respuesta aquí, mi chula..."
-                              className="min-h-[160px] text-base"
-                              value={answers[currentQuestion.id] || ""}
-                              onChange={(e) => setAnswers(prev => ({ ...prev, [currentQuestion.id]: e.target.value }))}
-                              disabled={!!flippedQuestions[currentQuestion.id]}
-                              />
-                          </div>
+            <div className={cn("w-full flex flex-col gap-6", imagePlaceholder ? "lg:w-7/12" : "lg:w-full")}>
+                <div className="flex justify-center">
+                     <CircularProgress current={currentQuestionIndex + 1} total={questions.length} />
+                </div>
+                <div className="bg-card rounded-xl shadow-lg border border-border p-6">
+                    <h2 className="text-2xl font-bold text-center mb-2">{currentQuestion.question}</h2>
+                    <p className="text-center text-muted-foreground mb-6">{currentQuestion.hint}</p>
 
-                          <div className="absolute w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] bg-primary/10 p-6 rounded-lg flex flex-col justify-center items-center text-center">
-                              <p className="text-foreground/80 italic text-lg">
-                                  &ldquo;{currentQuestion.creatorAnswer}&rdquo;
-                              </p>
-                          </div>
-                      </div>
-                  </div>
-                )}
-              </div>
-              
-              <div className="w-full md:w-auto md:pl-8 md:border-l border-border flex justify-center">
-                <CircularProgress current={currentQuestionIndex + 1} total={questions.length} />
-              </div>
+                    {currentQuestion.type === 'multiple-choice' && (
+                        <RadioGroup
+                            onValueChange={(value) => setAnswers(prev => ({ ...prev, [currentQuestion.id]: value }))}
+                            value={answers[currentQuestion.id] || ""}
+                            className="grid grid-cols-1 sm:grid-cols-2 gap-3"
+                            disabled={answerStatus !== 'unanswered'}
+                        >
+                            {currentQuestion.options.map((option, index) => (
+                            <Label 
+                                key={`${option}-${index}`}
+                                htmlFor={`${option}-${index}`}
+                                className={cn(
+                                "flex items-center space-x-3 p-4 rounded-lg border-2 border-border has-[input:checked]:border-primary has-[input:checked]:bg-primary/5 cursor-pointer transition-all",
+                                answerStatus !== 'unanswered' &&
+                                    (Array.isArray(currentQuestion.correctAnswer)
+                                    ? currentQuestion.correctAnswer.includes(option)
+                                    : currentQuestion.correctAnswer === option) &&
+                                    "border-green-500 bg-green-500/5",
+                                answerStatus === 'incorrect' && answers[currentQuestion.id] === option && "border-destructive bg-destructive/5"
+                                )}
+                            >
+                                <RadioGroupItem value={option} id={`${option}-${index}`} disabled={answerStatus !== 'unanswered'} />
+                                <span className="font-body text-base flex-1">{option}</span>
+                            </Label>
+                            ))}
+                        </RadioGroup>
+                    )}
+                    {currentQuestion.type === 'open-ended' && (
+                        <div className="pt-2 [perspective:1000px]">
+                            <div
+                                className={cn(
+                                    "relative w-full min-h-[160px] [transform-style:preserve-3d] transition-transform duration-1000",
+                                    flippedQuestions[currentQuestion.id] && "[transform:rotateY(180deg)]"
+                                )}
+                            >
+                                <div className="absolute w-full h-full [backface-visibility:hidden]">
+                                    <Textarea
+                                    placeholder="Escribe tu respuesta aquí, mi chula..."
+                                    className="min-h-[160px] text-base"
+                                    value={answers[currentQuestion.id] || ""}
+                                    onChange={(e) => setAnswers(prev => ({ ...prev, [currentQuestion.id]: e.target.value }))}
+                                    disabled={!!flippedQuestions[currentQuestion.id]}
+                                    />
+                                </div>
+
+                                <div className="absolute w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] bg-primary/10 p-6 rounded-lg flex flex-col justify-center items-center text-center">
+                                    <p className="text-foreground/80 italic text-lg">
+                                        &ldquo;{currentQuestion.creatorAnswer}&rdquo;
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
             </div>
-          </div>
-        )}
+        </div>
 
         {answerStatus !== 'unanswered' ? (
           <div className={cn(
@@ -688,7 +395,11 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
         letter={letterToShow}
         onClose={() => {
           setLetterToShow(null);
-          if (answerStatus !== 'unanswered') {
+          // Only advance if a letter was shown after an answer was submitted
+          const isMCQ = questions[currentQuestionIndex].type === "multiple-choice";
+          const isLastMCQ = isMCQ && questions[currentQuestionIndex + 1]?.type === "open-ended";
+
+          if (isLastMCQ || answerStatus !== 'unanswered') {
               goToNextQuestion();
           }
         }}
