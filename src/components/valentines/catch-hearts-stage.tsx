@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
-import { Heart, Trophy, Clock, Info, Gamepad2, Lock, LockOpen } from 'lucide-react';
+import { Heart, Clock, Info, Gamepad2, Lock, LockOpen } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import SimpleCircularProgress from './SimpleCircularProgress';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -53,7 +53,7 @@ const GameOverlay = ({ status, onStart, onRetry, score, highScore }: { status: G
   if (status !== 'won' && status !== 'lost') return null;
 
   const isWon = status === 'won';
-  const Icon = isWon ? Trophy : 'replay';
+  const Icon = isWon ? 'emoji_events' : 'replay';
   const title = isWon ? '¡Lo lograste!' : '¡Se acabó el tiempo!';
   const buttonText = isWon ? 'Ver Siguiente Pista' : 'Reintentar';
 
@@ -341,7 +341,7 @@ export default function CatchHeartsStage({ onSuccess, user }: { onSuccess: () =>
             <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-2xl flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-                  <Trophy className="w-5 h-5" />
+                  <span className="material-symbols-outlined text-2xl">trophy</span>
                 </div>
                 <div>
                   <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground block">Mejor Récord</span>
