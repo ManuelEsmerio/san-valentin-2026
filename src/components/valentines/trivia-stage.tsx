@@ -20,6 +20,7 @@ import CircularProgress from "./CircularProgress";
 
 type TriviaStageProps = {
   onSuccess: () => void;
+  user: string | null;
 };
 
 type MultipleChoiceQuestion = {
@@ -94,14 +95,21 @@ const shuffleArray = (array: any[]) => {
   return array;
 };
 
-const IntroScreen = memo(({ onStart }: { onStart: () => void }) => (
+const IntroScreen = memo(({ onStart, onSkip, user }: { onStart: () => void; onSkip: () => void; user: string | null; }) => (
   <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5 animate-fade-in">
     <div className="p-6 sm:p-10 text-center flex flex-col items-center gap-4">
       <span className="material-symbols-outlined text-primary text-6xl" style={{ fontVariationSettings: "'FILL' 1" }}>quiz</span>
       <h2 className="text-foreground text-3xl font-bold leading-tight tracking-[-0.015em]">¡Bien hecho, mi chula!</h2>
-      <p className="text-muted-foreground max-w-md">Superaste el primer desafío y conseguiste la pista. Ahora, una trivia para demostrar cuánto nos conocemos. ¿Estás lista?</p>
+      <p className="text-muted-foreground max-w-md">
+        ¡Vas muy bien! Has superado los dos primeros desafíos. Ahora, una trivia para ver qué tanto nos conocemos. ¿Lista?
+      </p>
       <div className="flex flex-col sm:flex-row items-center gap-4 mt-4">
         <Button onClick={onStart} className="h-12 px-8 text-lg font-bold shadow-lg shadow-primary/20" size="lg">¡Estoy lista!</Button>
+        {user === 'manuel' && (
+            <Button onClick={onSkip} variant="outline" className="h-12">
+                Saltar Trivia (Dev)
+            </Button>
+        )}
       </div>
     </div>
   </div>
@@ -140,7 +148,7 @@ const FinishedScreen = memo(() => (
 FinishedScreen.displayName = 'FinishedScreen';
 
 
-export default function TriviaStage({ onSuccess }: TriviaStageProps) {
+export default function TriviaStage({ onSuccess, user }: TriviaStageProps) {
   const [questions, setQuestions] = useState<TriviaQuestion[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
@@ -262,7 +270,7 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
     }
   }, [stage, onSuccess]);
 
-  if (stage === "intro") return <IntroScreen onStart={() => setStage("playing")} />;
+  if (stage === "intro") return <IntroScreen onStart={() => setStage("playing")} onSkip={onSuccess} user={user} />;
   if (stage === "failed") return <FailedScreen score={score} onRetry={handleRetry} />;
   if (stage === "finished") return <FinishedScreen />;
 
@@ -275,7 +283,7 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
 
   return (
     <>
-      <div className="w-full flex flex-col items-center gap-6 animate-fade-in">
+      <div className="w-full animate-fade-in">
         <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Left Column: Trivia Content */}
           <div className="lg:col-span-8">
