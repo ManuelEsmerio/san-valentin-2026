@@ -191,12 +191,13 @@ export default function MemoryGameStage({ onSuccess }: Props) {
     const isWon = status === 'won';
     const title = isWon ? "¡Victoria!" : "¡Se acabó el tiempo!";
     const description = isWon ? `Completado en ${GAME_DURATION - timeLeft}s con ${moves} movimientos.` : "No te preocupes, ¡inténtalo de nuevo!";
+    const icon = isWon ? 'auto_awesome' : 'replay';
 
     return (
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex flex-col items-center justify-center text-center p-4 z-10 animate-fade-in">
         <div className="bg-card p-8 rounded-2xl shadow-2xl max-w-sm w-full">
             <div className={cn("h-16 w-16 mx-auto mb-4 rounded-full flex items-center justify-center", isWon ? "bg-green-100 dark:bg-green-900/30" : "bg-primary/10")}>
-                <span className="material-symbols-outlined text-4xl" style={{color: isWon ? 'var(--color-green-500)' : 'var(--color-primary)'}}>{isWon ? 'celebration' : 'replay'}</span>
+                <span className={cn("material-symbols-outlined text-4xl", isWon ? "text-green-500" : "text-primary")}>{icon}</span>
             </div>
             <h3 className="text-2xl font-bold text-foreground mb-2">{title}</h3>
             <p className="text-muted-foreground mb-6">{description}</p>
@@ -213,114 +214,113 @@ export default function MemoryGameStage({ onSuccess }: Props) {
 
   return (
     <>
-      <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 animate-fade-in">
-        <div className="lg:col-span-8">
-          <div className={cn("relative overflow-hidden aspect-square flex flex-col items-center justify-center gap-6 rounded-2xl bg-card p-0 border-2 border-primary/10",
-             isGameOver && "opacity-50"
-          )}>
-            <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:30px_30px]"></div>
+      <div className="w-full relative">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-fade-in">
+          <div className="lg:col-span-8">
+            <div className={cn("relative overflow-hidden aspect-square flex flex-col items-center justify-center gap-6 rounded-2xl bg-card p-0 border-2 border-primary/10")}>
+              <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:30px_30px]"></div>
 
-            {gameState === 'idle' && (
-              <div className="flex flex-col items-center gap-4 z-10 text-center animate-fade-in p-8">
-                <div className="relative bg-background w-20 h-20 rounded-2xl flex items-center justify-center shadow-lg border border-primary/10">
-                  <Gamepad2 className="text-primary h-10 w-10" />
+              {gameState === 'idle' && (
+                <div className="flex flex-col items-center gap-4 z-10 text-center animate-fade-in p-8">
+                  <div className="relative bg-background w-20 h-20 rounded-2xl flex items-center justify-center shadow-lg border border-primary/10">
+                    <Gamepad2 className="text-primary h-10 w-10" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-foreground pt-4">Memoria de Recuerdos</h3>
+                  <p className="max-w-xs text-muted-foreground">Para seguir avanzando, debes de completar este desafío.</p>
+                  <Button onClick={() => setInstructionsOpen(true)} className="mt-6 h-12 px-8 rounded-lg text-base font-bold tracking-wider shadow-lg shadow-primary/20" size="lg">
+                    Empezar Desafío
+                  </Button>
                 </div>
-                <h3 className="text-2xl font-bold text-foreground pt-4">Memoria de Recuerdos</h3>
-                <p className="max-w-xs text-muted-foreground">Para seguir avanzando, debes de completar este desafío.</p>
-                <Button onClick={() => setInstructionsOpen(true)} className="mt-6 h-12 px-8 rounded-lg text-base font-bold tracking-wider shadow-lg shadow-primary/20" size="lg">
-                  Empezar Desafío
-                </Button>
-              </div>
-            )}
-            
-            {(gameState === 'playing' || isGameOver) && (
-              <div className="p-4 sm:p-6 w-full h-full">
-                <div className="grid grid-cols-4 sm:grid-cols-6 gap-4">
-                  {cards.map((card, index) => (
-                    <MemoryCard
-                      key={index}
-                      card={card}
-                      onClick={() => handleCardClick(index)}
-                      isDisabled={isChecking || isGameOver}
-                    />
-                  ))}
+              )}
+              
+              {(gameState === 'playing' || isGameOver) && (
+                <div className="p-4 sm:p-6 w-full h-full">
+                  <div className="grid grid-cols-4 sm:grid-cols-6 gap-6">
+                    {cards.map((card, index) => (
+                      <MemoryCard
+                        key={index}
+                        card={card}
+                        onClick={() => handleCardClick(index)}
+                        isDisabled={isChecking || isGameOver}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="lg:col-span-4 space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+                <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-2xl flex flex-col items-center justify-center text-center">
+                  <SimpleCircularProgress progress={(matchedPairs / TOTAL_PAIRS) * 100} size={80} strokeWidth={6}>
+                    <Heart className="h-6 w-6 text-primary" />
+                  </SimpleCircularProgress>
+                  <span className="mt-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">PARES</span>
+                  <span className="text-2xl font-bold text-foreground">{matchedPairs}/{TOTAL_PAIRS}</span>
+                </div>
+                <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-2xl flex flex-col items-center justify-center text-center">
+                  <SimpleCircularProgress progress={(timeLeft / GAME_DURATION) * 100} size={80} strokeWidth={6}>
+                    <Timer className="h-6 w-6 text-primary" />
+                  </SimpleCircularProgress>
+                  <span className="mt-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">TIEMPO</span>
+                  <span className="text-2xl font-bold text-foreground">{timeLeft}s</span>
                 </div>
               </div>
-            )}
-            
-            {isGameOver && <GameOverlay status={gameState} />}
+              
+              <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-2xl flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                    <Trophy className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground block">Mejor Tiempo</span>
+                    <span className="text-lg font-bold text-foreground">{bestTime !== null ? `${bestTime}s` : '-'}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className={cn(
+                "bg-card/50 dark:bg-zinc-800/30 p-4 rounded-2xl border border-dashed transition-colors",
+                gameState === 'won' ? "border-green-500/50" : "border-primary/20"
+              )}>
+                <div className="flex items-center gap-3 mb-2">
+                  <div className={cn(
+                    "w-8 h-8 rounded-full flex items-center justify-center transition-colors",
+                    gameState === 'won' ? "bg-green-500/10 text-green-500" : "bg-muted text-muted-foreground"
+                  )}>
+                    {gameState === 'won' ? <LockOpen className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
+                  </div>
+                  <h3 className={cn(
+                    "font-bold transition-colors",
+                    gameState === 'won' ? "text-green-600 dark:text-green-400" : "text-foreground"
+                  )}>
+                    {gameState === 'won' ? 'Pista 4: Desbloqueada' : 'Pista 4: Bloqueada'}
+                  </h3>
+                </div>
+                <p className="text-sm text-muted-foreground italic pl-11 mb-4">
+                  "Los recuerdos correctos ordenan la mente y abren el camino."
+                </p>
+                <div className="pl-11">
+                    <div className="flex justify-between items-center text-xs font-medium text-muted-foreground mb-1">
+                        <p>{gameState === 'won' ? 'DESBLOQUEADO' : 'PROGRESO'}</p>
+                        <p>{Math.round(hintProgress)}%</p>
+                    </div>
+                    <div className="h-1.5 w-full bg-muted rounded-full">
+                        <div className={cn("h-full rounded-full", gameState === 'won' ? "bg-green-500" : "bg-primary")} style={{ width: `${hintProgress}%` }} />
+                    </div>
+                </div>
+              </div>
+              
+              <div className="p-3 bg-primary/5 rounded-lg border border-primary/10">
+                  <div className="flex gap-2 items-center text-xs font-medium text-primary">
+                      <Info className="h-4 w-4 shrink-0"/>
+                      Encuentra todos los pares de cartas antes de que se acabe el tiempo.
+                  </div>
+              </div>
           </div>
         </div>
-
-        <div className="lg:col-span-4 space-y-6">
-          <div className="grid grid-cols-2 gap-4">
-              <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-2xl flex flex-col items-center justify-center text-center">
-                <SimpleCircularProgress progress={(matchedPairs / TOTAL_PAIRS) * 100} size={80} strokeWidth={6}>
-                  <Heart className="h-6 w-6 text-primary" />
-                </SimpleCircularProgress>
-                <span className="mt-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">PARES</span>
-                <span className="text-2xl font-bold text-foreground">{matchedPairs}/{TOTAL_PAIRS}</span>
-              </div>
-              <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-2xl flex flex-col items-center justify-center text-center">
-                <SimpleCircularProgress progress={(timeLeft / GAME_DURATION) * 100} size={80} strokeWidth={6}>
-                  <Timer className="h-6 w-6 text-primary" />
-                </SimpleCircularProgress>
-                <span className="mt-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">TIEMPO</span>
-                <span className="text-2xl font-bold text-foreground">{timeLeft}s</span>
-              </div>
-            </div>
-            
-            <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-2xl flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-                  <Trophy className="w-5 h-5" />
-                </div>
-                <div>
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground block">Mejor Tiempo</span>
-                  <span className="text-lg font-bold text-foreground">{bestTime !== null ? `${bestTime}s` : '-'}</span>
-                </div>
-              </div>
-            </div>
-            
-            <div className={cn(
-              "bg-card/50 dark:bg-zinc-800/30 p-4 rounded-2xl border border-dashed transition-colors",
-              gameState === 'won' ? "border-green-500/50" : "border-primary/20"
-            )}>
-              <div className="flex items-center gap-3 mb-2">
-                <div className={cn(
-                  "w-8 h-8 rounded-full flex items-center justify-center transition-colors",
-                  gameState === 'won' ? "bg-green-500/10 text-green-500" : "bg-muted text-muted-foreground"
-                )}>
-                  {gameState === 'won' ? <LockOpen className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
-                </div>
-                <h3 className={cn(
-                  "font-bold transition-colors",
-                  gameState === 'won' ? "text-green-600 dark:text-green-400" : "text-foreground"
-                )}>
-                  {gameState === 'won' ? 'Pista 4: Desbloqueada' : 'Pista 4: Bloqueada'}
-                </h3>
-              </div>
-              <p className="text-sm text-muted-foreground italic pl-11 mb-4">
-                "Los recuerdos correctos ordenan la mente y abren el camino."
-              </p>
-              <div className="pl-11">
-                  <div className="flex justify-between items-center text-xs font-medium text-muted-foreground mb-1">
-                      <p>{gameState === 'won' ? 'DESBLOQUEADO' : 'PROGRESO'}</p>
-                      <p>{Math.round(hintProgress)}%</p>
-                  </div>
-                  <div className="h-1.5 w-full bg-muted rounded-full">
-                      <div className={cn("h-full rounded-full", gameState === 'won' ? "bg-green-500" : "bg-primary")} style={{ width: `${hintProgress}%` }} />
-                  </div>
-              </div>
-            </div>
-            
-            <div className="p-3 bg-primary/5 rounded-lg border border-primary/10">
-                <div className="flex gap-2 items-center text-xs font-medium text-primary">
-                    <Info className="h-4 w-4 shrink-0"/>
-                    Encuentra todos los pares de cartas antes de que se acabe el tiempo.
-                </div>
-            </div>
-        </div>
+        {isGameOver && <GameOverlay status={gameState} />}
       </div>
 
       <Dialog open={isInstructionsOpen} onOpenChange={setInstructionsOpen}>

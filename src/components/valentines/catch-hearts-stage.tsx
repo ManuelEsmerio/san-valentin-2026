@@ -61,7 +61,7 @@ const GameOverlay = ({ status, onStart, onRetry, score, highScore }: { status: G
     <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex flex-col items-center justify-center text-center p-4 z-10 animate-fade-in">
       <div className="bg-card p-8 rounded-2xl shadow-2xl max-w-sm w-full">
         <div className={cn("h-16 w-16 mx-auto mb-4 rounded-full flex items-center justify-center", isWon ? "bg-green-100 dark:bg-green-900/30" : "bg-primary/10")}>
-            <span className="material-symbols-outlined text-4xl" style={{color: isWon ? 'var(--color-green-500)' : 'var(--color-primary)'}}>{Icon}</span>
+            <span className="material-symbols-outlined text-4xl" style={{color: isWon ? 'hsl(var(--chart-2))' : 'hsl(var(--primary))'}}>{Icon}</span>
         </div>
         <h3 className="text-2xl font-bold text-foreground mb-2">{title}</h3>
         <p className="text-muted-foreground mb-1">Tu puntaje: <span className="font-bold text-foreground">{score}</span></p>
