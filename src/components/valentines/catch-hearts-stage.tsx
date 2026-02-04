@@ -77,6 +77,11 @@ export default function CatchHeartsStage({ onSuccess }: { onSuccess: () => void 
   const [highScore, setHighScore] = useState(0);
   const [isInstructionsModalOpen, setInstructionsModalOpen] = useState(false);
 
+  const scoreRef = useRef(score);
+  useEffect(() => {
+    scoreRef.current = score;
+  }, [score]);
+
   const gameLoopRef = useRef<number>();
   const itemsRef = useRef<Item[]>([]);
   const catcherXRef = useRef(0);
@@ -111,7 +116,7 @@ export default function CatchHeartsStage({ onSuccess }: { onSuccess: () => void 
     itemsRef.current = [];
     nextItemIdRef.current = 0;
     if (canvasRef.current) {
-        catcherXRef.current = canvasRef.current.width / 2;
+        catcherXRef.current = canvasRef.current.getBoundingClientRect().width / 2;
     }
   }, []);
 
@@ -131,7 +136,6 @@ export default function CatchHeartsStage({ onSuccess }: { onSuccess: () => void 
   }, [updateHighScore]);
 
   const getRandomItemType = (currentScore: number): ItemType => {
-      // Progressive difficulty: negative items become more common as score increases
       const negativeItemChance = Math.min(0.4, 0.20 + (currentScore / TARGET_SCORE) * 0.2);
       const rand = Math.random();
 
@@ -152,14 +156,14 @@ export default function CatchHeartsStage({ onSuccess }: { onSuccess: () => void 
       setTimeLeft(prevTime => {
         if (prevTime <= 1) {
           clearInterval(timerId);
-          handleGameEnd(score);
+          handleGameEnd(scoreRef.current);
           return 0;
         }
         return prevTime - 1;
       });
     }, 1000);
     return () => clearInterval(timerId);
-  }, [gameState, score, handleGameEnd]);
+  }, [gameState, handleGameEnd]);
 
   useEffect(() => {
     if (gameState !== 'playing') {
@@ -174,20 +178,22 @@ export default function CatchHeartsStage({ onSuccess }: { onSuccess: () => void 
     
     const dpr = window.devicePixelRatio || 1;
     const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width * dpr;
-    canvas.height = rect.height * dpr;
-    ctx.scale(dpr, dpr);
-    catcherXRef.current = rect.width / 2;
-
+    if (canvas.width !== rect.width * dpr || canvas.height !== rect.height * dpr) {
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
+    }
+    
     const gameLoop = (timestamp: number) => {
-      if (gameState !== 'playing') return;
+      if (gameState !== 'playing' || !canvasRef.current) return;
 
-      const baseSpeed = 2 + (score / 100);
-      const spawnInterval = Math.max(200, 500 - (score / 10));
+      const currentScore = scoreRef.current;
+      const baseSpeed = 2 + (currentScore / 100);
+      const spawnInterval = Math.max(200, 500 - (currentScore / 10));
 
       if (timestamp - lastSpawnTimeRef.current > spawnInterval) { 
         lastSpawnTimeRef.current = timestamp;
-        const type = getRandomItemType(score);
+        const type = getRandomItemType(currentScore);
         const config = ITEM_CONFIG[type];
         itemsRef.current.push({
           id: nextItemIdRef.current++,
@@ -229,8 +235,15 @@ export default function CatchHeartsStage({ onSuccess }: { onSuccess: () => void 
     
     gameLoopRef.current = requestAnimationFrame(gameLoop);
 
-    const handleMouseMove = (e: MouseEvent) => catcherXRef.current = e.clientX - canvas.getBoundingClientRect().left;
-    const handleTouchMove = (e: TouchEvent) => { e.preventDefault(); catcherXRef.current = e.touches[0].clientX - canvas.getBoundingClientRect().left; };
+    const handleMouseMove = (e: MouseEvent) => {
+      if(!canvasRef.current) return;
+      catcherXRef.current = e.clientX - canvasRef.current.getBoundingClientRect().left;
+    }
+    const handleTouchMove = (e: TouchEvent) => { 
+      if(!canvasRef.current) return;
+      e.preventDefault(); 
+      catcherXRef.current = e.touches[0].clientX - canvasRef.current.getBoundingClientRect().left; 
+    };
 
     canvas.addEventListener('mousemove', handleMouseMove);
     canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
@@ -242,7 +255,7 @@ export default function CatchHeartsStage({ onSuccess }: { onSuccess: () => void 
         canvas.removeEventListener('touchmove', handleTouchMove);
       }
     };
-  }, [gameState, score]);
+  }, [gameState]);
 
   const totalChallenges = 5;
   const completedChallenges = 1;
