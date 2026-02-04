@@ -9,14 +9,14 @@ type EmotionalState = {
 };
 
 const emotionalStates: { range: [number, number]; state: EmotionalState }[] = [
-  { range: [0, 2], state: { emoji: '😢', text: 'Apenas empezamos...' } },
-  { range: [3, 5], state: { emoji: '😭', text: 'Esto es más difícil de lo que pensaba.' } },
-  { range: [6, 8], state: { emoji: '🥺', text: 'Ok, necesito concentrarme.' } },
-  { range: [9, 11], state: { emoji: '😐', text: 'Punto medio. Momento de seriedad.' } },
-  { range: [12, 14], state: { emoji: '🙂', text: 'Ok... vamos bien.' } },
-  { range: [15, 17], state: { emoji: '😊', text: 'Me gusta este punto.' } },
-  { range: [18, 19], state: { emoji: '😍', text: '¡Ya casi llegamos!' } },
-  { range: [20, 20], state: { emoji: '😍💖', text: '¡Perfecto! ¡Puntaje máximo!' } },
+  { range: [0, 3], state: { emoji: '😢', text: 'Apenas empezamos...' } },
+  { range: [4, 7], state: { emoji: '😭', text: 'Esto es más difícil de lo que pensaba.' } },
+  { range: [8, 11], state: { emoji: '🥺', text: 'Ok, necesito concentrarme.' } },
+  { range: [12, 15], state: { emoji: '😐', text: 'Punto medio. Momento de seriedad.' } },
+  { range: [16, 19], state: { emoji: '🙂', text: 'Ok... vamos bien.' } },
+  { range: [20, 22], state: { emoji: '😊', text: 'Me gusta este punto.' } },
+  { range: [23, 23], state: { emoji: '😍', text: '¡Ya casi llegamos!' } },
+  { range: [24, 24], state: { emoji: '😍💖', text: '¡Perfecto! ¡Puntaje máximo!' } },
 ];
 
 const getEmotionalState = (questionNumber: number): EmotionalState => {

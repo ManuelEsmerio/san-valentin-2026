@@ -28,18 +28,12 @@ const cardIcons: { name: string; icon: LucideIcon }[] = [
   { name: 'Star', icon: Star },
 ];
 
-const generateCards = () => {
-  const duplicatedCards = [...cardIcons, ...cardIcons];
-  return duplicatedCards
-    .map((card, index) => ({
-      id: index,
-      name: card.name,
-      icon: card.icon,
-      isFlipped: false,
-      isMatched: false,
-    }))
-    .sort(() => Math.random() - 0.5);
-};
+// --- Constants ---
+const TOTAL_PAIRS = 12;
+const PAIRS_ON_EASY_MODE = 8;
+const GAME_DURATION = 75; // Increased from 60
+const BEST_TIME_KEY = 'valentines-memory-besttime';
+
 
 type CardType = {
   id: number;
@@ -48,12 +42,6 @@ type CardType = {
   isFlipped: boolean;
   isMatched: boolean;
 };
-
-// --- Constants ---
-const TOTAL_PAIRS = 12;
-const GAME_DURATION = 60;
-const BEST_TIME_KEY = 'valentines-memory-besttime';
-
 
 // --- Card Component ---
 const MemoryCard = memo(({ card, onClick, isDisabled }: { card: CardType; onClick: () => void; isDisabled: boolean }) => (
@@ -95,6 +83,9 @@ export default function MemoryGameStage({ onSuccess, user }: Props) {
   const [isMapModalOpen, setMapModalOpen] = useState(false);
   const [isKeywordModalOpen, setKeywordModalOpen] = useState(false);
 
+  const [losses, setLosses] = useState(0);
+  const [numPairs, setNumPairs] = useState(TOTAL_PAIRS);
+
   const timerRef = useRef<NodeJS.Timeout>();
 
   const coordinates = "19.4130° N, 99.1718° W";
@@ -104,23 +95,38 @@ export default function MemoryGameStage({ onSuccess, user }: Props) {
   const iframeUrl = `https://maps.google.com/maps?q=${lat},${long}&hl=es&z=14&output=embed`;
   const CORRECT_KEYWORD = "en";
 
+  const generateCards = useCallback((pairs: number) => {
+    const iconsToUse = cardIcons.slice(0, pairs);
+    const duplicatedCards = [...iconsToUse, ...iconsToUse];
+    return duplicatedCards
+      .map((card, index) => ({
+        id: index,
+        name: card.name,
+        icon: card.icon,
+        isFlipped: false,
+        isMatched: false,
+      }))
+      .sort(() => Math.random() - 0.5);
+  }, []);
+
   useEffect(() => {
     const storedBestTime = localStorage.getItem(BEST_TIME_KEY);
     if (storedBestTime) {
       setBestTime(parseInt(storedBestTime, 10));
     }
-  }, []);
+    setCards(generateCards(numPairs));
+  }, [generateCards, numPairs]);
 
   const resetGame = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
-    setCards(generateCards());
+    setCards(generateCards(numPairs));
     setFlippedCards([]);
     setMoves(0);
     setMatchedPairs(0);
     setTimeLeft(GAME_DURATION);
     setIsChecking(false);
     setGameState('idle');
-  }, []);
+  }, [generateCards, numPairs]);
 
   const startGame = () => {
     setInstructionsOpen(false);
@@ -134,12 +140,17 @@ export default function MemoryGameStage({ onSuccess, user }: Props) {
         setTimeLeft(prev => prev - 1);
       }, 1000);
     } else if (timeLeft === 0 && gameState === 'playing') {
-      setGameState('lost');
+        const newLosses = losses + 1;
+        setLosses(newLosses);
+        if (newLosses >= 2) {
+            setNumPairs(PAIRS_ON_EASY_MODE);
+        }
+        setGameState('lost');
     }
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [gameState, timeLeft]);
+  }, [gameState, timeLeft, losses]);
 
 
   const handleCardClick = (index: number) => {
@@ -162,19 +173,16 @@ export default function MemoryGameStage({ onSuccess, user }: Props) {
       const secondCard = cards[secondIndex];
 
       if (firstCard.name === secondCard.name) {
-        // Match
         setMatchedPairs(prev => prev + 1);
         const newCards = cards.map(card => 
           card.name === firstCard.name ? { ...card, isMatched: true, isFlipped: true } : card
         );
-        // No need to flip back, they are matched.
         setTimeout(() => {
           setCards(newCards);
           setFlippedCards([]);
           setIsChecking(false);
         }, 500);
       } else {
-        // No match
         setTimeout(() => {
           const newCards = cards.map(card => ({...card}));
           newCards[firstIndex].isFlipped = false;
@@ -188,7 +196,7 @@ export default function MemoryGameStage({ onSuccess, user }: Props) {
   }, [flippedCards, cards]);
 
   useEffect(() => {
-    if (matchedPairs === TOTAL_PAIRS && gameState !== 'won') {
+    if (matchedPairs === numPairs && gameState !== 'won' && numPairs > 0) {
       setGameState('won');
       if (timerRef.current) clearInterval(timerRef.current);
       const timeTaken = GAME_DURATION - timeLeft;
@@ -196,8 +204,10 @@ export default function MemoryGameStage({ onSuccess, user }: Props) {
         setBestTime(timeTaken);
         localStorage.setItem(BEST_TIME_KEY, timeTaken.toString());
       }
+      setLosses(0);
+      setNumPairs(TOTAL_PAIRS);
     }
-  }, [matchedPairs, timeLeft, bestTime, gameState]);
+  }, [matchedPairs, timeLeft, bestTime, gameState, numPairs]);
 
   const handleWin = useCallback(() => {
     setMapModalOpen(true);
@@ -221,7 +231,9 @@ export default function MemoryGameStage({ onSuccess, user }: Props) {
   const GameOverlay = ({ status }: { status: 'won' | 'lost' }) => {
     const isWon = status === 'won';
     const title = isWon ? "¡Victoria!" : "¡Se acabó el tiempo!";
-    const description = isWon ? `Completado en ${GAME_DURATION - timeLeft}s con ${moves} movimientos.` : "No te preocupes, ¡inténtalo de nuevo!";
+    const description = isWon 
+        ? `Completado en ${GAME_DURATION - timeLeft}s con ${moves} movimientos.` 
+        : losses >= 1 ? "No te preocupes, ahora será más fácil. ¡Inténtalo de nuevo!" : "No te preocupes, ¡inténtalo de nuevo!";
     const icon = isWon ? 'auto_awesome' : 'replay';
 
     return (
@@ -240,8 +252,9 @@ export default function MemoryGameStage({ onSuccess, user }: Props) {
     );
   };
   
-  const hintProgress = (matchedPairs / TOTAL_PAIRS) * 100;
+  const hintProgress = numPairs > 0 ? (matchedPairs / numPairs) * 100 : 0;
   const isGameOver = gameState === 'won' || gameState === 'lost';
+  const gridClass = numPairs === PAIRS_ON_EASY_MODE ? "grid-cols-4" : "grid-cols-4 sm:grid-cols-6";
 
   return (
     <>
@@ -273,7 +286,7 @@ export default function MemoryGameStage({ onSuccess, user }: Props) {
               
               {(gameState === 'playing' || isGameOver) && (
                 <div className="p-4 sm:p-6 w-full h-full">
-                  <div className="grid grid-cols-4 sm:grid-cols-6 gap-6">
+                  <div className={cn("grid gap-2 sm:gap-4", gridClass)}>
                     {cards.map((card, index) => (
                       <MemoryCard
                         key={index}
@@ -292,11 +305,11 @@ export default function MemoryGameStage({ onSuccess, user }: Props) {
           <div className="lg:col-span-4 space-y-6">
             <div className="grid grid-cols-2 gap-4">
                 <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-2xl flex flex-col items-center justify-center text-center">
-                  <SimpleCircularProgress progress={(matchedPairs / TOTAL_PAIRS) * 100} size={80} strokeWidth={6}>
+                  <SimpleCircularProgress progress={hintProgress} size={80} strokeWidth={6}>
                     <Heart className="h-6 w-6 text-primary" />
                   </SimpleCircularProgress>
                   <span className="mt-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">PARES</span>
-                  <span className="text-2xl font-bold text-foreground">{matchedPairs}/{TOTAL_PAIRS}</span>
+                  <span className="text-2xl font-bold text-foreground">{matchedPairs}/{numPairs}</span>
                 </div>
                 <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-2xl flex flex-col items-center justify-center text-center">
                   <SimpleCircularProgress progress={(timeLeft / GAME_DURATION) * 100} size={80} strokeWidth={6}>
@@ -368,7 +381,7 @@ export default function MemoryGameStage({ onSuccess, user }: Props) {
                   <DialogTitle className="text-2xl text-center font-bold">Instrucciones: Memoria de Recuerdos</DialogTitle>
                   <DialogDescription asChild>
                       <div className="text-center pt-4 space-y-4 text-base text-muted-foreground">
-                          <p>Voltea las cartas para encontrar los 12 pares que representan nuestros recuerdos compartidos.</p>
+                          <p>Voltea las cartas para encontrar los {numPairs} pares que representan nuestros recuerdos compartidos.</p>
                           <p className="font-bold text-primary italic">El objetivo es encontrar todos los pares antes de que el tiempo se agote.</p>
                       </div>
                   </DialogDescription>

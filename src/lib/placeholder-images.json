@@ -199,6 +199,30 @@
       "imageHint": "couple laughing"
     },
     {
+      "id": "trivia-25",
+      "description": "Imagen para la pregunta de trivia: ¿Quién se pierde con un mapa?",
+      "imageUrl": "/image/trivia-25.jpg",
+      "imageHint": "lost map"
+    },
+    {
+      "id": "trivia-26",
+      "description": "Imagen para la pregunta de trivia: ¿Quién elige la película?",
+      "imageUrl": "/image/trivia-26.jpg",
+      "imageHint": "couple watching movie"
+    },
+    {
+      "id": "trivia-27",
+      "description": "Imagen para la pregunta de trivia: ¿Quién se come los postres?",
+      "imageUrl": "/image/trivia-27.jpg",
+      "imageHint": "eating dessert"
+    },
+    {
+      "id": "trivia-28",
+      "description": "Imagen para la pregunta de trivia: ¿Quién es más tacaño?",
+      "imageUrl": "/image/trivia-28.jpg",
+      "imageHint": "saving money"
+    },
+    {
       "id": "open-ended-1",
       "description": "Imagen para la pregunta abierta: ¿Qué es lo que más valoras cuando te sientes en calma conmigo?",
       "imageUrl": "/image/open-ended-1.jpg",
