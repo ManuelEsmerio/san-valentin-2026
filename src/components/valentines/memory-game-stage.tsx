@@ -235,7 +235,7 @@ export default function MemoryGameStage({ onSuccess }: Props) {
             
             {(gameState === 'playing' || isGameOver) && (
               <div className="p-4 sm:p-6 w-full h-full">
-                <div className="grid grid-cols-4 sm:grid-cols-6 gap-2 sm:gap-4">
+                <div className="grid grid-cols-4 sm:grid-cols-6 gap-4">
                   {cards.map((card, index) => (
                     <MemoryCard
                       key={index}
@@ -252,7 +252,7 @@ export default function MemoryGameStage({ onSuccess }: Props) {
           </div>
         </div>
 
-        <div className="lg:col-span-4 space-y-4">
+        <div className="lg:col-span-4 space-y-6">
           <div className="grid grid-cols-2 gap-4">
               <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-2xl flex flex-col items-center justify-center text-center">
                 <SimpleCircularProgress progress={(matchedPairs / TOTAL_PAIRS) * 100} size={80} strokeWidth={6}>
