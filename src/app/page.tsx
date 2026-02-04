@@ -130,7 +130,7 @@ export default function Home() {
     }
   };
 
-  const containerClass = stage === 'game' || stage === 'catch-hearts' || stage === 'trivia' ? 'max-w-5xl' : stage === 'revelation' || stage === 'puzzle' ? 'max-w-2xl' : 'max-w-lg';
+  const containerClass = stage === 'game' || stage === 'catch-hearts' || stage === 'trivia' || stage === 'memory-game' ? 'max-w-5xl' : stage === 'revelation' || stage === 'puzzle' ? 'max-w-2xl' : 'max-w-lg';
 
   return (
     <div className="w-full flex flex-col items-center">
