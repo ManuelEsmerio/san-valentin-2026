@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
-import { Heart, Trophy, Clock, Info, Gamepad2 } from 'lucide-react';
+import { Heart, Trophy, Clock, Info, Gamepad2, Lock, LockOpen } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Progress } from '../ui/progress';
 import SimpleCircularProgress from './SimpleCircularProgress';
@@ -362,6 +362,36 @@ export default function CatchHeartsStage({ onSuccess, user }: { onSuccess: () =>
                   <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground block">Mejor Récord</span>
                   <span className="text-lg font-bold text-foreground">{highScore} Puntos</span>
                 </div>
+              </div>
+            </div>
+
+            <div className={cn(
+              "bg-card/50 dark:bg-zinc-800/30 p-6 rounded-3xl border-2 border-dashed transition-colors",
+              gameState === 'won' ? "border-green-500/50" : "border-primary/20"
+            )}>
+              <div className="flex items-center gap-3 mb-4">
+                <div className={cn(
+                  "w-8 h-8 rounded-full flex items-center justify-center transition-colors",
+                  gameState === 'won' ? "bg-green-500/10 text-green-500" : "bg-muted text-muted-foreground"
+                )}>
+                  {gameState === 'won' ? <LockOpen className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
+                </div>
+                <h3 className={cn(
+                  "font-bold transition-colors",
+                  gameState === 'won' ? "text-green-600 dark:text-green-400" : "text-foreground"
+                )}>
+                  {gameState === 'won' ? 'Pista 2: Desbloqueada' : 'Pista 2: Bloqueada'}
+                </h3>
+              </div>
+              <p className="text-sm text-muted-foreground mb-6 italic">
+                "Donde la confianza se encuentra, la siguiente puerta se abre."
+              </p>
+              <div className="space-y-2">
+                <div className="flex justify-between text-[10px] font-bold uppercase tracking-tighter text-muted-foreground mb-1">
+                  <span>{gameState === 'won' ? 'DESBLOQUEADO' : 'DESBLOQUEO'}</span>
+                  <span>{Math.min(100, Math.round((score / TARGET_SCORE) * 100))}%</span>
+                </div>
+                <Progress value={(score / TARGET_SCORE) * 100} className={cn("h-1.5", gameState === 'won' && "[&>div]:bg-green-500")} />
               </div>
             </div>
             
