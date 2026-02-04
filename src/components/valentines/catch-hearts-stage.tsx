@@ -53,7 +53,7 @@ const GameOverlay = ({ status, onStart, onRetry, score, highScore }: { status: G
   if (status !== 'won' && status !== 'lost') return null;
 
   const isWon = status === 'won';
-  const Icon = isWon ? 'emoji_events' : 'replay';
+  const Icon = isWon ? 'auto_awesome' : 'replay';
   const title = isWon ? '¡Lo lograste!' : '¡Se acabó el tiempo!';
   const buttonText = isWon ? 'Ver Siguiente Pista' : 'Reintentar';
 
@@ -306,9 +306,16 @@ export default function CatchHeartsStage({ onSuccess, user }: { onSuccess: () =>
                     </div>
                     <h3 className="text-2xl font-bold text-foreground pt-4">Atrapa los Detalles</h3>
                     <p className="max-w-xs text-muted-foreground">Para seguir avanzando, debes de completar este desafío.</p>
-                    <Button onClick={() => setInstructionsModalOpen(true)} className="mt-6 h-12 px-8 rounded-lg text-base font-bold tracking-wider shadow-lg shadow-primary/20" size="lg">
-                      Empezar Desafío
-                    </Button>
+                    <div className="flex flex-col sm:flex-row items-center gap-4 mt-4">
+                      <Button onClick={() => setInstructionsModalOpen(true)} className="h-12 px-8 rounded-lg text-base font-bold tracking-wider shadow-lg shadow-primary/20" size="lg">
+                        Empezar Desafío
+                      </Button>
+                      {isDevMode && (
+                          <Button onClick={() => setMapModalOpen(true)} variant="outline" className="h-12">
+                              Saltar Desafío (Dev)
+                          </Button>
+                      )}
+                    </div>
                   </div>
                 )}
 

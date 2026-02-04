@@ -263,7 +263,7 @@ export default function MemoryGameStage({ onSuccess, user }: Props) {
                       Empezar Desafío
                     </Button>
                     {user === 'manuel' && (
-                        <Button onClick={onSuccess} variant="outline" className="h-12">
+                        <Button onClick={() => setMapModalOpen(true)} variant="outline" className="h-12">
                             Saltar Desafío (Dev)
                         </Button>
                     )}

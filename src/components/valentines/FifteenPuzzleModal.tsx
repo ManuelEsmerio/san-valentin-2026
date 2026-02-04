@@ -56,6 +56,7 @@ const shuffleTiles = (difficulty: Difficulty) => {
 type FifteenPuzzleModalProps = {
   isOpen: boolean;
   onSuccess: () => void;
+  user: string | null;
 };
 
 const VictoryHearts = () => (
@@ -70,7 +71,7 @@ const VictoryHearts = () => (
     </div>
   );
 
-export default function FifteenPuzzleModal({ isOpen, onSuccess }: FifteenPuzzleModalProps) {
+export default function FifteenPuzzleModal({ isOpen, onSuccess, user }: FifteenPuzzleModalProps) {
   const [isShowing, setIsShowing] = useState(false);
   const [gameStatus, setGameStatus] = useState<'playing' | 'solved' | 'lost'>('playing');
   const [tiles, setTiles] = useState<number[]>([]);
@@ -221,6 +222,15 @@ export default function FifteenPuzzleModal({ isOpen, onSuccess }: FifteenPuzzleM
                             <RotateCcw className="h-4 w-4" />
                             Reiniciar Juego
                         </Button>
+                        {user === 'manuel' && (
+                            <Button
+                                onClick={() => setRiddleModalOpen(true)}
+                                variant="outline"
+                                className="px-6 py-3 h-auto rounded-full font-bold"
+                            >
+                                Saltar (Dev)
+                            </Button>
+                        )}
                       </div>
                   </div>
               </div>

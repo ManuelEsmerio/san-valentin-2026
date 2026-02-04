@@ -271,13 +271,24 @@ export default function GameStage({ onSuccess, user }: GameStageProps) {
                   <p className="max-w-xs text-muted-foreground">
                     Para seguir avanzando, debes de completar este desafío.
                   </p>
-                  <Button
-                    onClick={openInstructions}
-                    className="mt-6 h-12 px-8 rounded-lg text-base font-bold tracking-wider shadow-lg shadow-primary/20"
-                    size="lg"
-                  >
-                    Empezar Desafío
-                  </Button>
+                  <div className="flex flex-col sm:flex-row items-center gap-4 mt-4">
+                    <Button
+                      onClick={openInstructions}
+                      className="h-12 px-8 rounded-lg text-base font-bold tracking-wider shadow-lg shadow-primary/20"
+                      size="lg"
+                    >
+                      Empezar Desafío
+                    </Button>
+                    {isDevMode && (
+                        <Button
+                        onClick={() => setMapModalOpen(true)}
+                        variant="outline"
+                        className="h-12"
+                        >
+                        Saltar Desafío (Dev)
+                        </Button>
+                    )}
+                  </div>
                 </div>
               )}
 

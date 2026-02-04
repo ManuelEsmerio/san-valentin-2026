@@ -122,7 +122,7 @@ export default function Home() {
       case 'memory-game':
         return <MemoryGameStage key="memory-game" onSuccess={() => setStageAndSave('puzzle')} user={loggedInUser} />;
       case 'puzzle':
-        return <PuzzleStage key="puzzle" onSuccess={() => setStageAndSave('revelation')} />;
+        return <PuzzleStage key="puzzle" onSuccess={() => setStageAndSave('revelation')} user={loggedInUser} />;
       case 'revelation':
         return <RevelationStage key="revelation" />;
       default:
