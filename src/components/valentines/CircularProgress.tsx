@@ -12,16 +12,16 @@ const emotionalStates: { range: [number, number]; state: EmotionalState }[] = [
   { range: [0, 2], state: { emoji: '😢', text: 'Apenas empezamos...' } },
   { range: [3, 5], state: { emoji: '😭', text: 'Esto es más difícil de lo que pensaba.' } },
   { range: [6, 8], state: { emoji: '🥺', text: 'Ok, necesito concentrarme.' } },
-  { range: [9, 10], state: { emoji: '😐', text: 'Punto medio. Momento de seriedad.' } },
-  { range: [11, 13], state: { emoji: '🙂', text: 'Ok... vamos bien.' } },
-  { range: [14, 16], state: { emoji: '😊', text: 'Me gusta este punto.' } },
-  { range: [17, 18], state: { emoji: '😍', text: '¡Ya casi llegamos!' } },
-  { range: [19, 19], state: { emoji: '😍💖', text: 'Así se siente llegar juntos.' } },
+  { range: [9, 11], state: { emoji: '😐', text: 'Punto medio. Momento de seriedad.' } },
+  { range: [12, 14], state: { emoji: '🙂', text: 'Ok... vamos bien.' } },
+  { range: [15, 17], state: { emoji: '😊', text: 'Me gusta este punto.' } },
+  { range: [18, 19], state: { emoji: '😍', text: '¡Ya casi llegamos!' } },
+  { range: [20, 20], state: { emoji: '😍💖', text: '¡Perfecto! ¡Puntaje máximo!' } },
 ];
 
 const getEmotionalState = (questionNumber: number): EmotionalState => {
   // We use questionNumber - 1 for arrays, but the logic is based on 1-19
-  const currentQuestion = Math.max(1, questionNumber);
+  const currentQuestion = Math.max(0, questionNumber);
   const foundState = emotionalStates.find(({ range }) => currentQuestion >= range[0] && currentQuestion <= range[1]);
   return foundState ? foundState.state : { emoji: '😢', text: 'Apenas empezamos...' };
 };
@@ -75,7 +75,7 @@ function CircularProgress({ current, total }: CircularProgressProps) {
         setIsAnimating(false);
       }, 200); // Half of the animation duration
     } else if (current === 0) {
-        setEmojiState(newState);
+        setEmojiState(getEmotionalState(0));
     }
   }, [current, emojiState.emoji]);
 
@@ -119,7 +119,7 @@ function CircularProgress({ current, total }: CircularProgressProps) {
                 {emojiState.emoji}
             </div>
         </div>
-        {current === total && total > 0 && <HeartConfetti />}
+        {progress >= 100 && total > 0 && <HeartConfetti />}
       </div>
       <div className="text-center h-12">
         <p className="text-muted-foreground font-medium transition-opacity duration-300">

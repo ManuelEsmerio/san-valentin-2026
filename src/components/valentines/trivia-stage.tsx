@@ -64,7 +64,7 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
   { id: 13, type: 'multiple-choice', question: '¿Qué es lo que más valoro de nuestra relación?', options: ['La confianza', 'La comunicación', 'Las acciones', 'Todo lo anterior'], correctAnswer: 'Todo lo anterior', image: 'trivia-13', hint: 'Es la base de todo.' },
   { id: 14, type: 'multiple-choice', question: '¿Cómo describirías nuestra relación?', options: ['Divertida', 'Única', 'Auténtica', 'Todas las anteriores'], correctAnswer: ['Divertida', 'Única', 'Auténtica', 'Todas las anteriores'], image: 'trivia-14', hint: 'No hay respuesta incorrecta aquí.' },
   { id: 16, type: 'multiple-choice', question: '¿A quién le huelen más las patas?', options: ['Tú', 'Tú, también', 'Definitivamente tú', 'No hay duda: tú'], correctAnswer: ['Tú', 'Tú, también', 'Definitivamente tú', 'No hay duda: tú'], image: 'trivia-16', hint: 'Ni el aromatizante pudo contra eso 😂🦶' },
-  { id: 17, type: 'multiple-choice', question: '¿Quién dura más tiempo en el baño?', options: ['Tú', 'Tú (con el celular)', 'Tú, pero dices que ya sales', 'Todas las anteriores'], correctAnswer: 'Todas las anteriores', image: 'trivia-17', hint: 'Según tú: ‘ya casi’ 🚿📱' },
+  { id: 17, type: 'multiple-choice', question: '¿Quién dura más tiempo en el baño?', options: ['Tú', 'Tú (con el celular)', 'Tú, pero dices que ya sales', 'Todas las anteriores'], correctAnswer: ['Tú', 'Tú (con el celular)', 'Tú, pero dices que ya sales', 'Todas las anteriores'], image: 'trivia-17', hint: 'Según tú: ‘ya casi’ 🚿📱' },
   { id: 18, type: 'multiple-choice', question: '¿Quién es más pedorro?', options: ['Tú', 'Tú, pero lo niegas', 'Tú y luego te haces el sorprendido', 'Todas aplican'], correctAnswer: 'Todas aplican', image: 'trivia-18', hint: 'El amor todo lo soporta… incluso eso 💨😂' },
   { id: 19, type: 'multiple-choice', question: '¿Qué momento simple disfruto más contigo?', options: ['Platicar sin prisa', 'Reírnos de tonterías', 'Estar en silencio', 'Todo lo anterior'], correctAnswer: 'Todo lo anterior', image: 'trivia-19', hint: 'Lo simple también es especial.' },
   { id: 22, type: "multiple-choice", question: "¿A quién le da más hueva bañarse?", options: ["Tú", "Tú (pero dices que ahorita)", "Tú, pero mañana seguro sí", "Todas las anteriores 👀"], correctAnswer: "Todas las anteriores 👀", image: "trivia-22", hint: "El agua no muerde… pero parece que sí 😂🚿",},
@@ -80,7 +80,7 @@ const openEndedQuestions: OpenEndedQuestion[] = [
 
 const LETTERS: Record<number, { title: string; content: string[]; imageIds: string[] }> = {
   5: {
-    title: '¿Recuerdas ese día tan especial?',
+    title: '¿Recuerdas ese día especial?',
     content: [
       'Fue cuando fuimos a nuestro primer concierto. Tenías la sonrisa más grande y hermosa que haya visto. No cabías de la emoción por ver a Coldplay, tanto que cantaste a todo pulmón ese día, sin importar lo mal que cantas 😂 (ntc).',
       'Es un momento muy especial para mí y lo recuerdo siempre con una sonrisa.',
@@ -435,28 +435,31 @@ export default function TriviaStage({ onSuccess, user }: TriviaStageProps) {
                     </RadioGroup>
                   )}
                   {currentQuestion.type === 'open-ended' && (
-                    <div className="pt-2 [perspective:1000px] h-full">
+                    <div className="relative [perspective:1000px]" style={{ minHeight: '160px' }}>
                       <div
                           className={cn(
                               "relative w-full h-full [transform-style:preserve-3d] transition-transform duration-1000",
+                              "min-h-[160px]",
                               flippedQuestions[currentQuestion.id] && "[transform:rotateY(180deg)]"
                           )}
                       >
-                        <div className="absolute w-full h-full [backface-visibility:hidden]">
-                          <Textarea
-                              placeholder="Escribe tu respuesta aquí, mi chula..."
-                              className="min-h-[160px] h-full text-base"
-                              value={answers[currentQuestion.id] || ""}
-                              onChange={(e) => setAnswers(prev => ({ ...prev, [currentQuestion.id]: e.target.value }))}
-                              disabled={!!flippedQuestions[currentQuestion.id]}
-                          />
-                        </div>
+                          {/* Front face with textarea */}
+                          <div className="absolute w-full h-full [backface-visibility:hidden]">
+                              <Textarea
+                                  placeholder="Escribe tu respuesta aquí, mi chula..."
+                                  className="h-full text-base min-h-[160px]"
+                                  value={answers[currentQuestion.id] || ""}
+                                  onChange={(e) => setAnswers(prev => ({ ...prev, [currentQuestion.id]: e.target.value }))}
+                                  disabled={!!flippedQuestions[currentQuestion.id]}
+                              />
+                          </div>
 
-                        <div className="absolute w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] bg-primary/10 p-6 rounded-lg flex flex-col justify-center items-center text-center">
-                          <p className="text-foreground/80 italic text-lg">
-                              &ldquo;{currentQuestion.creatorAnswer}&rdquo;
-                          </p>
-                        </div>
+                          {/* Back face with creator's answer */}
+                          <div className="absolute w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] bg-primary/10 p-6 rounded-lg flex flex-col justify-center items-center text-center">
+                              <p className="text-foreground/80 italic text-lg">
+                                  &ldquo;{currentQuestion.creatorAnswer}&rdquo;
+                              </p>
+                          </div>
                       </div>
                     </div>
                   )}
@@ -468,7 +471,7 @@ export default function TriviaStage({ onSuccess, user }: TriviaStageProps) {
           {/* Right Column: Stats & Actions */}
           <div className="lg:col-span-4 space-y-4">
             <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-2xl flex flex-col items-center justify-center text-center">
-              <CircularProgress current={currentQuestionIndex + 1} total={questions.length} />
+              <CircularProgress current={score} total={multipleChoiceQuestions.length} />
             </div>
 
             <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-2xl flex items-center justify-between">
