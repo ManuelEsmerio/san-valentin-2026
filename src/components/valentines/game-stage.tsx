@@ -429,10 +429,12 @@ export default function GameStage({ onSuccess, user }: GameStageProps) {
         <DialogContent>
             <DialogHeader>
                 <DialogTitle className="text-2xl text-center">Desafío 1: Snake Game</DialogTitle>
-                <DialogDescription className="text-center pt-4 space-y-2">
-                    <p>Usa las flechas del teclado (o los botones en pantalla) para mover la serpiente de corazones.</p>
-                    <p>El objetivo es recolectar <span className="font-bold text-primary">{targetScore}</span> corazones sin chocar contigo misma.</p>
-                    <p className="pt-2">¡Mucha suerte, mi chula!</p>
+                 <DialogDescription asChild>
+                    <div className="text-center pt-4 space-y-2 text-sm text-muted-foreground">
+                        <p>Usa las flechas del teclado (o los botones en pantalla) para mover la serpiente de corazones.</p>
+                        <p>El objetivo es recolectar <span className="font-bold text-primary">{targetScore}</span> corazones sin chocar contigo misma.</p>
+                        <p className="pt-2">¡Mucha suerte, mi chula!</p>
+                    </div>
                 </DialogDescription>
             </DialogHeader>
             <DialogFooter>
