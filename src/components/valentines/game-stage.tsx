@@ -284,36 +284,32 @@ export default function GameStage({ onSuccess, user }: GameStageProps) {
       <div className="w-full p-2 rounded-xl border-2 border-primary/20 bg-card/80">
         <div
           className={cn(
-            "flex flex-col items-center gap-6 rounded-lg border-4 border-primary/30 bg-card/90 px-6 py-10 shadow-inner relative overflow-hidden min-h-[400px] md:min-h-[800px] justify-center",
+            "flex flex-col items-center justify-center gap-6 rounded-lg border-4 border-primary/30 bg-primary/5 px-6 py-10 shadow-inner relative overflow-hidden min-h-[400px] md:min-h-[500px]",
             "dark:bg-black/20"
           )}
         >
           {gameState === "idle" && (
-            <div className="flex max-w-[480px] flex-col items-center gap-4 z-10 text-center animate-fade-in">
-              <div className="w-full h-64 bg-accent/30 dark:bg-accent/10 rounded-lg border border-primary/10 flex items-center justify-center relative overflow-hidden">
-                <div className="flex gap-1 absolute top-20 left-20">
-                  <Heart className="text-primary/80 fill-primary/80" />
-                  <Heart className="text-primary/60 fill-primary/60" />
-                  <Heart className="text-primary/40 fill-primary/40" />
-                </div>
-                <div className="absolute bottom-12 right-24 animate-pulse">
-                  <Heart className="text-primary fill-primary" />
-                </div>
-                <p className="text-foreground/20 font-bold uppercase tracking-widest text-xl">
-                  Heart Snake Board
-                </p>
+            <div className="flex flex-col items-center gap-4 z-10 text-center animate-fade-in p-8">
+              <div className="flex items-center gap-2">
+                <Heart className="h-5 w-5 text-primary fill-primary" />
+                <Heart className="h-5 w-5 text-primary fill-primary" />
+                <Heart className="h-5 w-5 text-primary/50 fill-primary/50" />
               </div>
-              <p className="text-muted-foreground text-sm font-normal leading-normal max-w-xs">
+              <h3 className="text-xl font-bold uppercase tracking-[0.2em] text-foreground/80 pt-4">
+                Heart Snake Board
+              </h3>
+              <Heart className="h-6 w-6 text-primary fill-primary animate-pulse" />
+              <p className="max-w-xs text-muted-foreground pt-4">
                 Para seguir avanzando, debes de completar este desafío.
               </p>
-              <div className="flex flex-col sm:flex-row items-center gap-4">
-                <Button
-                    onClick={openInstructions}
-                    className="min-w-[200px] h-12 px-6 text-base font-bold tracking-wider hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/30 z-10"
-                >
-                    EMPEZAR JUEGO
-                </Button>
-              </div>
+              <Button
+                onClick={openInstructions}
+                className="mt-6 h-14 px-8 rounded-full text-base font-bold tracking-wider shadow-lg shadow-primary/20"
+                size="lg"
+              >
+                EMPEZAR JUEGO
+                <ChevronRight className="ml-2 h-5 w-5" />
+              </Button>
             </div>
           )}
 
@@ -431,9 +427,9 @@ export default function GameStage({ onSuccess, user }: GameStageProps) {
                 <DialogTitle className="text-2xl text-center">Desafío 1: Snake Game</DialogTitle>
                  <DialogDescription asChild>
                     <div className="text-center pt-4 space-y-2 text-sm text-muted-foreground">
-                        <p>Usa las flechas del teclado (o los botones en pantalla) para mover la serpiente de corazones.</p>
-                        <p>El objetivo es recolectar <span className="font-bold text-primary">{targetScore}</span> corazones sin chocar contigo misma.</p>
-                        <p className="pt-2">¡Mucha suerte, mi chula!</p>
+                        <div>Usa las flechas del teclado (o los botones en pantalla) para mover la serpiente de corazones.</div>
+                        <div>El objetivo es recolectar <span className="font-bold text-primary">{targetScore}</span> corazones sin chocar contigo misma.</div>
+                        <div className="pt-2">¡Mucha suerte, mi chula!</div>
                     </div>
                 </DialogDescription>
             </DialogHeader>
