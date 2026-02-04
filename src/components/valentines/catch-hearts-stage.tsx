@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 
 // --- Game Constants ---
 const GAME_DURATION = 30; // Shorter game
-const TARGET_SCORE = 250; // Adjusted target
+const TARGET_SCORE = 300; // Adjusted target
 const CATCHER_WIDTH = 100;
 const CATCHER_HEIGHT = 20;
 const HIGH_SCORE_KEY = 'valentines-catch-highscore';
@@ -166,87 +166,85 @@ export default function CatchHeartsStage({ onSuccess }: { onSuccess: () => void 
   }, [gameState, handleGameEnd]);
 
   useEffect(() => {
-    if (gameState !== 'playing') {
-      if (gameLoopRef.current) cancelAnimationFrame(gameLoopRef.current);
-      return;
-    }
-
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    
-    const dpr = window.devicePixelRatio || 1;
-    const rect = canvas.getBoundingClientRect();
-    if (canvas.width !== rect.width * dpr || canvas.height !== rect.height * dpr) {
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
-      ctx.scale(dpr, dpr);
-    }
-    
-    const gameLoop = (timestamp: number) => {
-      if (gameState !== 'playing' || !canvasRef.current) return;
-
-      const currentScore = scoreRef.current;
-      const baseSpeed = 2 + (currentScore / 100);
-      const spawnInterval = Math.max(200, 500 - (currentScore / 10));
-
-      if (timestamp - lastSpawnTimeRef.current > spawnInterval) { 
-        lastSpawnTimeRef.current = timestamp;
-        const type = getRandomItemType(currentScore);
-        const config = ITEM_CONFIG[type];
-        itemsRef.current.push({
-          id: nextItemIdRef.current++,
-          x: Math.random() * rect.width,
-          y: -30,
-          speed: baseSpeed + Math.random() * 2,
-          type,
-          icon: config.icon,
-          points: config.points,
-        });
-      }
-
-      ctx.clearRect(0, 0, rect.width, rect.height);
-
-      itemsRef.current = itemsRef.current.filter(item => {
-        item.y += item.speed;
-        
-        const catcherLeft = catcherXRef.current - CATCHER_WIDTH / 2;
-        const catcherRight = catcherXRef.current + CATCHER_WIDTH / 2;
-        if (item.y + 30 >= rect.height - CATCHER_HEIGHT && item.y <= rect.height && item.x >= catcherLeft && item.x <= catcherRight) {
-            setScore(s => Math.max(0, s + item.points));
-            return false;
-        }
-        
-        if (item.y < rect.height + 50) {
-            drawItemOnCanvas(ctx, item);
-            return true;
-        }
-        return false;
-      });
-
-      ctx.fillStyle = 'hsl(var(--primary) / 0.7)';
-      ctx.beginPath();
-      ctx.roundRect(catcherXRef.current - CATCHER_WIDTH / 2, rect.height - CATCHER_HEIGHT, CATCHER_WIDTH, CATCHER_HEIGHT, [10, 10, 0, 0]);
-      ctx.fill();
-
-      gameLoopRef.current = requestAnimationFrame(gameLoop);
-    };
-    
-    gameLoopRef.current = requestAnimationFrame(gameLoop);
 
     const handleMouseMove = (e: MouseEvent) => {
-      if(!canvasRef.current) return;
-      catcherXRef.current = e.clientX - canvasRef.current.getBoundingClientRect().left;
+        if(!canvasRef.current) return;
+        catcherXRef.current = e.clientX - canvasRef.current.getBoundingClientRect().left;
     }
     const handleTouchMove = (e: TouchEvent) => { 
-      if(!canvasRef.current) return;
-      e.preventDefault(); 
-      catcherXRef.current = e.touches[0].clientX - canvasRef.current.getBoundingClientRect().left; 
+        if(!canvasRef.current) return;
+        e.preventDefault(); 
+        catcherXRef.current = e.touches[0].clientX - canvasRef.current.getBoundingClientRect().left; 
     };
 
     canvas.addEventListener('mousemove', handleMouseMove);
     canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+
+    if (gameState === "playing") {
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+      
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      if (canvas.width !== rect.width * dpr || canvas.height !== rect.height * dpr) {
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        ctx.scale(dpr, dpr);
+      }
+      
+      const gameLoop = (timestamp: number) => {
+        if (gameState !== 'playing' || !canvasRef.current) return;
+
+        const currentScore = scoreRef.current;
+        const baseSpeed = 2 + (currentScore / 100);
+        const spawnInterval = Math.max(200, 500 - (currentScore / 10));
+
+        if (timestamp - lastSpawnTimeRef.current > spawnInterval) { 
+          lastSpawnTimeRef.current = timestamp;
+          const type = getRandomItemType(currentScore);
+          const config = ITEM_CONFIG[type];
+          itemsRef.current.push({
+            id: nextItemIdRef.current++,
+            x: Math.random() * rect.width,
+            y: -30,
+            speed: baseSpeed + Math.random() * 2,
+            type,
+            icon: config.icon,
+            points: config.points,
+          });
+        }
+
+        ctx.clearRect(0, 0, rect.width, rect.height);
+
+        const newItems: Item[] = [];
+        for (const item of itemsRef.current) {
+            item.y += item.speed;
+        
+            const catcherLeft = catcherXRef.current - CATCHER_WIDTH / 2;
+            const catcherRight = catcherXRef.current + CATCHER_WIDTH / 2;
+            if (item.y + 30 >= rect.height - CATCHER_HEIGHT && item.y <= rect.height && item.x >= catcherLeft && item.x <= catcherRight) {
+                setScore(s => Math.max(0, s + item.points));
+            } else if (item.y < rect.height + 50) {
+                drawItemOnCanvas(ctx, item);
+                newItems.push(item);
+            }
+        }
+        itemsRef.current = newItems;
+
+        ctx.fillStyle = 'hsl(var(--primary) / 0.7)';
+        ctx.beginPath();
+        ctx.roundRect(catcherXRef.current - CATCHER_WIDTH / 2, rect.height - CATCHER_HEIGHT, CATCHER_WIDTH, CATCHER_HEIGHT, [10, 10, 0, 0]);
+        ctx.fill();
+
+        gameLoopRef.current = requestAnimationFrame(gameLoop);
+      };
+      
+      gameLoopRef.current = requestAnimationFrame(gameLoop);
+    } else {
+        if (gameLoopRef.current) cancelAnimationFrame(gameLoopRef.current);
+    }
 
     return () => {
       if (gameLoopRef.current) cancelAnimationFrame(gameLoopRef.current);
