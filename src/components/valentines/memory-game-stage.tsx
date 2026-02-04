@@ -1,15 +1,16 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, memo } from 'react';
 import {
   Dog, Cat, Plane, Clapperboard, Pizza, Brush, Heart, Sailboat, CupSoda, Gem, Rabbit, Star,
-  type LucideIcon, Timer, MousePointerClick, Award, BrainCircuit, Play
+  type LucideIcon, Timer, Trophy, Lock, LockOpen, Gamepad2, Info
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
+import SimpleCircularProgress from './SimpleCircularProgress';
 
-// Card data
+// --- Card Data ---
 const cardIcons: { name: string; icon: LucideIcon }[] = [
   { name: 'Dog', icon: Dog },
   { name: 'Cat', icon: Cat },
@@ -46,8 +47,14 @@ type CardType = {
   isMatched: boolean;
 };
 
-// Card component
-const MemoryCard = ({ card, onClick, isDisabled }: { card: CardType; onClick: () => void; isDisabled: boolean }) => (
+// --- Constants ---
+const TOTAL_PAIRS = 12;
+const GAME_DURATION = 60;
+const BEST_TIME_KEY = 'valentines-memory-besttime';
+
+
+// --- Card Component ---
+const MemoryCard = memo(({ card, onClick, isDisabled }: { card: CardType; onClick: () => void; isDisabled: boolean }) => (
   <div className="aspect-square [perspective:1000px]" onClick={!isDisabled ? onClick : undefined}>
     <div
       className={cn(
@@ -63,55 +70,65 @@ const MemoryCard = ({ card, onClick, isDisabled }: { card: CardType; onClick: ()
       </div>
     </div>
   </div>
-);
+));
+MemoryCard.displayName = 'MemoryCard';
 
-// Main component
+// --- Main Component ---
 type Props = {
   onSuccess: () => void;
 };
 
 export default function MemoryGameStage({ onSuccess }: Props) {
-  const [gameState, setGameState] = useState<'idle' | 'playing' | 'won'>('idle');
+  const [gameState, setGameState] = useState<'idle' | 'playing' | 'won' | 'lost'>('idle');
   const [cards, setCards] = useState<CardType[]>([]);
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
   const [moves, setMoves] = useState(0);
-  const [timer, setTimer] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(GAME_DURATION);
+  const [matchedPairs, setMatchedPairs] = useState(0);
+  const [bestTime, setBestTime] = useState<number | null>(null);
+
   const [isChecking, setIsChecking] = useState(false);
   const [isInstructionsOpen, setInstructionsOpen] = useState(false);
 
   const timerRef = useRef<NodeJS.Timeout>();
 
+  useEffect(() => {
+    const storedBestTime = localStorage.getItem(BEST_TIME_KEY);
+    if (storedBestTime) {
+      setBestTime(parseInt(storedBestTime, 10));
+    }
+  }, []);
+
   const resetGame = useCallback(() => {
+    if (timerRef.current) clearInterval(timerRef.current);
     setCards(generateCards());
     setFlippedCards([]);
     setMoves(0);
-    setTimer(0);
+    setMatchedPairs(0);
+    setTimeLeft(GAME_DURATION);
     setIsChecking(false);
     setGameState('idle');
   }, []);
-
-  useEffect(() => {
-    resetGame();
-  }, [resetGame]);
 
   const startGame = () => {
     setInstructionsOpen(false);
     resetGame();
     setGameState('playing');
   };
-
+  
   useEffect(() => {
-    if (gameState === 'playing') {
+    if (gameState === 'playing' && timeLeft > 0) {
       timerRef.current = setInterval(() => {
-        setTimer(prev => prev + 1);
+        setTimeLeft(prev => prev - 1);
       }, 1000);
-    } else {
-      if (timerRef.current) clearInterval(timerRef.current);
+    } else if (timeLeft === 0 && gameState === 'playing') {
+      setGameState('lost');
     }
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [gameState]);
+  }, [gameState, timeLeft]);
+
 
   const handleCardClick = (index: number) => {
     if (isChecking || flippedCards.length === 2 || cards[index].isFlipped || cards[index].isMatched) {
@@ -134,9 +151,11 @@ export default function MemoryGameStage({ onSuccess }: Props) {
 
       if (firstCard.name === secondCard.name) {
         // Match
+        setMatchedPairs(prev => prev + 1);
         const newCards = cards.map(card => 
-          card.name === firstCard.name ? { ...card, isMatched: true, isFlipped: false } : card
+          card.name === firstCard.name ? { ...card, isMatched: true, isFlipped: true } : card
         );
+        // No need to flip back, they are matched.
         setTimeout(() => {
           setCards(newCards);
           setFlippedCards([]);
@@ -157,108 +176,169 @@ export default function MemoryGameStage({ onSuccess }: Props) {
   }, [flippedCards, cards]);
 
   useEffect(() => {
-    const allMatched = cards.length > 0 && cards.every(card => card.isMatched);
-    if (allMatched) {
+    if (matchedPairs === TOTAL_PAIRS) {
       setGameState('won');
+      if (timerRef.current) clearInterval(timerRef.current);
+      const timeTaken = GAME_DURATION - timeLeft;
+      if (bestTime === null || timeTaken < bestTime) {
+        setBestTime(timeTaken);
+        localStorage.setItem(BEST_TIME_KEY, timeTaken.toString());
+      }
     }
-  }, [cards]);
+  }, [matchedPairs, timeLeft, bestTime]);
 
-  const StatCard = ({ icon: Icon, title, value }: { icon: LucideIcon, title: string, value: string | number }) => (
-    <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-2xl flex flex-col items-center justify-center text-center">
-      <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-2">
-        <Icon className="w-8 h-8" />
-      </div>
-      <span className="text-sm font-bold uppercase tracking-widest text-muted-foreground">{title}</span>
-      <span className="text-2xl font-bold text-foreground">{value}</span>
-    </div>
-  );
+  const GameOverlay = ({ status }: { status: 'won' | 'lost' }) => {
+    const isWon = status === 'won';
+    const title = isWon ? "¡Victoria!" : "¡Se acabó el tiempo!";
+    const description = isWon ? `Completado en ${GAME_DURATION - timeLeft}s con ${moves} movimientos.` : "No te preocupes, ¡inténtalo de nuevo!";
 
-  if (gameState === 'idle') {
     return (
-      <>
-        <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5 animate-fade-in">
-          <div className="p-6 sm:p-10 text-center flex flex-col items-center gap-4">
-            <BrainCircuit className="h-16 w-16 text-primary" />
-            <h2 className="text-foreground text-3xl font-bold leading-tight tracking-[-0.015em]">Desafío de Memoria</h2>
-            <p className="text-muted-foreground max-w-md">
-              Encuentra todos los pares que representan nuestros momentos y gustos. ¡Demuestra que tu memoria es tan buena como tu amor!
-            </p>
-            <Button onClick={() => setInstructionsOpen(true)} className="h-12 px-8 text-lg font-bold shadow-lg shadow-primary/20 mt-4" size="lg">
-              <Play className="mr-2" />
-              Jugar
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex flex-col items-center justify-center text-center p-4 z-10 animate-fade-in">
+        <div className="bg-card p-8 rounded-2xl shadow-2xl max-w-sm w-full">
+            <div className={cn("h-16 w-16 mx-auto mb-4 rounded-full flex items-center justify-center", isWon ? "bg-green-100 dark:bg-green-900/30" : "bg-primary/10")}>
+                <span className="material-symbols-outlined text-4xl" style={{color: isWon ? 'var(--color-green-500)' : 'var(--color-primary)'}}>{isWon ? 'celebration' : 'replay'}</span>
+            </div>
+            <h3 className="text-2xl font-bold text-foreground mb-2">{title}</h3>
+            <p className="text-muted-foreground mb-6">{description}</p>
+            <Button onClick={isWon ? onSuccess : resetGame} className="w-full h-12 text-lg font-bold">
+            {isWon ? 'Continuar Aventura' : 'Reintentar'}
             </Button>
+        </div>
+      </div>
+    );
+  };
+  
+  const hintProgress = (matchedPairs / TOTAL_PAIRS) * 100;
+  const isGameOver = gameState === 'won' || gameState === 'lost';
+
+  return (
+    <>
+      <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 animate-fade-in">
+        <div className="lg:col-span-8">
+          <div className={cn("relative overflow-hidden aspect-square flex flex-col items-center justify-center gap-6 rounded-2xl bg-card p-0 border-2 border-primary/10",
+             isGameOver && "opacity-50"
+          )}>
+            <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:30px_30px]"></div>
+
+            {gameState === 'idle' && (
+              <div className="flex flex-col items-center gap-4 z-10 text-center animate-fade-in p-8">
+                <div className="relative bg-background w-20 h-20 rounded-2xl flex items-center justify-center shadow-lg border border-primary/10">
+                  <Gamepad2 className="text-primary h-10 w-10" />
+                </div>
+                <h3 className="text-2xl font-bold text-foreground pt-4">Memoria de Recuerdos</h3>
+                <p className="max-w-xs text-muted-foreground">Para seguir avanzando, debes de completar este desafío.</p>
+                <Button onClick={() => setInstructionsOpen(true)} className="mt-6 h-12 px-8 rounded-lg text-base font-bold tracking-wider shadow-lg shadow-primary/20" size="lg">
+                  Empezar Desafío
+                </Button>
+              </div>
+            )}
+            
+            {(gameState === 'playing' || isGameOver) && (
+              <div className="p-4 sm:p-6 w-full h-full">
+                <div className="grid grid-cols-4 sm:grid-cols-6 gap-2 sm:gap-4">
+                  {cards.map((card, index) => (
+                    <MemoryCard
+                      key={index}
+                      card={card}
+                      onClick={() => handleCardClick(index)}
+                      isDisabled={isChecking || isGameOver}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {isGameOver && <GameOverlay status={gameState} />}
           </div>
         </div>
 
-        <Dialog open={isInstructionsOpen} onOpenChange={setInstructionsOpen}>
-            <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                    <DialogTitle className="text-2xl text-center font-bold">Instrucciones: Memoria de Recuerdos</DialogTitle>
-                    <DialogDescription asChild>
-                        <div className="text-center pt-4 space-y-4 text-base text-muted-foreground">
-                            <p>Voltea las cartas una por una para encontrar los 12 pares que representan nuestros recuerdos.</p>
-                            <p className="font-bold text-primary italic">El objetivo es encontrar todos los pares en el menor tiempo y con la menor cantidad de movimientos posible.</p>
-                        </div>
-                    </DialogDescription>
-                </DialogHeader>
-                <DialogFooter className="pt-4">
-                    <Button onClick={startGame} className="w-full h-12 text-lg font-bold">¡Comenzar!</Button>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
-      </>
-    );
-  }
-  
-  if (gameState === 'won') {
-    return (
-        <Dialog open={true} onOpenChange={() => {}}>
-            <DialogContent className="sm:max-w-md text-center">
-                <DialogHeader>
-                    <DialogTitle className="text-2xl font-bold">¡Felicidades, mi amor!</DialogTitle>
-                     <DialogDescription asChild>
-                      <div className="pt-4 space-y-2">
-                        <Award className="h-12 w-12 text-primary mx-auto animate-pulse" />
-                        <p className="text-base text-muted-foreground">"Cada recuerdo contigo es mi favorito ❤️"</p>
-                        <div className="grid grid-cols-2 gap-4 pt-4 text-center">
-                          <div>
-                            <p className="text-sm text-muted-foreground">Tiempo Total</p>
-                            <p className="text-lg font-bold text-foreground">{timer}s</p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-muted-foreground">Movimientos</p>
-                            <p className="text-lg font-bold text-foreground">{moves}</p>
-                          </div>
-                        </div>
-                      </div>
-                  </DialogDescription>
-                </DialogHeader>
-                <DialogFooter className="pt-4">
-                    <Button onClick={onSuccess} className="w-full h-12 text-lg font-bold">Continuar Aventura</Button>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
-    );
-  }
-
-  return (
-    <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 animate-fade-in">
-        <div className="lg:col-span-8">
-            <div className="grid grid-cols-4 sm:grid-cols-6 gap-2 sm:gap-4 aspect-auto lg:h-full">
-                {cards.map((card, index) => (
-                    <MemoryCard
-                        key={index}
-                        card={card}
-                        onClick={() => handleCardClick(index)}
-                        isDisabled={isChecking}
-                    />
-                ))}
+        <div className="lg:col-span-4 space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+              <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-2xl flex flex-col items-center justify-center text-center">
+                <SimpleCircularProgress progress={(matchedPairs / TOTAL_PAIRS) * 100} size={80} strokeWidth={6}>
+                  <Heart className="h-6 w-6 text-primary" />
+                </SimpleCircularProgress>
+                <span className="mt-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">PARES</span>
+                <span className="text-2xl font-bold text-foreground">{matchedPairs}/{TOTAL_PAIRS}</span>
+              </div>
+              <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-2xl flex flex-col items-center justify-center text-center">
+                <SimpleCircularProgress progress={(timeLeft / GAME_DURATION) * 100} size={80} strokeWidth={6}>
+                  <Timer className="h-6 w-6 text-primary" />
+                </SimpleCircularProgress>
+                <span className="mt-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">TIEMPO</span>
+                <span className="text-2xl font-bold text-foreground">{timeLeft}s</span>
+              </div>
+            </div>
+            
+            <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-2xl flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                  <Trophy className="w-5 h-5" />
+                </div>
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground block">Mejor Tiempo</span>
+                  <span className="text-lg font-bold text-foreground">{bestTime !== null ? `${bestTime}s` : '-'}</span>
+                </div>
+              </div>
+            </div>
+            
+            <div className={cn(
+              "bg-card/50 dark:bg-zinc-800/30 p-4 rounded-2xl border border-dashed transition-colors",
+              gameState === 'won' ? "border-green-500/50" : "border-primary/20"
+            )}>
+              <div className="flex items-center gap-3 mb-2">
+                <div className={cn(
+                  "w-8 h-8 rounded-full flex items-center justify-center transition-colors",
+                  gameState === 'won' ? "bg-green-500/10 text-green-500" : "bg-muted text-muted-foreground"
+                )}>
+                  {gameState === 'won' ? <LockOpen className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
+                </div>
+                <h3 className={cn(
+                  "font-bold transition-colors",
+                  gameState === 'won' ? "text-green-600 dark:text-green-400" : "text-foreground"
+                )}>
+                  {gameState === 'won' ? 'Pista 4: Desbloqueada' : 'Pista 4: Bloqueada'}
+                </h3>
+              </div>
+              <p className="text-sm text-muted-foreground italic pl-11 mb-4">
+                "Los recuerdos correctos ordenan la mente y abren el camino."
+              </p>
+              <div className="pl-11">
+                  <div className="flex justify-between items-center text-xs font-medium text-muted-foreground mb-1">
+                      <p>{gameState === 'won' ? 'DESBLOQUEADO' : 'PROGRESO'}</p>
+                      <p>{Math.round(hintProgress)}%</p>
+                  </div>
+                  <div className="h-1.5 w-full bg-muted rounded-full">
+                      <div className={cn("h-full rounded-full", gameState === 'won' ? "bg-green-500" : "bg-primary")} style={{ width: `${hintProgress}%` }} />
+                  </div>
+              </div>
+            </div>
+            
+            <div className="p-3 bg-primary/5 rounded-lg border border-primary/10">
+                <div className="flex gap-2 items-center text-xs font-medium text-primary">
+                    <Info className="h-4 w-4 shrink-0"/>
+                    Encuentra todos los pares de cartas antes de que se acabe el tiempo.
+                </div>
             </div>
         </div>
-        <div className="lg:col-span-4 space-y-4">
-            <StatCard icon={Timer} title="Tiempo" value={`${timer}s`} />
-            <StatCard icon={MousePointerClick} title="Movimientos" value={moves} />
-        </div>
-    </div>
+      </div>
+
+      <Dialog open={isInstructionsOpen} onOpenChange={setInstructionsOpen}>
+          <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                  <DialogTitle className="text-2xl text-center font-bold">Instrucciones: Memoria de Recuerdos</DialogTitle>
+                  <DialogDescription asChild>
+                      <div className="text-center pt-4 space-y-4 text-base text-muted-foreground">
+                          <p>Voltea las cartas para encontrar los 12 pares que representan nuestros recuerdos compartidos.</p>
+                          <p className="font-bold text-primary italic">El objetivo es encontrar todos los pares antes de que el tiempo se agote.</p>
+                      </div>
+                  </DialogDescription>
+              </DialogHeader>
+              <DialogFooter className="pt-4">
+                  <Button onClick={startGame} className="w-full h-12 text-lg font-bold">¡Comenzar!</Button>
+              </DialogFooter>
+          </DialogContent>
+      </Dialog>
+    </>
   );
 }
