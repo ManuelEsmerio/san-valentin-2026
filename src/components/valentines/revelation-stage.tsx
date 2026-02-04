@@ -282,14 +282,19 @@ export default function RevelationStage() {
             <CarouselNext className="hidden sm:flex right-2" />
           </Carousel>
           
-          <div className="text-center bg-accent/50 p-6 rounded-lg w-full max-w-2xl">
-            <p className="text-lg md:text-xl">
-              Este es solo un pequeño recordatorio de todo lo que significas para
-              mí y de lo increíble que es cada momento a tu lado.
-            </p>
-            <p className="font-headline text-2xl mt-4 text-primary">
-              💕 ¡Feliz 14 de Febrero! 💕
-            </p>
+          <div className="text-left bg-accent/50 p-6 rounded-lg w-full max-w-2xl space-y-4">
+              <p className="text-lg md:text-xl">
+                  Este es solo un pequeño recordatorio de lo importante que eres para mí y de lo increíble que es compartir cada momento contigo. Gracias por ser parte de mi vida, por tu cariño, tu paciencia y por todo lo que construimos juntos. ❤️
+              </p>
+              <p className="text-lg md:text-xl">
+                  Sé que estos días han sido de mucho trabajo, pero para nada me olvido de ti. Espero que al menos este detalle te haya sacado una buena sonrisa y te haya ayudado a relajarte un poquito.
+              </p>
+              <p className="text-lg md:text-xl">
+                  Ojalá los desafíos no hayan sido estresantes 😥, porque quise hacer algo con lo que hago todos los días para darte algo único y especial, algo que solo tú vas a tener. :3
+              </p>
+              <p className="font-headline text-2xl mt-4 text-primary text-center">
+                💕 ¡Feliz 14 de Febrero! 💕
+              </p>
           </div>
 
           <div className="mt-6 flex flex-col items-center gap-4 w-full max-w-sm">
@@ -301,7 +306,7 @@ export default function RevelationStage() {
               <RotateCcw className="mr-2 h-4 w-4" />
               Volver a vivir la experiencia
             </Button>
-            <Button
+            {/* <Button
               onClick={() => setAdventureModalOpen(true)}
               className="w-full h-14 text-lg font-bold bg-gradient-to-r from-primary to-rose-400 text-white shadow-lg shadow-primary/30"
             >
@@ -312,7 +317,7 @@ export default function RevelationStage() {
                 card_giftcard
               </span>
               ¡Regalo sorpresa!
-            </Button>
+            </Button> */}
           </div>
         </div>
       </div>
