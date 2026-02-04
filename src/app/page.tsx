@@ -1,22 +1,22 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Fragment } from 'react';
 import dynamic from 'next/dynamic';
-import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
 import StageLoading from '@/components/valentines/StageLoading';
+import { Heart } from 'lucide-react';
 
 type Stage = 'login' | 'welcome' | 'game' | 'catch-hearts' | 'trivia' | 'memory-game' | 'puzzle' | 'revelation';
 
 const stageInfo: Record<Stage, { step: number; title: string; subtitle: string }> = {
   login: { step: 0, title: 'El Inicio', subtitle: 'Verifica tu amor para comenzar.' },
   welcome: { step: 0, title: 'Un Momento', subtitle: '' },
-  game: { step: 1, title: 'Desafío 1: Snake Romance', subtitle: '' },
+  game: { step: 1, title: 'Desafío 1: Snake Romance', subtitle: 'Guía al corazón y recolecta todos los puntos.' },
   'catch-hearts': { step: 2, title: 'Desafío 2: Atrapa los Detalles del Amor', subtitle: 'Cada detalle cuenta en esta lluvia de amor.' },
-  trivia: { step: 3, title: 'Desafío 3: Trivia', subtitle: 'Demuestra cuánto nos conocemos' },
+  trivia: { step: 3, title: 'Desafío 3: Trivia de Recuerdos', subtitle: 'Demuestra cuánto nos conocemos.' },
   'memory-game': { step: 4, title: 'Desafío 4: Memoria de Recuerdos', subtitle: 'Encuentra los pares.' },
   puzzle: { step: 5, title: 'Desafío 5: Puzzle Fifteen', subtitle: 'Ordena los números para revelar la pista final' },
-  revelation: { step: 6, title: 'La Sorpresa Final', subtitle: '' },
+  revelation: { step: 6, title: 'La Sorpresa Final', subtitle: 'Has llegado al final de la aventura.' },
 };
 
 const CountdownStage = dynamic(() => import('@/components/valentines/countdown-stage'), {
@@ -98,7 +98,8 @@ export default function Home() {
   const currentTitle = stageInfo[stage]?.title;
   const currentSubtitle = stageInfo[stage]?.subtitle;
   const totalChallenges = 5;
-  const progress = Math.max(0, currentStep - 1) / totalChallenges * 100;
+  const challengeProgress = Math.max(0, currentStep - 1);
+  const isChallengeStage = stage !== 'login' && stage !== 'welcome' && stage !== 'revelation';
 
   const renderStage = () => {
     switch (stage) {
@@ -127,7 +128,7 @@ export default function Home() {
 
   return (
     <div className="w-full flex flex-col items-center">
-      {(stage !== 'game' && stage !== 'catch-hearts' && (stage === 'trivia' || stage === 'puzzle' || stage === 'memory-game')) && (
+      {isChallengeStage && (
         <div className={cn("w-full text-center mb-6", containerClass)}>
           <h1 className="text-foreground tracking-light text-[24px] sm:text-[40px] font-bold leading-tight px-4 pb-1">
             {currentTitle}
@@ -138,19 +139,43 @@ export default function Home() {
         </div>
       )}
 
-      {(stage !== 'game' && stage !== 'catch-hearts' && (stage === 'trivia' || stage === 'puzzle' || stage === 'memory-game')) && (
-        <div className={cn("w-full flex flex-col gap-3 p-4 bg-card/50 rounded-xl mb-6 border border-border", containerClass)}>
-          <div className="flex gap-4 justify-between items-center">
-            <p className="text-foreground/90 text-base font-medium leading-normal">
-              Progreso del Desafío
-            </p>
-            <div className="flex items-center gap-4">
-              <p className="text-primary text-sm font-bold leading-normal">
-                {currentStep - 1} de {totalChallenges} Completados
-              </p>
-            </div>
+      {isChallengeStage && (
+        <div className={cn("w-full bg-card rounded-2xl p-4 shadow-sm mb-6", containerClass)}>
+          <div className="flex justify-between items-center mb-4">
+              <p className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Progreso del Desafío</p>
+              <div className="text-sm font-bold text-primary bg-primary/10 px-3 py-1 rounded-full">
+                  {challengeProgress} de {totalChallenges} Completados
+              </div>
           </div>
-          <Progress value={progress} className="h-3"/>
+          <div className="flex items-center">
+              {Array.from({ length: totalChallenges }).map((_, index) => {
+                  const isHeartActive = index < challengeProgress;
+                  const isHeartCurrent = index === challengeProgress;
+
+                  return (
+                      <Fragment key={index}>
+                          <div className={cn(
+                              "w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all z-10",
+                              (isHeartActive || isHeartCurrent) ? "bg-card border-primary" : "bg-card border-muted-foreground/20"
+                          )}>
+                              <Heart 
+                                  className={cn(
+                                      "w-4 h-4 transition-colors",
+                                      (isHeartActive || isHeartCurrent) ? "text-primary" : "text-muted-foreground/30"
+                                  )} 
+                                  fill={(isHeartActive || isHeartCurrent) ? 'currentColor' : 'none'}
+                              />
+                          </div>
+                          {index < totalChallenges - 1 && (
+                              <div className={cn(
+                                  "flex-1 h-1 transition-colors -mx-1",
+                                  isHeartActive ? "bg-primary" : "bg-muted"
+                              )} />
+                          )}
+                      </Fragment>
+                  )
+              })}
+          </div>
         </div>
       )}
 

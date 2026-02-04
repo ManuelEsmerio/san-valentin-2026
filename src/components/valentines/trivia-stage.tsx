@@ -17,7 +17,6 @@ import {
 } from "@/lib/placeholder-images";
 import { cn } from "@/lib/utils";
 import CircularProgress from "./CircularProgress";
-import { Progress } from "../ui/progress";
 
 type TriviaStageProps = {
   onSuccess: () => void;
@@ -273,29 +272,10 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
   }
 
   const imagePlaceholder = PlaceHolderImages.find((img) => img.id === currentQuestion.image);
-  const totalChallenges = 5;
-  const completedChallenges = 2; // This is challenge 3
-  const overallProgress = (completedChallenges / totalChallenges) * 100;
 
   return (
     <>
       <div className="w-full flex flex-col items-center gap-6 animate-fade-in">
-        <header className="w-full flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="text-center md:text-left">
-            <p className="text-primary font-bold tracking-[0.2em] text-xs uppercase mb-1">Desafío 03</p>
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground">
-              Trivia de <span className="text-primary italic">Recuerdos</span>
-            </h1>
-          </div>
-          <div className="bg-card/50 dark:bg-zinc-800/30 rounded-xl p-4 w-full md:w-96 border border-border">
-            <div className="flex justify-between items-center text-xs font-medium text-muted-foreground mb-2">
-              <p>PROGRESO TOTAL</p>
-              <p className="text-foreground font-bold">{completedChallenges} de {totalChallenges} Completados</p>
-            </div>
-            <Progress value={overallProgress} className="h-1.5" />
-          </div>
-        </header>
-
         <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Left Column: Trivia Content */}
           <div className="lg:col-span-8">

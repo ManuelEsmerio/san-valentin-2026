@@ -4,7 +4,6 @@ import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Heart, Trophy, Clock, Info, Gamepad2, Lock, LockOpen } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Progress } from '../ui/progress';
 import SimpleCircularProgress from './SimpleCircularProgress';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import MapModal from './MapModal';
@@ -54,14 +53,16 @@ const GameOverlay = ({ status, onStart, onRetry, score, highScore }: { status: G
   if (status !== 'won' && status !== 'lost') return null;
 
   const isWon = status === 'won';
-  const Icon = isWon ? Trophy : RotateCcw;
+  const Icon = isWon ? Trophy : 'replay';
   const title = isWon ? '¡Lo lograste!' : '¡Se acabó el tiempo!';
   const buttonText = isWon ? 'Ver Siguiente Pista' : 'Reintentar';
 
   return (
     <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex flex-col items-center justify-center text-center p-4 z-10 animate-fade-in">
       <div className="bg-card p-8 rounded-2xl shadow-2xl max-w-sm w-full">
-        <Icon className={cn("h-16 w-16 mx-auto mb-4", isWon ? "text-green-500" : "text-primary")} />
+        <div className={cn("h-16 w-16 mx-auto mb-4 rounded-full flex items-center justify-center", isWon ? "bg-green-100 dark:bg-green-900/30" : "bg-primary/10")}>
+            <span className="material-symbols-outlined text-4xl" style={{color: isWon ? 'var(--color-green-500)' : 'var(--color-primary)'}}>{Icon}</span>
+        </div>
         <h3 className="text-2xl font-bold text-foreground mb-2">{title}</h3>
         <p className="text-muted-foreground mb-1">Tu puntaje: <span className="font-bold text-foreground">{score}</span></p>
         <p className="text-muted-foreground mb-6">Récord: <span className="font-bold text-foreground">{highScore}</span></p>
@@ -287,30 +288,11 @@ export default function CatchHeartsStage({ onSuccess, user }: { onSuccess: () =>
       }
   };
 
-  const totalChallenges = 5;
-  const completedChallenges = 1;
-  const overallProgress = (completedChallenges / totalChallenges) * 100;
   const hintProgress = (score / TARGET_SCORE) * 100;
 
   return (
     <>
       <div className="w-full flex flex-col items-center gap-6 animate-fade-in">
-        <header className="w-full flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="text-center md:text-left">
-            <p className="text-primary font-bold tracking-[0.2em] text-xs uppercase mb-1">Desafío 02</p>
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground">
-              Atrapa los <span className="text-primary italic">Detalles</span>
-            </h1>
-          </div>
-          <div className="bg-card/50 dark:bg-zinc-800/30 rounded-xl p-4 w-full md:w-96 border border-border">
-            <div className="flex justify-between items-center text-xs font-medium text-muted-foreground mb-2">
-              <p>PROGRESO TOTAL</p>
-              <p className="text-foreground font-bold">{completedChallenges} de {totalChallenges} Completados</p>
-            </div>
-            <Progress value={overallProgress} className="h-1.5" />
-          </div>
-        </header>
-
         <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div className="lg:col-span-8">
             <div className="relative overflow-hidden aspect-square flex flex-col items-center justify-center gap-6 rounded-2xl bg-card p-0 border-2 border-primary/10">
@@ -392,10 +374,12 @@ export default function CatchHeartsStage({ onSuccess, user }: { onSuccess: () =>
               </p>
               <div className="pl-11">
                   <div className="flex justify-between items-center text-xs font-medium text-muted-foreground mb-1">
-                      <p>{gameState === 'won' ? 'DESBLOQUEADO' : 'DESBLOQUEO'}</p>
+                      <p>{gameState === 'won' ? 'DESBLOQUEADO' : 'PROGRESO'}</p>
                       <p>{Math.min(100, Math.round(hintProgress))}%</p>
                   </div>
-                  <Progress value={hintProgress} className={cn("h-1", gameState === 'won' && "[&>div]:bg-green-500")} />
+                  <div className="h-1.5 w-full bg-muted rounded-full">
+                      <div className={cn("h-full rounded-full", gameState === 'won' ? "bg-green-500" : "bg-primary")} style={{ width: `${Math.min(100, hintProgress)}%` }} />
+                  </div>
               </div>
             </div>
             

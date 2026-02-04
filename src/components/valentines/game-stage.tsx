@@ -4,7 +4,6 @@ import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Heart, Lock, Trophy, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Gamepad2, Info, LockOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Progress } from "../ui/progress";
 import MapModal from "./MapModal";
 import KeywordModal from "./KeywordModal";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -248,29 +247,10 @@ export default function GameStage({ onSuccess, user }: GameStageProps) {
   }, [onSuccess]);
 
   const hintProgress = (score / targetScore) * 100;
-  const totalChallenges = 5;
-  const completedChallenges = 0;
-  const overallProgress = (completedChallenges / totalChallenges) * 100;
 
   return (
     <>
       <div className="w-full flex flex-col items-center gap-6 animate-fade-in">
-        <header className="w-full flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="text-center md:text-left">
-            <p className="text-primary font-bold tracking-[0.2em] text-xs uppercase mb-1">Desafío 01</p>
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground">
-              Snake <span className="text-primary italic">Romance</span>
-            </h1>
-          </div>
-          <div className="bg-card/50 dark:bg-zinc-800/30 rounded-xl p-4 w-full md:w-96 border border-border">
-            <div className="flex justify-between items-center text-xs font-medium text-muted-foreground mb-2">
-                <p>PROGRESO TOTAL</p>
-                <p className="text-foreground font-bold">{completedChallenges} de {totalChallenges} Completados</p>
-            </div>
-            <Progress value={overallProgress} className="h-1.5"/>
-          </div>
-        </header>
-
         <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div className="lg:col-span-8">
             <div
@@ -393,10 +373,12 @@ export default function GameStage({ onSuccess, user }: GameStageProps) {
               </p>
               <div className="pl-11">
                   <div className="flex justify-between items-center text-xs font-medium text-muted-foreground mb-1">
-                      <p>{gameState === 'won' ? 'DESBLOQUEADO' : 'DESBLOQUEO'}</p>
+                      <p>{gameState === 'won' ? 'DESBLOQUEADO' : 'PROGRESO'}</p>
                       <p>{Math.round(hintProgress)}%</p>
                   </div>
-                  <Progress value={hintProgress} className={cn("h-1", gameState === 'won' && "[&>div]:bg-green-500")} />
+                  <div className="h-1.5 w-full bg-muted rounded-full">
+                      <div className={cn("h-full rounded-full", gameState === 'won' ? "bg-green-500" : "bg-primary")} style={{ width: `${hintProgress}%` }} />
+                  </div>
               </div>
             </div>
 
