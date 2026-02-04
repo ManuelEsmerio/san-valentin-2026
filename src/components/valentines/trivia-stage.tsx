@@ -17,6 +17,7 @@ import {
 } from "@/lib/placeholder-images";
 import { cn } from "@/lib/utils";
 import CircularProgress from "./CircularProgress";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 type TriviaStageProps = {
   onSuccess: () => void;
@@ -99,12 +100,12 @@ const IntroScreen = memo(({ onStart, onSkip, user }: { onStart: () => void; onSk
   <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5 animate-fade-in">
     <div className="p-6 sm:p-10 text-center flex flex-col items-center gap-4">
       <span className="material-symbols-outlined text-primary text-6xl" style={{ fontVariationSettings: "'FILL' 1" }}>quiz</span>
-      <h2 className="text-foreground text-3xl font-bold leading-tight tracking-[-0.015em]">¡Bien hecho, mi chula!</h2>
+      <h2 className="text-foreground text-3xl font-bold leading-tight tracking-[-0.015em]">¡Vas muy bien! Has superado los dos primeros desafíos.</h2>
       <p className="text-muted-foreground max-w-md">
-        ¡Vas muy bien! Has superado los dos primeros desafíos. Ahora, una trivia para ver qué tanto nos conocemos. ¿Lista?
+        Ahora, una trivia para ver qué tanto nos conocemos. ¿Lista?
       </p>
       <div className="flex flex-col sm:flex-row items-center gap-4 mt-4">
-        <Button onClick={onStart} className="h-12 px-8 text-lg font-bold shadow-lg shadow-primary/20" size="lg">¡Estoy lista!</Button>
+        <Button onClick={onStart} className="h-12 px-8 text-lg font-bold shadow-lg shadow-primary/20" size="lg">Empezar Desafío</Button>
         {user === 'manuel' && (
             <Button onClick={onSkip} variant="outline" className="h-12">
                 Saltar Trivia (Dev)
@@ -115,6 +116,27 @@ const IntroScreen = memo(({ onStart, onSkip, user }: { onStart: () => void; onSk
   </div>
 ));
 IntroScreen.displayName = 'IntroScreen';
+
+const InstructionsModal = memo(({ isOpen, onOpenChange, onStartGame }: { isOpen: boolean; onOpenChange: (open: boolean) => void; onStartGame: () => void; }) => (
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+        <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+                <DialogTitle className="text-2xl text-center font-bold">Instrucciones del Desafío</DialogTitle>
+                <DialogDescription asChild>
+                    <div className="text-center pt-4 space-y-4 text-base text-muted-foreground">
+                        <p>A continuación, se te presentarán una serie de preguntas sobre nosotros. Algunas son de opción múltiple y otras son para que escribas tu sentir.</p>
+                        <p className="font-bold text-primary italic">Recuerda que estas preguntas deben ser respondidas con la verdad.</p>
+                        <p>Alcanza la puntuación mínima para desbloquear el siguiente desafío. ¡Mucha suerte!</p>
+                    </div>
+                </DialogDescription>
+            </DialogHeader>
+            <DialogFooter className="pt-4">
+                <Button onClick={onStartGame} className="w-full h-12 text-lg font-bold">¡A jugar!</Button>
+            </DialogFooter>
+        </DialogContent>
+    </Dialog>
+));
+InstructionsModal.displayName = 'InstructionsModal';
 
 const FailedScreen = memo(({ score, onRetry }: { score: number, onRetry: () => void }) => (
     <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5">
@@ -160,6 +182,7 @@ export default function TriviaStage({ onSuccess, user }: TriviaStageProps) {
   const [letterToShow, setLetterToShow] = useState<{ title: string; content: string[]; images: ImagePlaceholder[] } | null>(null);
   const [shownLetters, setShownLetters] = useState<Record<number, boolean>>({});
   const [flippedQuestions, setFlippedQuestions] = useState<Record<number, boolean>>({});
+  const [isInstructionsModalOpen, setInstructionsModalOpen] = useState(false);
 
   const setupTrivia = useCallback(() => {
     const shuffledMcq = shuffleArray([...multipleChoiceQuestions]);
@@ -270,7 +293,24 @@ export default function TriviaStage({ onSuccess, user }: TriviaStageProps) {
     }
   }, [stage, onSuccess]);
 
-  if (stage === "intro") return <IntroScreen onStart={() => setStage("playing")} onSkip={onSuccess} user={user} />;
+  const handleStartGame = () => {
+    setInstructionsModalOpen(false);
+    setStage("playing");
+  };
+
+  if (stage === "intro") {
+    return (
+      <>
+        <IntroScreen onStart={() => setInstructionsModalOpen(true)} onSkip={onSuccess} user={user} />
+        <InstructionsModal 
+          isOpen={isInstructionsModalOpen} 
+          onOpenChange={setInstructionsModalOpen} 
+          onStartGame={handleStartGame} 
+        />
+      </>
+    );
+  }
+
   if (stage === "failed") return <FailedScreen score={score} onRetry={handleRetry} />;
   if (stage === "finished") return <FinishedScreen />;
 
