@@ -76,9 +76,10 @@ MemoryCard.displayName = 'MemoryCard';
 // --- Main Component ---
 type Props = {
   onSuccess: () => void;
+  user: string | null;
 };
 
-export default function MemoryGameStage({ onSuccess }: Props) {
+export default function MemoryGameStage({ onSuccess, user }: Props) {
   const [gameState, setGameState] = useState<'idle' | 'playing' | 'won' | 'lost'>('idle');
   const [cards, setCards] = useState<CardType[]>([]);
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
@@ -201,7 +202,7 @@ export default function MemoryGameStage({ onSuccess }: Props) {
             </div>
             <h3 className="text-2xl font-bold text-foreground mb-2">{title}</h3>
             <p className="text-muted-foreground mb-6">{description}</p>
-            <Button onClick={isWon ? onSuccess : resetGame} className="w-full h-12 text-lg font-bold">
+            <Button onClick={isWon ? onSuccess : startGame} className="w-full h-12 text-lg font-bold">
             {isWon ? 'Continuar Aventura' : 'Reintentar'}
             </Button>
         </div>
@@ -227,9 +228,16 @@ export default function MemoryGameStage({ onSuccess }: Props) {
                   </div>
                   <h3 className="text-2xl font-bold text-foreground pt-4">Memoria de Recuerdos</h3>
                   <p className="max-w-xs text-muted-foreground">Para seguir avanzando, debes de completar este desafío.</p>
-                  <Button onClick={() => setInstructionsOpen(true)} className="mt-6 h-12 px-8 rounded-lg text-base font-bold tracking-wider shadow-lg shadow-primary/20" size="lg">
-                    Empezar Desafío
-                  </Button>
+                  <div className="flex flex-col sm:flex-row items-center gap-4 mt-4">
+                    <Button onClick={() => setInstructionsOpen(true)} className="h-12 px-8 rounded-lg text-base font-bold tracking-wider shadow-lg shadow-primary/20" size="lg">
+                      Empezar Desafío
+                    </Button>
+                    {user === 'manuel' && (
+                        <Button onClick={onSuccess} variant="outline" className="h-12">
+                            Saltar Desafío (Dev)
+                        </Button>
+                    )}
+                  </div>
                 </div>
               )}
               
@@ -247,6 +255,7 @@ export default function MemoryGameStage({ onSuccess }: Props) {
                   </div>
                 </div>
               )}
+               {isGameOver && <GameOverlay status={gameState} />}
             </div>
           </div>
 
@@ -320,7 +329,6 @@ export default function MemoryGameStage({ onSuccess }: Props) {
               </div>
           </div>
         </div>
-        {isGameOver && <GameOverlay status={gameState} />}
       </div>
 
       <Dialog open={isInstructionsOpen} onOpenChange={setInstructionsOpen}>

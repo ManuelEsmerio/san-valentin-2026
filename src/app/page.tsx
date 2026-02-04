@@ -120,7 +120,7 @@ export default function Home() {
       case 'trivia':
         return <TriviaStage key="trivia" onSuccess={() => setStageAndSave('memory-game')} user={loggedInUser} />;
       case 'memory-game':
-        return <MemoryGameStage key="memory-game" onSuccess={() => setStageAndSave('puzzle')} />;
+        return <MemoryGameStage key="memory-game" onSuccess={() => setStageAndSave('puzzle')} user={loggedInUser} />;
       case 'puzzle':
         return <PuzzleStage key="puzzle" onSuccess={() => setStageAndSave('revelation')} />;
       case 'revelation':
