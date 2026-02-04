@@ -292,101 +292,103 @@ export default function CatchHeartsStage({ onSuccess, user }: { onSuccess: () =>
 
   return (
     <>
-      <div className="w-full relative flex flex-col items-center gap-6 animate-fade-in">
-        <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-8">
-            <div className="relative overflow-hidden aspect-square flex flex-col items-center justify-center gap-6 rounded-2xl bg-card p-0 border-2 border-primary/10">
-              <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:30px_30px]"></div>
+      <div className="w-full relative">
+        <div className="flex flex-col items-center gap-6 animate-fade-in">
+          <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div className="lg:col-span-8">
+              <div className="relative overflow-hidden aspect-square flex flex-col items-center justify-center gap-6 rounded-2xl bg-card p-0 border-2 border-primary/10">
+                <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:30px_30px]"></div>
 
-              {gameState === 'idle' && (
-                <div className="flex flex-col items-center gap-4 z-10 text-center animate-fade-in p-8">
-                  <div className="relative bg-background w-20 h-20 rounded-2xl flex items-center justify-center shadow-lg border border-primary/10">
-                    <Gamepad2 className="text-primary h-10 w-10" />
+                {gameState === 'idle' && (
+                  <div className="flex flex-col items-center gap-4 z-10 text-center animate-fade-in p-8">
+                    <div className="relative bg-background w-20 h-20 rounded-2xl flex items-center justify-center shadow-lg border border-primary/10">
+                      <Gamepad2 className="text-primary h-10 w-10" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-foreground pt-4">Atrapa los Detalles</h3>
+                    <p className="max-w-xs text-muted-foreground">Para seguir avanzando, debes de completar este desafío.</p>
+                    <Button onClick={() => setInstructionsModalOpen(true)} className="mt-6 h-12 px-8 rounded-lg text-base font-bold tracking-wider shadow-lg shadow-primary/20" size="lg">
+                      Empezar Desafío
+                    </Button>
                   </div>
-                  <h3 className="text-2xl font-bold text-foreground pt-4">Atrapa los Detalles</h3>
-                  <p className="max-w-xs text-muted-foreground">Para seguir avanzando, debes de completar este desafío.</p>
-                  <Button onClick={() => setInstructionsModalOpen(true)} className="mt-6 h-12 px-8 rounded-lg text-base font-bold tracking-wider shadow-lg shadow-primary/20" size="lg">
-                    Empezar Desafío
-                  </Button>
-                </div>
-              )}
+                )}
 
-              {(gameState === "playing" || gameState === "won" || gameState === "lost") && (
-                <canvas ref={canvasRef} className={cn(
-                  "rounded-lg bg-pink-100/20 dark:bg-pink-900/10 transition-opacity duration-500 w-full h-full",
-                  (gameState === "lost" || gameState === "won") && "opacity-10"
-                )} />
-              )}
-            </div>
-          </div>
-
-          <div className="lg:col-span-4 space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-2xl flex flex-col items-center justify-center text-center">
-                <SimpleCircularProgress progress={(score / TARGET_SCORE) * 100} size={80} strokeWidth={6}>
-                  <Heart className="h-6 w-6 text-primary" />
-                </SimpleCircularProgress>
-                <span className="mt-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Puntaje</span>
-                <span className="text-2xl font-bold text-foreground">{score}</span>
-              </div>
-              <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-2xl flex flex-col items-center justify-center text-center">
-                <SimpleCircularProgress progress={(timeLeft / GAME_DURATION) * 100} size={80} strokeWidth={6}>
-                  <Clock className="h-6 w-6 text-primary" />
-                </SimpleCircularProgress>
-                <span className="mt-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Tiempo</span>
-                <span className="text-2xl font-bold text-foreground">{timeLeft}s</span>
+                {(gameState === "playing" || gameState === "won" || gameState === "lost") && (
+                  <canvas ref={canvasRef} className={cn(
+                    "rounded-lg bg-pink-100/20 dark:bg-pink-900/10 transition-opacity duration-500 w-full h-full",
+                    (gameState === "lost" || gameState === "won") && "opacity-10"
+                  )} />
+                )}
               </div>
             </div>
 
-            <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-2xl flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-                  <span className="material-symbols-outlined text-2xl">trophy</span>
+            <div className="lg:col-span-4 space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-2xl flex flex-col items-center justify-center text-center">
+                  <SimpleCircularProgress progress={(score / TARGET_SCORE) * 100} size={80} strokeWidth={6}>
+                    <Heart className="h-6 w-6 text-primary" />
+                  </SimpleCircularProgress>
+                  <span className="mt-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Puntaje</span>
+                  <span className="text-2xl font-bold text-foreground">{score}</span>
                 </div>
-                <div>
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground block">Mejor Récord</span>
-                  <span className="text-lg font-bold text-foreground">{highScore} Puntos</span>
+                <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-2xl flex flex-col items-center justify-center text-center">
+                  <SimpleCircularProgress progress={(timeLeft / GAME_DURATION) * 100} size={80} strokeWidth={6}>
+                    <Clock className="h-6 w-6 text-primary" />
+                  </SimpleCircularProgress>
+                  <span className="mt-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Tiempo</span>
+                  <span className="text-2xl font-bold text-foreground">{timeLeft}s</span>
                 </div>
               </div>
-            </div>
-            
-            <div className={cn(
-              "bg-card/50 dark:bg-zinc-800/30 p-4 rounded-2xl border border-dashed transition-colors",
-              gameState === 'won' ? "border-green-500/50" : "border-primary/20"
-            )}>
-              <div className="flex items-center gap-3 mb-2">
-                <div className={cn(
-                  "w-8 h-8 rounded-full flex items-center justify-center transition-colors",
-                  gameState === 'won' ? "bg-green-500/10 text-green-500" : "bg-muted text-muted-foreground"
-                )}>
-                  {gameState === 'won' ? <LockOpen className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
-                </div>
-                <h3 className={cn(
-                  "font-bold transition-colors",
-                  gameState === 'won' ? "text-green-600 dark:text-green-400" : "text-foreground"
-                )}>
-                  {gameState === 'won' ? 'Pista 2: Desbloqueada' : 'Pista 2: Bloqueada'}
-                </h3>
-              </div>
-              <p className="text-sm text-muted-foreground italic pl-11 mb-4">
-                "Donde la confianza se encuentra, la siguiente puerta se abre."
-              </p>
-              <div className="pl-11">
-                  <div className="flex justify-between items-center text-xs font-medium text-muted-foreground mb-1">
-                      <p>{gameState === 'won' ? 'DESBLOQUEADO' : 'PROGRESO'}</p>
-                      <p>{Math.min(100, Math.round(hintProgress))}%</p>
+
+              <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-2xl flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                    <span className="material-symbols-outlined text-2xl">trophy</span>
                   </div>
-                  <div className="h-1.5 w-full bg-muted rounded-full">
-                      <div className={cn("h-full rounded-full", gameState === 'won' ? "bg-green-500" : "bg-primary")} style={{ width: `${Math.min(100, hintProgress)}%` }} />
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground block">Mejor Récord</span>
+                    <span className="text-lg font-bold text-foreground">{highScore} Puntos</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className={cn(
+                "bg-card/50 dark:bg-zinc-800/30 p-4 rounded-2xl border border-dashed transition-colors",
+                gameState === 'won' ? "border-green-500/50" : "border-primary/20"
+              )}>
+                <div className="flex items-center gap-3 mb-2">
+                  <div className={cn(
+                    "w-8 h-8 rounded-full flex items-center justify-center transition-colors",
+                    gameState === 'won' ? "bg-green-500/10 text-green-500" : "bg-muted text-muted-foreground"
+                  )}>
+                    {gameState === 'won' ? <LockOpen className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
+                  </div>
+                  <h3 className={cn(
+                    "font-bold transition-colors",
+                    gameState === 'won' ? "text-green-600 dark:text-green-400" : "text-foreground"
+                  )}>
+                    {gameState === 'won' ? 'Pista 2: Desbloqueada' : 'Pista 2: Bloqueada'}
+                  </h3>
+                </div>
+                <p className="text-sm text-muted-foreground italic pl-11 mb-4">
+                  "Donde la confianza se encuentra, la siguiente puerta se abre."
+                </p>
+                <div className="pl-11">
+                    <div className="flex justify-between items-center text-xs font-medium text-muted-foreground mb-1">
+                        <p>{gameState === 'won' ? 'DESBLOQUEADO' : 'PROGRESO'}</p>
+                        <p>{Math.min(100, Math.round(hintProgress))}%</p>
+                    </div>
+                    <div className="h-1.5 w-full bg-muted rounded-full">
+                        <div className={cn("h-full rounded-full", gameState === 'won' ? "bg-green-500" : "bg-primary")} style={{ width: `${Math.min(100, hintProgress)}%` }} />
+                    </div>
+                </div>
+              </div>
+              
+              <div className="p-3 bg-primary/5 rounded-lg border border-primary/10">
+                  <div className="flex gap-2 items-center text-xs font-medium text-primary">
+                      <Info className="h-4 w-4 shrink-0"/>
+                      Usa el mouse o tu dedo para guiar la cesta.
                   </div>
               </div>
-            </div>
-            
-            <div className="p-3 bg-primary/5 rounded-lg border border-primary/10">
-                <div className="flex gap-2 items-center text-xs font-medium text-primary">
-                    <Info className="h-4 w-4 shrink-0"/>
-                    Usa el mouse o tu dedo para guiar la cesta.
-                </div>
             </div>
           </div>
         </div>
