@@ -96,10 +96,16 @@ export default function Home() {
 
   const currentStep = stageInfo[stage]?.step;
   const currentTitle = stageInfo[stage]?.title;
-  const currentSubtitle = stageInfo[stage]?.subtitle;
   const totalChallenges = 5;
   const challengeProgress = Math.max(0, currentStep - 1);
   const isChallengeStage = stage !== 'login' && stage !== 'welcome' && stage !== 'revelation';
+  
+  const [challengeLabel, ...titleParts] = currentTitle.split(': ');
+  const mainTitle = titleParts.join(': ');
+  const words = mainTitle.split(' ');
+  const lastWord = words.pop() || '';
+  const restOfTitle = words.join(' ');
+  const challengeNum = String(currentStep).padStart(2, '0');
 
   const renderStage = () => {
     switch (stage) {
@@ -112,7 +118,7 @@ export default function Home() {
       case 'catch-hearts':
         return <CatchHeartsStage key="catch-hearts" onSuccess={() => setStageAndSave('trivia')} user={loggedInUser} />;
       case 'trivia':
-        return <TriviaStage key="trivia" onSuccess={() => setStageAndSave('memory-game')} />;
+        return <TriviaStage key="trivia" onSuccess={() => setStageAndSave('memory-game')} user={loggedInUser} />;
       case 'memory-game':
         return <MemoryGameStage key="memory-game" onSuccess={() => setStageAndSave('puzzle')} />;
       case 'puzzle':
@@ -129,24 +135,26 @@ export default function Home() {
   return (
     <div className="w-full flex flex-col items-center">
       {isChallengeStage && (
-        <div className={cn("w-full text-center mb-6", containerClass)}>
-          <h1 className="text-foreground tracking-light text-[24px] sm:text-[40px] font-bold leading-tight px-4 pb-1">
-            {currentTitle}
-          </h1>
-          <p className="text-primary text-lg font-medium">
-            {currentSubtitle}
-          </p>
+        <div className={cn("w-full mb-6", containerClass)}>
+          <div className="flex justify-between items-end">
+            <div>
+              <p className="text-primary font-semibold tracking-wider uppercase text-sm">
+                Desafío {challengeNum}
+              </p>
+              <h1 className="text-foreground tracking-tight text-[28px] sm:text-[40px] font-bold leading-none mt-1">
+                {restOfTitle}{' '}
+                <span className="text-primary">{lastWord}</span>
+              </h1>
+            </div>
+            <div className="text-sm font-bold text-primary bg-primary/10 px-3 py-1 rounded-full shrink-0 mb-1">
+              {challengeProgress} de {totalChallenges} Completados
+            </div>
+          </div>
         </div>
       )}
 
       {isChallengeStage && (
         <div className={cn("w-full bg-card rounded-2xl p-4 shadow-sm mb-6", containerClass)}>
-          <div className="flex justify-between items-center mb-4">
-              <p className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Progreso del Desafío</p>
-              <div className="text-sm font-bold text-primary bg-primary/10 px-3 py-1 rounded-full">
-                  {challengeProgress} de {totalChallenges} Completados
-              </div>
-          </div>
           <div className="flex items-center">
               {Array.from({ length: totalChallenges }).map((_, index) => {
                   const isHeartActive = index < challengeProgress;
