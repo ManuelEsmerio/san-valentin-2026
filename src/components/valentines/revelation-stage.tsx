@@ -283,13 +283,12 @@ export default function RevelationStage() {
           </Carousel>
           
           <div className="text-center bg-accent/50 p-6 rounded-lg w-full max-w-2xl">
-            <p className="font-bold text-xl mb-4 text-primary">"Tu Sorpresa Está En Tu Habitación"</p>
             <p className="text-lg md:text-xl">
               Este es solo un pequeño recordatorio de todo lo que significas para
               mí y de lo increíble que es cada momento a tu lado.
             </p>
             <p className="font-headline text-2xl mt-4 text-primary">
-              💕 ¡Te amo infinito! 💕
+              💕 ¡Feliz 14 de Febrero! 💕
             </p>
           </div>
 
