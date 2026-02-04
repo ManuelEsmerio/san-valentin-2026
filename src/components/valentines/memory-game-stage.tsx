@@ -9,6 +9,8 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 import SimpleCircularProgress from './SimpleCircularProgress';
+import MapModal from './MapModal';
+import KeywordModal from './KeywordModal';
 
 // --- Card Data ---
 const cardIcons: { name: string; icon: LucideIcon }[] = [
@@ -90,8 +92,17 @@ export default function MemoryGameStage({ onSuccess, user }: Props) {
 
   const [isChecking, setIsChecking] = useState(false);
   const [isInstructionsOpen, setInstructionsOpen] = useState(false);
+  const [isMapModalOpen, setMapModalOpen] = useState(false);
+  const [isKeywordModalOpen, setKeywordModalOpen] = useState(false);
 
   const timerRef = useRef<NodeJS.Timeout>();
+
+  const coordinates = "19.4130° N, 99.1718° W";
+  const lat = "19.4130";
+  const long = "-99.1718";
+  const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${long}`;
+  const iframeUrl = `https://maps.google.com/maps?q=${lat},${long}&hl=es&z=14&output=embed`;
+  const CORRECT_KEYWORD = "futuro";
 
   useEffect(() => {
     const storedBestTime = localStorage.getItem(BEST_TIME_KEY);
@@ -177,7 +188,7 @@ export default function MemoryGameStage({ onSuccess, user }: Props) {
   }, [flippedCards, cards]);
 
   useEffect(() => {
-    if (matchedPairs === TOTAL_PAIRS) {
+    if (matchedPairs === TOTAL_PAIRS && gameState !== 'won') {
       setGameState('won');
       if (timerRef.current) clearInterval(timerRef.current);
       const timeTaken = GAME_DURATION - timeLeft;
@@ -186,7 +197,26 @@ export default function MemoryGameStage({ onSuccess, user }: Props) {
         localStorage.setItem(BEST_TIME_KEY, timeTaken.toString());
       }
     }
-  }, [matchedPairs, timeLeft, bestTime]);
+  }, [matchedPairs, timeLeft, bestTime, gameState]);
+
+  const handleWin = useCallback(() => {
+    setMapModalOpen(true);
+  }, []);
+
+  const handleOpenKeywordModal = useCallback(() => {
+    setMapModalOpen(false);
+    setKeywordModalOpen(true);
+  }, []);
+
+  const handleKeywordSuccess = useCallback(() => {
+    setKeywordModalOpen(false);
+    onSuccess();
+  }, [onSuccess]);
+
+  const handleReturnToMap = useCallback(() => {
+    setKeywordModalOpen(false);
+    setMapModalOpen(true);
+  }, []);
 
   const GameOverlay = ({ status }: { status: 'won' | 'lost' }) => {
     const isWon = status === 'won';
@@ -202,8 +232,8 @@ export default function MemoryGameStage({ onSuccess, user }: Props) {
             </div>
             <h3 className="text-2xl font-bold text-foreground mb-2">{title}</h3>
             <p className="text-muted-foreground mb-6">{description}</p>
-            <Button onClick={isWon ? onSuccess : startGame} className="w-full h-12 text-lg font-bold">
-            {isWon ? 'Continuar Aventura' : 'Reintentar'}
+            <Button onClick={isWon ? handleWin : startGame} className="w-full h-12 text-lg font-bold">
+            {isWon ? 'Ver Pista' : 'Reintentar'}
             </Button>
         </div>
       </div>
@@ -347,6 +377,24 @@ export default function MemoryGameStage({ onSuccess, user }: Props) {
               </DialogFooter>
           </DialogContent>
       </Dialog>
+
+      <MapModal
+        isOpen={isMapModalOpen}
+        onClose={() => setMapModalOpen(false)}
+        onNextChallenge={handleOpenKeywordModal}
+        coordinates={coordinates}
+        googleMapsUrl={googleMapsUrl}
+        iframeUrl={iframeUrl}
+      />
+
+      <KeywordModal
+        isOpen={isKeywordModalOpen}
+        onSuccess={handleKeywordSuccess}
+        onBack={handleReturnToMap}
+        correctKeyword={CORRECT_KEYWORD}
+        title="Cuarta Palabra Clave"
+        description="Has encontrado la cuarta pista. Ingresa la palabra clave para desbloquear el desafío final."
+      />
     </>
   );
 }
