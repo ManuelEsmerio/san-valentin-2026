@@ -40,6 +40,10 @@ const ITEM_CONFIG: Record<ItemType, { icon: string; points: number }> = {
   trash: { icon: '🗑️', points: -10 },
 };
 
+const itemTypes = Object.keys(ITEM_CONFIG) as ItemType[];
+const positiveItems = itemTypes.filter(k => ITEM_CONFIG[k].points > 0);
+const negativeItems = itemTypes.filter(k => ITEM_CONFIG[k].points < 0);
+
 const drawItemOnCanvas = (ctx: CanvasRenderingContext2D, item: Item) => {
     ctx.font = '30px Arial';
     ctx.fillText(item.icon, item.x - 15, item.y + 15);
@@ -94,11 +98,12 @@ export default function CatchHeartsStage({ onSuccess, user }: { onSuccess: () =>
   const catcherXRef = useRef(0);
   const nextItemIdRef = useRef(0);
   const lastSpawnTimeRef = useRef(0);
+  const animationFrameIdRef = useRef<number>();
 
   useEffect(() => {
     scoreRef.current = score;
   }, [score]);
-
+  
   useEffect(() => {
     try {
       const storedHighScore = localStorage.getItem(HIGH_SCORE_KEY);
@@ -184,34 +189,18 @@ export default function CatchHeartsStage({ onSuccess, user }: { onSuccess: () =>
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas || gameState !== 'playing') return;
+    if (!canvas) return;
 
-    const handleMouseMove = (e: MouseEvent) => {
-        if(!canvasRef.current) return;
-        catcherXRef.current = e.clientX - canvasRef.current.getBoundingClientRect().left;
-    }
-    const handleTouchMove = (e: TouchEvent) => { 
-        if(!canvasRef.current) return;
-        e.preventDefault(); 
-        catcherXRef.current = e.touches[0].clientX - canvasRef.current.getBoundingClientRect().left; 
-    };
-
-    canvas.addEventListener('mousemove', handleMouseMove);
-    canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
-
-    let animationFrameId: number;
-    
     const dpr = window.devicePixelRatio || 1;
     const rect = canvas.getBoundingClientRect();
-    if (canvas.width !== rect.width * dpr || canvas.height !== rect.height * dpr) {
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
-    }
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     ctx.scale(dpr, dpr);
     
     const gameLoop = (timestamp: number) => {
+      if (gameState !== 'playing') return;
       const currentScore = scoreRef.current;
       const baseSpeed = 2 + (currentScore / 100);
       const spawnInterval = Math.max(200, 500 - (currentScore / 10));
@@ -254,13 +243,30 @@ export default function CatchHeartsStage({ onSuccess, user }: { onSuccess: () =>
       ctx.roundRect(catcherXRef.current - CATCHER_WIDTH / 2, rect.height - CATCHER_HEIGHT, CATCHER_WIDTH, CATCHER_HEIGHT, [10, 10, 0, 0]);
       ctx.fill();
 
-      animationFrameId = requestAnimationFrame(gameLoop);
+      animationFrameIdRef.current = requestAnimationFrame(gameLoop);
     };
+
+    if (gameState === 'playing') {
+      animationFrameIdRef.current = requestAnimationFrame(gameLoop);
+    }
     
-    animationFrameId = requestAnimationFrame(gameLoop);
+    const handleMouseMove = (e: MouseEvent) => {
+      if(!canvasRef.current) return;
+      catcherXRef.current = e.clientX - canvasRef.current.getBoundingClientRect().left;
+    }
+    const handleTouchMove = (e: TouchEvent) => { 
+        if(!canvasRef.current) return;
+        e.preventDefault(); 
+        catcherXRef.current = e.touches[0].clientX - canvasRef.current.getBoundingClientRect().left; 
+    };
+
+    canvas.addEventListener('mousemove', handleMouseMove);
+    canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
+      if (animationFrameIdRef.current) {
+        cancelAnimationFrame(animationFrameIdRef.current);
+      }
       if (canvas) {
         canvas.removeEventListener('mousemove', handleMouseMove);
         canvas.removeEventListener('touchmove', handleTouchMove);
@@ -274,9 +280,6 @@ export default function CatchHeartsStage({ onSuccess, user }: { onSuccess: () =>
       const negativeItemChance = Math.min(0.4, 0.20 + (currentScore / TARGET_SCORE) * 0.2);
       const rand = Math.random();
 
-      const positiveItems = (Object.keys(ITEM_CONFIG) as ItemType[]).filter(k => ITEM_CONFIG[k].points > 0);
-      const negativeItems = (Object.keys(ITEM_CONFIG) as ItemType[]).filter(k => ITEM_CONFIG[k].points < 0);
-
       if (rand > negativeItemChance) {
         return positiveItems[Math.floor(Math.random() * positiveItems.length)];
       } else {
@@ -287,6 +290,7 @@ export default function CatchHeartsStage({ onSuccess, user }: { onSuccess: () =>
   const totalChallenges = 5;
   const completedChallenges = 1;
   const overallProgress = (completedChallenges / totalChallenges) * 100;
+  const hintProgress = (score / TARGET_SCORE) * 100;
 
   return (
     <>
@@ -298,28 +302,28 @@ export default function CatchHeartsStage({ onSuccess, user }: { onSuccess: () =>
               Atrapa los <span className="text-primary italic">Detalles</span>
             </h1>
           </div>
-          <div className="bg-card/50 dark:bg-zinc-800/30 rounded-2xl p-5 w-full md:w-96 border border-border">
-            <div className="flex justify-between items-end mb-3">
-              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Progreso Total</span>
-              <span className="text-primary font-bold italic">{completedChallenges} de {totalChallenges} Completados</span>
+          <div className="bg-card/50 dark:bg-zinc-800/30 rounded-xl p-4 w-full md:w-96 border border-border">
+            <div className="flex justify-between items-center text-xs font-medium text-muted-foreground mb-2">
+              <p>PROGRESO TOTAL</p>
+              <p className="text-foreground font-bold">{completedChallenges} de {totalChallenges} Completados</p>
             </div>
-            <Progress value={overallProgress} className="h-2" />
+            <Progress value={overallProgress} className="h-1.5" />
           </div>
         </header>
 
         <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div className="lg:col-span-8">
-            <div className="relative overflow-hidden aspect-square flex flex-col items-center justify-center gap-6 rounded-2xl bg-card/80 p-2 border-2 border-primary/10">
+            <div className="relative overflow-hidden aspect-square flex flex-col items-center justify-center gap-6 rounded-2xl bg-card p-0 border-2 border-primary/10">
               <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:30px_30px]"></div>
 
               {gameState === 'idle' && (
                 <div className="flex flex-col items-center gap-4 z-10 text-center animate-fade-in p-8">
-                  <div className="relative bg-background w-20 h-20 rounded-3xl flex items-center justify-center shadow-lg border border-primary/10">
+                  <div className="relative bg-background w-20 h-20 rounded-2xl flex items-center justify-center shadow-lg border border-primary/10">
                     <Gamepad2 className="text-primary h-10 w-10" />
                   </div>
                   <h3 className="text-2xl font-bold text-foreground pt-4">Atrapa los Detalles</h3>
                   <p className="max-w-xs text-muted-foreground">Para seguir avanzando, debes de completar este desafío.</p>
-                  <Button onClick={() => setInstructionsModalOpen(true)} className="mt-6 h-12 px-8 rounded-xl text-base font-bold tracking-wider shadow-lg shadow-primary/20" size="lg">
+                  <Button onClick={() => setInstructionsModalOpen(true)} className="mt-6 h-12 px-8 rounded-lg text-base font-bold tracking-wider shadow-lg shadow-primary/20" size="lg">
                     Empezar Desafío
                   </Button>
                 </div>
@@ -335,28 +339,28 @@ export default function CatchHeartsStage({ onSuccess, user }: { onSuccess: () =>
             </div>
           </div>
 
-          <div className="lg:col-span-4 space-y-6">
+          <div className="lg:col-span-4 space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-3xl flex flex-col items-center justify-center text-center">
-                <SimpleCircularProgress progress={(score / TARGET_SCORE) * 100} size={80} strokeWidth={8}>
+              <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-2xl flex flex-col items-center justify-center text-center">
+                <SimpleCircularProgress progress={(score / TARGET_SCORE) * 100} size={80} strokeWidth={6}>
                   <Heart className="h-6 w-6 text-primary" />
                 </SimpleCircularProgress>
-                <span className="mt-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Puntaje</span>
+                <span className="mt-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Puntaje</span>
                 <span className="text-2xl font-bold text-foreground">{score}</span>
               </div>
-              <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-3xl flex flex-col items-center justify-center text-center">
-                <SimpleCircularProgress progress={(timeLeft / GAME_DURATION) * 100} size={80} strokeWidth={8}>
+              <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-2xl flex flex-col items-center justify-center text-center">
+                <SimpleCircularProgress progress={(timeLeft / GAME_DURATION) * 100} size={80} strokeWidth={6}>
                   <Clock className="h-6 w-6 text-primary" />
                 </SimpleCircularProgress>
-                <span className="mt-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Tiempo</span>
+                <span className="mt-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Tiempo</span>
                 <span className="text-2xl font-bold text-foreground">{timeLeft}s</span>
               </div>
             </div>
 
-            <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-5 rounded-2xl flex items-center justify-between">
+            <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-2xl flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                  <Trophy className="w-6 h-6" />
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                  <Trophy className="w-5 h-5" />
                 </div>
                 <div>
                   <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground block">Mejor Récord</span>
@@ -364,12 +368,12 @@ export default function CatchHeartsStage({ onSuccess, user }: { onSuccess: () =>
                 </div>
               </div>
             </div>
-
+            
             <div className={cn(
-              "bg-card/50 dark:bg-zinc-800/30 p-6 rounded-3xl border-2 border-dashed transition-colors",
+              "bg-card/50 dark:bg-zinc-800/30 p-4 rounded-2xl border border-dashed transition-colors",
               gameState === 'won' ? "border-green-500/50" : "border-primary/20"
             )}>
-              <div className="flex items-center gap-3 mb-4">
+              <div className="flex items-center gap-3 mb-2">
                 <div className={cn(
                   "w-8 h-8 rounded-full flex items-center justify-center transition-colors",
                   gameState === 'won' ? "bg-green-500/10 text-green-500" : "bg-muted text-muted-foreground"
@@ -383,44 +387,42 @@ export default function CatchHeartsStage({ onSuccess, user }: { onSuccess: () =>
                   {gameState === 'won' ? 'Pista 2: Desbloqueada' : 'Pista 2: Bloqueada'}
                 </h3>
               </div>
-              <p className="text-sm text-muted-foreground mb-6 italic">
+              <p className="text-sm text-muted-foreground italic pl-11 mb-4">
                 "Donde la confianza se encuentra, la siguiente puerta se abre."
               </p>
-              <div className="space-y-2">
-                <div className="flex justify-between text-[10px] font-bold uppercase tracking-tighter text-muted-foreground mb-1">
-                  <span>{gameState === 'won' ? 'DESBLOQUEADO' : 'DESBLOQUEO'}</span>
-                  <span>{Math.min(100, Math.round((score / TARGET_SCORE) * 100))}%</span>
-                </div>
-                <Progress value={(score / TARGET_SCORE) * 100} className={cn("h-1.5", gameState === 'won' && "[&>div]:bg-green-500")} />
+              <div className="pl-11">
+                  <div className="flex justify-between items-center text-xs font-medium text-muted-foreground mb-1">
+                      <p>{gameState === 'won' ? 'DESBLOQUEADO' : 'DESBLOQUEO'}</p>
+                      <p>{Math.min(100, Math.round(hintProgress))}%</p>
+                  </div>
+                  <Progress value={hintProgress} className={cn("h-1", gameState === 'won' && "[&>div]:bg-green-500")} />
               </div>
             </div>
             
-            <div className="p-4 bg-primary/5 rounded-2xl border border-primary/10">
+            <div className="p-3 bg-primary/5 rounded-lg border border-primary/10">
                 <div className="flex gap-2 items-center text-xs font-medium text-primary">
                     <Info className="h-4 w-4 shrink-0"/>
                     Usa el mouse o tu dedo para guiar la cesta.
                 </div>
             </div>
-
           </div>
         </div>
       </div>
       
       <Dialog open={isInstructionsModalOpen} onOpenChange={setInstructionsModalOpen}>
-          <DialogContent className="sm:max-w-xl">
+          <DialogContent className="sm:max-w-md">
               <DialogHeader>
                   <DialogTitle className="text-2xl text-center font-bold">Desafío 2: Atrapa los Detalles</DialogTitle>
                    <DialogDescription asChild>
                       <div className="text-center pt-4 space-y-6 text-base text-muted-foreground">
                         <p>Usa el ratón o tu dedo para mover la cesta y atrapar los objetos buenos. ¡Evita los malos!</p>
                         <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-left w-fit mx-auto">
-                            <p className="font-medium flex items-center gap-2">❤️ Corazones: <span className="font-bold text-foreground">+10</span></p>
-                            <p className="font-medium flex items-center gap-2">🌹 Flores: <span className="font-bold text-foreground">+15</span></p>
-                            <p className="font-medium flex items-center gap-2">🍫 Chocolates: <span className="font-bold text-foreground">+20</span></p>
-                            <p className="font-medium flex items-center gap-2">💌 Cartas: <span className="font-bold text-foreground">+25</span></p>
-                            <p className="font-medium flex items-center gap-2">🎁 Regalos: <span className="font-bold text-foreground">+30</span></p>
-                            <p className="font-medium flex items-center gap-2 text-destructive">💔 Corazón roto: <span className="font-bold text-destructive">-15</span></p>
-                            <p className="font-medium flex items-center gap-2 text-destructive">🗑️ Basura: <span className="font-bold text-destructive">-10</span></p>
+                            {positiveItems.map(key => (
+                                <p key={key} className="font-medium flex items-center gap-2">{ITEM_CONFIG[key].icon} {key.replace('_', ' ')}: <span className="font-bold text-foreground">{ITEM_CONFIG[key].points > 0 ? '+' : ''}{ITEM_CONFIG[key].points}</span></p>
+                            ))}
+                            {negativeItems.map(key => (
+                                <p key={key} className="font-medium flex items-center gap-2 text-destructive">{ITEM_CONFIG[key].icon} {key.replace('_', ' ')}: <span className="font-bold">{ITEM_CONFIG[key].points}</span></p>
+                            ))}
                         </div>
                         <p>Alcanza <span className="font-bold text-primary">{TARGET_SCORE}</span> puntos en {GAME_DURATION} segundos para ganar.</p>
                       </div>
