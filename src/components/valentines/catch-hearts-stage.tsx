@@ -2,10 +2,13 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import { Heart, Play, Trophy, Clock, XCircle, CheckCircle2, Star, Shield, HelpCircle } from 'lucide-react';
+import { Heart, Play, Trophy, Clock, XCircle, CheckCircle2, Star, Shield, HelpCircle, Gamepad2, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { Progress } from '../ui/progress';
+import SimpleCircularProgress from './SimpleCircularProgress';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 // --- Game Constants ---
 const GAME_DURATION = 60;
@@ -59,9 +62,6 @@ const GameOverlay = ({ status, onStart, onRetry, score, highScore }: { status: G
   const isWon = status === 'won';
   const Icon = isWon ? CheckCircle2 : XCircle;
   const title = isWon ? '¡Lo lograste!' : '¡Se acabó el tiempo!';
-  const description = isWon 
-    ? `Alcanzaste ${score} puntos. ¡Excelente trabajo!`
-    : `Obtuviste ${score} de ${TARGET_SCORE}. ¡Inténtalo de nuevo!`;
   const buttonText = isWon ? 'Siguiente Desafío' : 'Reintentar';
 
   return (
@@ -79,31 +79,6 @@ const GameOverlay = ({ status, onStart, onRetry, score, highScore }: { status: G
   );
 };
 
-const Hud = ({ score, timeLeft, highScore, powerUps }: { score: number, timeLeft: number, highScore: number, powerUps: PowerUps }) => (
-  <div className="absolute top-4 left-4 right-4 flex justify-between items-start gap-4 z-20">
-    <div className="flex flex-col gap-2">
-      <div className="bg-card/50 backdrop-blur-sm p-2 pl-4 rounded-full flex items-center gap-3 border border-border">
-          <Heart className="h-6 w-6 text-primary" />
-          <span className="text-xl font-bold text-foreground w-16 text-center">{score}</span>
-      </div>
-      <div className="bg-card/50 backdrop-blur-sm p-2 pl-4 rounded-full flex items-center gap-3 border border-border">
-          <Trophy className="h-6 w-6 text-yellow-500" />
-          <span className="text-xl font-bold text-foreground w-16 text-center">{highScore}</span>
-      </div>
-    </div>
-    <div className="flex flex-col gap-2 items-end">
-      <div className="bg-card/50 backdrop-blur-sm p-2 pr-4 rounded-full flex items-center gap-3 border border-border">
-          <span className="text-xl font-bold text-foreground w-12 text-center">{timeLeft}s</span>
-          <Clock className="h-6 w-6 text-primary"/>
-      </div>
-      <div className="flex gap-2">
-        {powerUps.star.active && <div className="h-8 w-8 rounded-full bg-yellow-400/20 text-yellow-400 flex items-center justify-center border border-yellow-400/50 animate-pulse"><Star className="h-5 w-5" /></div>}
-        {powerUps.diamond.active && <div className="h-8 w-8 rounded-full bg-cyan-400/20 text-cyan-400 flex items-center justify-center border border-cyan-400/50"><Shield className="h-5 w-5" /></div>}
-      </div>
-    </div>
-  </div>
-);
-
 // --- Main Component ---
 export default function CatchHeartsStage({ onSuccess }: { onSuccess: () => void }) {
   const { toast } = useToast();
@@ -113,6 +88,7 @@ export default function CatchHeartsStage({ onSuccess }: { onSuccess: () => void 
   const [timeLeft, setTimeLeft] = useState(GAME_DURATION);
   const [highScore, setHighScore] = useState(0);
   const [powerUps, setPowerUps] = useState<PowerUps>({ star: { active: false, timeoutId: null }, diamond: { active: false } });
+  const [isInstructionsModalOpen, setInstructionsModalOpen] = useState(false);
 
   const gameLoopRef = useRef<number>();
   const itemsRef = useRef<Item[]>([]);
@@ -155,6 +131,7 @@ export default function CatchHeartsStage({ onSuccess }: { onSuccess: () => void 
   }, [powerUps.star.timeoutId]);
 
   const startGame = () => {
+    setInstructionsModalOpen(false);
     resetGame();
     setGameState('playing');
   };
@@ -261,15 +238,14 @@ export default function CatchHeartsStage({ onSuccess }: { onSuccess: () => void 
         const catcherRight = catcherXRef.current + CATCHER_WIDTH / 2;
         if (item.y + 30 >= rect.height - CATCHER_HEIGHT && item.y <= rect.height && item.x >= catcherLeft && item.x <= catcherRight) {
             
-            // --- Item catch logic ---
-            if (item.points < 0) { // Negative item
+            if (item.points < 0) {
                 if (powerUps.diamond.active) {
                     setPowerUps(p => ({ ...p, diamond: { active: false } }));
                     toast({ title: "¡Protegida!", description: "El diamante te ha salvado de los puntos negativos." });
                 } else {
                     setScore(s => Math.max(0, s + item.points));
                 }
-            } else { // Positive or Special item
+            } else {
                  if (item.type === 'clock') {
                     setTimeLeft(t => t + item.points);
                     toast({ title: "¡Tiempo Extra!", description: `+${item.points} segundos añadidos.` });
@@ -284,22 +260,21 @@ export default function CatchHeartsStage({ onSuccess }: { onSuccess: () => void 
                  } else if (item.type === 'diamond') {
                     setPowerUps(p => ({...p, diamond: { active: true }}));
                     toast({ title: "¡Protección!", description: "Estás protegida del siguiente objeto negativo." });
-                 } else { // Regular positive item
+                 } else {
                     const pointsToAdd = powerUps.star.active ? item.points * 2 : item.points;
                     setScore(s => s + pointsToAdd);
                  }
             }
-            return false; // Remove item
+            return false;
         }
         
         if (item.y < rect.height + 50) {
             drawItemOnCanvas(ctx, item);
             return true;
         }
-        return false; // Item is off-screen
+        return false;
       });
 
-      // Draw catcher
       ctx.fillStyle = 'hsl(var(--primary) / 0.7)';
       ctx.beginPath();
       ctx.roundRect(catcherXRef.current - CATCHER_WIDTH / 2, rect.height - CATCHER_HEIGHT, CATCHER_WIDTH, CATCHER_HEIGHT, [10, 10, 0, 0]);
@@ -325,72 +300,151 @@ export default function CatchHeartsStage({ onSuccess }: { onSuccess: () => void 
     };
   }, [gameState, score, powerUps, toast]);
 
+  const totalChallenges = 5;
+  const completedChallenges = 1;
+  const overallProgress = (completedChallenges / totalChallenges) * 100;
+
   return (
-    <div className="w-full flex flex-col items-center gap-6">
-      <div className="w-full relative bg-card/80 rounded-2xl aspect-[9/12] max-h-[70vh] shadow-lg border border-primary/10 overflow-hidden">
-        
-        {gameState === 'idle' && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-8 z-10 animate-fade-in">
-              <div className="relative bg-background w-20 h-20 rounded-3xl flex items-center justify-center shadow-lg border border-primary/10 mb-6">
-                <Heart className="text-primary h-10 w-10"/>
-              </div>
-              <h3 className="text-2xl font-bold text-foreground">
-                  Atrapa los Detalles del Amor
-              </h3>
-              <p className="max-w-xs text-muted-foreground mt-2 mb-6">
-                  Atrapa los objetos buenos y evita los malos. ¡Alcanza <span className="font-bold text-primary">{TARGET_SCORE}</span> puntos en {GAME_DURATION} segundos!
-              </p>
-              <Button onClick={startGame} className="h-12 px-8 rounded-xl text-base font-bold tracking-wider shadow-lg shadow-primary/20">
-                  <Play className="mr-2 h-5 w-5"/>
-                  Jugar ahora
-              </Button>
+    <>
+      <div className="w-full flex flex-col items-center gap-6 animate-fade-in">
+        <header className="w-full flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="text-center md:text-left">
+            <p className="text-primary font-bold tracking-[0.2em] text-xs uppercase mb-1">Desafío 02</p>
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground">
+              Atrapa los <span className="text-primary italic">Detalles</span>
+            </h1>
           </div>
-        )}
-
-        <canvas ref={canvasRef} className="w-full h-full" />
-        
-        <GameOverlay status={gameState} onStart={onSuccess} onRetry={startGame} score={score} highScore={highScore} />
-        {gameState === 'playing' && <Hud score={score} timeLeft={timeLeft} highScore={highScore} powerUps={powerUps} />}
-      </div>
-
-       <div className="w-full bg-card/50 dark:bg-zinc-800/30 p-4 rounded-2xl flex items-center justify-between border border-border">
-          <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                  <Trophy className="w-7 h-7"/>
-              </div>
-              <div>
-                  <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground block">Meta</span>
-                  <span className="text-xl font-bold text-foreground">{TARGET_SCORE} Puntos</span>
-              </div>
+          <div className="bg-card/50 dark:bg-zinc-800/30 rounded-2xl p-5 w-full md:w-96 border border-border">
+            <div className="flex justify-between items-end mb-3">
+              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Progreso Total</span>
+              <span className="text-primary font-bold italic">{completedChallenges} de {totalChallenges} Completados</span>
+            </div>
+            <Progress value={overallProgress} className="h-2" />
           </div>
-            <Popover>
+        </header>
+
+        <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="lg:col-span-8">
+            <div className="relative overflow-hidden aspect-square flex flex-col items-center justify-center gap-6 rounded-2xl bg-card/80 p-2 border-2 border-primary/10">
+              <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:30px_30px]"></div>
+
+              {gameState === 'idle' && (
+                <div className="flex flex-col items-center gap-4 z-10 text-center animate-fade-in p-8">
+                  <div className="relative bg-background w-20 h-20 rounded-3xl flex items-center justify-center shadow-lg border border-primary/10">
+                    <Gamepad2 className="text-primary h-10 w-10" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-foreground pt-4">Atrapa los Detalles</h3>
+                  <p className="max-w-xs text-muted-foreground">Para seguir avanzando, debes de completar este desafío.</p>
+                  <Button onClick={() => setInstructionsModalOpen(true)} className="mt-6 h-12 px-8 rounded-xl text-base font-bold tracking-wider shadow-lg shadow-primary/20" size="lg">
+                    Empezar Desafío
+                  </Button>
+                </div>
+              )}
+
+              {(gameState === "playing" || gameState === "won" || gameState === "lost") && (
+                <canvas ref={canvasRef} className={cn(
+                  "rounded-lg bg-pink-100/20 dark:bg-pink-900/10 transition-opacity duration-500 w-full h-full",
+                  (gameState === "lost" || gameState === "won") && "opacity-10"
+                )} />
+              )}
+              <GameOverlay status={gameState} onStart={onSuccess} onRetry={startGame} score={score} highScore={highScore} />
+            </div>
+          </div>
+
+          <div className="lg:col-span-4 space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-3xl flex flex-col items-center justify-center text-center">
+                <SimpleCircularProgress progress={(score / TARGET_SCORE) * 100} size={80} strokeWidth={8}>
+                  <Heart className="h-6 w-6 text-primary" />
+                </SimpleCircularProgress>
+                <span className="mt-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Puntaje</span>
+                <span className="text-2xl font-bold text-foreground">{score}</span>
+              </div>
+              <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-3xl flex flex-col items-center justify-center text-center">
+                <SimpleCircularProgress progress={(timeLeft / GAME_DURATION) * 100} size={80} strokeWidth={8}>
+                  <Clock className="h-6 w-6 text-primary" />
+                </SimpleCircularProgress>
+                <span className="mt-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Tiempo</span>
+                <span className="text-2xl font-bold text-foreground">{timeLeft}s</span>
+              </div>
+            </div>
+
+            <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-5 rounded-2xl flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                  <Trophy className="w-6 h-6" />
+                </div>
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground block">Mejor Récord</span>
+                  <span className="text-lg font-bold text-foreground">{highScore} Puntos</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-card/50 dark:bg-zinc-800/30 p-6 rounded-3xl border border-border">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-8 h-8 rounded-full bg-muted text-muted-foreground flex items-center justify-center">
+                  <Info className="w-4 h-4" />
+                </div>
+                <h3 className="font-bold text-foreground">Guía del Juego</h3>
+              </div>
+              <p className="text-sm text-muted-foreground mb-6 italic">Atrapa los objetos buenos y evita los malos para alcanzar la meta de {TARGET_SCORE} puntos.</p>
+              <Popover>
                 <PopoverTrigger asChild>
-                    <Button variant="ghost" size="icon" className="text-muted-foreground"><HelpCircle /></Button>
+                  <Button variant="outline" className="w-full"><HelpCircle className="w-4 h-4 mr-2" /> Ver Puntuación</Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-80">
-                    <div className="grid gap-4">
-                        <div className="space-y-2">
-                            <h4 className="font-medium leading-none">Reglas del Juego</h4>
-                            <p className="text-sm text-muted-foreground">
-                                Atrapa los objetos buenos para sumar puntos y evita los malos para no perderlos. ¡Supera la meta de {TARGET_SCORE} puntos!
-                            </p>
-                        </div>
-                        <div className="grid grid-cols-2 gap-2">
-                           <p className="text-sm font-medium flex items-center gap-2">❤️ +10</p>
-                           <p className="text-sm font-medium flex items-center gap-2">🌹 +15</p>
-                           <p className="text-sm font-medium flex items-center gap-2">🍫 +20</p>
-                           <p className="text-sm font-medium flex items-center gap-2">💌 +25</p>
-                           <p className="text-sm font-medium flex items-center gap-2">🎁 +30</p>
-                           <p className="text-sm font-medium flex items-center gap-2">💔 -15</p>
-                           <p className="text-sm font-medium flex items-center gap-2">🗑️ -10</p>
-                           <p className="text-sm font-medium flex items-center gap-2">⏱️ +10s</p>
-                           <p className="text-sm font-medium flex items-center gap-2">⭐ x2 Pts</p>
-                           <p className="text-sm font-medium flex items-center gap-2">💎 Escudo</p>
-                        </div>
+                  <div className="grid gap-4">
+                    <div className="space-y-2">
+                      <h4 className="font-medium leading-none">Puntuación de Objetos</h4>
+                      <p className="text-sm text-muted-foreground">Cada objeto tiene un valor. ¡Elige sabiamente!</p>
                     </div>
+                    <div className="grid grid-cols-2 gap-2 text-sm">
+                      <p className="font-medium flex items-center gap-2">❤️ +10</p>
+                      <p className="font-medium flex items-center gap-2">🌹 +15</p>
+                      <p className="font-medium flex items-center gap-2">🍫 +20</p>
+                      <p className="font-medium flex items-center gap-2">💌 +25</p>
+                      <p className="font-medium flex items-center gap-2">🎁 +30</p>
+                      <p className="font-medium flex items-center gap-2 text-destructive">💔 -15</p>
+                      <p className="font-medium flex items-center gap-2 text-destructive">🗑️ -10</p>
+                      <p className="font-medium flex items-center gap-2 text-blue-500">⏱️ +10s</p>
+                      <p className="font-medium flex items-center gap-2 text-yellow-500">⭐ x2 Pts</p>
+                      <p className="font-medium flex items-center gap-2 text-cyan-500">💎 Escudo</p>
+                    </div>
+                  </div>
                 </PopoverContent>
-            </Popover>
+              </Popover>
+            </div>
+
+            <div className="flex items-center gap-4 p-4 bg-card/50 dark:bg-zinc-800/30 rounded-2xl border border-border min-h-[72px]">
+              <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Poder Activo:</span>
+              <div className="flex gap-2">
+                {powerUps.star.active && <div className="h-10 w-10 rounded-full bg-yellow-400/20 text-yellow-400 flex items-center justify-center border border-yellow-400/50 animate-pulse"><Star className="h-6 w-6" /></div>}
+                {powerUps.diamond.active && <div className="h-10 w-10 rounded-full bg-cyan-400/20 text-cyan-400 flex items-center justify-center border border-cyan-400/50"><Shield className="h-6 w-6" /></div>}
+                {!powerUps.star.active && !powerUps.diamond.active && <span className="text-sm text-muted-foreground italic">Ninguno</span>}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+      
+      <Dialog open={isInstructionsModalOpen} onOpenChange={setInstructionsModalOpen}>
+          <DialogContent className="sm:max-w-xl">
+              <DialogHeader>
+                  <DialogTitle className="text-2xl text-center font-bold">Desafío 2: Atrapa los Detalles</DialogTitle>
+                   <DialogDescription asChild>
+                      <div className="text-center pt-4 space-y-3 text-base text-muted-foreground">
+                          <p>Usa el ratón o tu dedo para mover la cesta y atrapar los objetos que caen.</p>
+                          <p>Alcanza <span className="font-bold text-primary">{TARGET_SCORE}</span> puntos en {GAME_DURATION} segundos para ganar, ¡pero cuidado con los objetos negativos!</p>
+                          <p className="pt-2">¡A jugar, mi chula!</p>
+                      </div>
+                  </DialogDescription>
+              </DialogHeader>
+              <DialogFooter className="pt-4">
+                  <Button onClick={startGame} className="w-full h-12 text-lg font-bold">¡Vamos!</Button>
+              </DialogFooter>
+          </DialogContent>
+      </Dialog>
+    </>
   );
 }

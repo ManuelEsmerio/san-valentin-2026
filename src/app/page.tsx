@@ -123,11 +123,11 @@ export default function Home() {
     }
   };
 
-  const containerClass = stage === 'game' || stage === 'trivia' ? 'max-w-5xl' : stage === 'revelation' || stage === 'puzzle' ? 'max-w-2xl' : 'max-w-lg';
+  const containerClass = stage === 'game' || stage === 'catch-hearts' || stage === 'trivia' ? 'max-w-5xl' : stage === 'revelation' || stage === 'puzzle' ? 'max-w-2xl' : 'max-w-lg';
 
   return (
     <div className="w-full flex flex-col items-center">
-      {(stage !== 'game' && (stage === 'trivia' || stage === 'puzzle' || stage === 'catch-hearts' || stage === 'memory-game')) && (
+      {(stage !== 'game' && stage !== 'catch-hearts' && (stage === 'trivia' || stage === 'puzzle' || stage === 'memory-game')) && (
         <div className={cn("w-full text-center mb-6", containerClass)}>
           <h1 className="text-foreground tracking-light text-[24px] sm:text-[40px] font-bold leading-tight px-4 pb-1">
             {currentTitle}
@@ -138,7 +138,7 @@ export default function Home() {
         </div>
       )}
 
-      {(stage !== 'game' && (stage === 'trivia' || stage === 'puzzle' || stage === 'catch-hearts' || stage === 'memory-game')) && (
+      {(stage !== 'game' && stage !== 'catch-hearts' && (stage === 'trivia' || stage === 'puzzle' || stage === 'memory-game')) && (
         <div className={cn("w-full flex flex-col gap-3 p-4 bg-card/50 rounded-xl mb-6 border border-border", containerClass)}>
           <div className="flex gap-4 justify-between items-center">
             <p className="text-foreground/90 text-base font-medium leading-normal">
