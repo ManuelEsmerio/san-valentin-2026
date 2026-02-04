@@ -19,8 +19,9 @@ export default function WelcomeStage({ onSuccess }: WelcomeStageProps) {
           Bienvenida. <span role="img" aria-label="sparkling heart">💖</span>
         </h2>
         <div className="text-muted-foreground text-center mb-8 max-w-sm space-y-4">
-            <p>Este juego está hecho con tiempo, recuerdos y un poco de nosotros.</p>
-            <p>No hay respuestas correctas ni incorrectas. Solo sigue avanzando.</p>
+            <p>Tengo un reto para ti...</p>
+            <p>Supera cada juego, descubre cada pista, y llega hasta el final.</p>
+            <p>Prometo que valdrá la pena 😏❤️.</p>
         </div>
         <Button
           onClick={onSuccess}
@@ -30,10 +31,10 @@ export default function WelcomeStage({ onSuccess }: WelcomeStageProps) {
           <span className="material-symbols-outlined mr-2">
             play_circle
           </span>
-          ¡Empecemos!
+          Vamos!
         </Button>
         <p className="text-primary/70 text-sm mt-6">
-          Al final, hay algo esperándote.
+          Premio especial desbloqueable.
         </p>
       </div>
     </div>

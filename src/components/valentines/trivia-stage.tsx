@@ -12,7 +12,6 @@ import { CheckCircle2, RotateCcw, XCircle } from "lucide-react";
 import RomanticLetterModal from "./RomanticLetterModal";
 import { PlaceHolderImages, type ImagePlaceholder } from "@/lib/placeholder-images";
 import { cn } from "@/lib/utils";
-import FifteenPuzzleModal from "./FifteenPuzzleModal";
 import CircularProgress from "./CircularProgress";
 
 type TriviaStageProps = {
@@ -225,7 +224,6 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
   },
 ];
 
-
 const openEndedQuestions: OpenEndedQuestion[] = [
     {
         id: 25,
@@ -253,7 +251,7 @@ const openEndedQuestions: OpenEndedQuestion[] = [
     }
 ];
 
-const LETTERS = {
+const LETTERS: Record<number, { title: string; content: string[]; imageIds: string[] }> = {
   5: {
     title: "Lo que más amo de ti…",
     content: [
@@ -295,6 +293,7 @@ const LETTERS = {
 };
 
 const MIN_CORRECT_ANSWERS = 8;
+const LAST_MCQ_INDEX = multipleChoiceQuestions.length - 1;
 
 const shuffleArray = (array: any[]) => {
   let currentIndex = array.length, randomIndex;
@@ -318,14 +317,11 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
   
   const [letterToShow, setLetterToShow] = useState<{ title: string; content: string[]; images: ImagePlaceholder[] } | null>(null);
   const [shownLetters, setShownLetters] = useState<Record<number, boolean>>({});
-  const [isPuzzleModalOpen, setPuzzleModalOpen] = useState(false);
   const [flippedQuestions, setFlippedQuestions] = useState<Record<number, boolean>>({});
-
 
   const setupTrivia = useCallback(() => {
     const shuffledMcq = shuffleArray([...multipleChoiceQuestions]);
     const allQuestions = [...shuffledMcq, ...openEndedQuestions];
-    
     setQuestions(allQuestions);
     setCurrentQuestionIndex(0);
     setAnswers({});
@@ -333,7 +329,6 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
     setAnswerStatus('unanswered');
     setStage("intro");
     setShownLetters({});
-    setPuzzleModalOpen(false);
     setFlippedQuestions({});
   }, []);
 
@@ -341,16 +336,16 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
     setupTrivia();
   }, [setupTrivia]);
   
-  const showLetterIfNeeded = useCallback((trigger: keyof typeof LETTERS) => {
-    if (LETTERS[trigger] && !shownLetters[trigger]) {
-      const letterData = LETTERS[trigger];
+  const showLetter = useCallback((letterKey: keyof typeof LETTERS) => {
+    if (LETTERS[letterKey] && !shownLetters[letterKey]) {
+      const letterData = LETTERS[letterKey];
       const letterImages = letterData.imageIds
         .map(id => PlaceHolderImages.find(img => img.id === id))
         .filter((img): img is ImagePlaceholder => !!img);
         
       setLetterToShow({ ...letterData, images: letterImages });
-      setShownLetters(prev => ({ ...prev, [trigger]: true }));
-      return true; // Indicates a letter was shown
+      setShownLetters(prev => ({ ...prev, [letterKey]: true }));
+      return true;
     }
     return false;
   }, [shownLetters]);
@@ -358,14 +353,10 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
   const goToNextQuestion = useCallback(() => {
     setAnswerStatus("unanswered");
 
-    const currentQ = questions[currentQuestionIndex];
-    const nextQ = questions[currentQuestionIndex + 1];
-    
-    // Check if transitioning from the last MCQ to the first open-ended question
-    if (currentQ?.type === 'multiple-choice' && nextQ?.type === 'open-ended') {
-        if(showLetterIfNeeded(20)) return; // Show letter 4 and pause.
+    if (currentQuestionIndex === LAST_MCQ_INDEX) {
+      if (showLetter(20)) return;
     }
-    
+
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
@@ -375,7 +366,7 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
         setStage("failed");
       }
     }
-  }, [currentQuestionIndex, questions, score, showLetterIfNeeded]);
+  }, [currentQuestionIndex, questions.length, score, showLetter]);
 
   const handleNext = useCallback(() => {
     if (answerStatus !== 'unanswered') {
@@ -418,20 +409,28 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
     if (isCorrect) {
         const newScore = score + 1;
         setScore(newScore);
-        
-        const wasLetterShown = (newScore === 5 || newScore === 10 || newScore === 15) ? showLetterIfNeeded(newScore as keyof typeof LETTERS) : false;
-
+        const wasLetterShown = (newScore === 5 || newScore === 10 || newScore === 15) ? showLetter(newScore as keyof typeof LETTERS) : false;
         if (!wasLetterShown) {
           setAnswerStatus('correct');
         }
     } else {
         setAnswerStatus('incorrect');
     }
-  }, [answerStatus, answers, currentQuestionIndex, flippedQuestions, goToNextQuestion, questions, score, showLetterIfNeeded, toast]);
+  }, [answerStatus, answers, currentQuestionIndex, flippedQuestions, goToNextQuestion, questions, score, showLetter, toast]);
 
   const handleRetry = useCallback(() => {
     setupTrivia();
   }, [setupTrivia]);
+
+  useEffect(() => {
+    if (stage === "finished") {
+        const timer = setTimeout(() => {
+            onSuccess();
+        }, 3000); // 3-second delay before moving to the next stage
+        return () => clearTimeout(timer);
+    }
+  }, [stage, onSuccess]);
+
 
   if (stage === "intro") {
     return (
@@ -479,24 +478,17 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
 
   if (stage === "finished") {
      return (
-        <>
-          <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5">
-              <div className="px-4 sm:px-8 pb-10 pt-6">
-                  <Alert className="animate-fade-in text-center border-green-500/50">
-                      <span className="material-symbols-outlined text-primary text-5xl">check_circle</span>
-                      <AlertTitle className="font-headline mt-2 text-xl text-green-600">¡Perfecto! ¡Sabía que lo sabrías todo!</AlertTitle>
-                      <AlertDescription className="font-body space-y-4 mt-4 text-foreground/80">
-                        <p>Has completado el desafío. Ahora, un último juego te separa de la sorpresa final.</p>
-                        <Button onClick={() => setPuzzleModalOpen(true)} className="w-full h-12 text-lg font-bold">Continuar</Button>
-                      </AlertDescription>
-                  </Alert>
-              </div>
-          </div>
-          <FifteenPuzzleModal 
-            isOpen={isPuzzleModalOpen}
-            onSuccess={onSuccess}
-          />
-        </>
+        <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5">
+            <div className="px-4 sm:px-8 pb-10 pt-6">
+                <Alert className="animate-fade-in text-center border-green-500/50">
+                    <span className="material-symbols-outlined text-primary text-5xl">check_circle</span>
+                    <AlertTitle className="font-headline mt-2 text-xl text-green-600">¡Perfecto! ¡Sabía que lo sabrías todo!</AlertTitle>
+                    <AlertDescription className="font-body space-y-4 mt-4 text-foreground/80">
+                        <p>Has completado el desafío. Cargando el siguiente paso...</p>
+                    </AlertDescription>
+                </Alert>
+            </div>
+        </div>
       )
   }
   
@@ -511,7 +503,6 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
     <>
       <div className="w-full flex flex-col items-center gap-6">
         {imagePlaceholder ? (
-          // Layout WITH image
           <div className="w-full flex flex-col md:flex-row items-start md:items-center gap-8">
             <div className="w-full md:flex-1">
               <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5">
@@ -590,16 +581,13 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
                 </div>
               </div>
             </div>
-            {/* Progress Circle Side */}
             <div className="w-full md:w-auto flex justify-center md:pl-8">
                 <CircularProgress current={currentQuestionIndex + 1} total={questions.length} />
             </div>
           </div>
         ) : (
-          // Layout WITHOUT image
           <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5">
             <div className="flex flex-col-reverse md:flex-row items-center p-6 md:p-8 gap-8">
-              {/* Question Side */}
               <div className="w-full flex-1">
                 <h2 className="text-2xl font-bold mb-2">{currentQuestion.question}</h2>
                 <p className="text-muted-foreground mb-6">{currentQuestion.hint}</p>
@@ -660,7 +648,6 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
                 )}
               </div>
               
-              {/* Progress Circle Side */}
               <div className="w-full md:w-auto md:pl-8 md:border-l border-border flex justify-center">
                 <CircularProgress current={currentQuestionIndex + 1} total={questions.length} />
               </div>
@@ -701,16 +688,10 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
         letter={letterToShow}
         onClose={() => {
           setLetterToShow(null);
-          // After closing a letter, proceed to the next question if applicable.
           if (answerStatus !== 'unanswered') {
               goToNextQuestion();
           }
         }}
-      />
-
-      <FifteenPuzzleModal 
-        isOpen={isPuzzleModalOpen}
-        onSuccess={onSuccess}
       />
     </>
   );

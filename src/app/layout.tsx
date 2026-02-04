@@ -40,7 +40,7 @@ export default function RootLayout({
                 favorite
             </span>
             <h2 className="text-primary text-xl font-bold">
-            Para Mariana Rangel Zermeño, Con mucho cariño.
+            Con mucho cariño.
             </h2>
           </div>
           <ThemeToggle />
@@ -50,11 +50,7 @@ export default function RootLayout({
         </main>
         <footer className="py-6 text-center text-muted-foreground text-sm">
           <p className="flex items-center justify-center">
-            Made with{' '}
-            <span className="material-symbols-outlined text-xs align-middle mx-1">
-              favorite
-            </span>{' '}
-            for someone special
+            Diseñado para robarte sonrisas 😏💘
           </p>
         </footer>
         <Toaster />
