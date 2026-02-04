@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Dog, Cat, Plane, Clapperboard, Pizza, Brush, Heart, Sailboat, CupSoda, Gem, Rabbit, Star,
   type LucideIcon, Timer, MousePointerClick, Award, BrainCircuit, Play
