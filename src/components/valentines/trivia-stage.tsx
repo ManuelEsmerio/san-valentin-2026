@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
-import { CheckCircle2, Lightbulb, Link, RotateCcw, XCircle } from "lucide-react";
+import { CheckCircle2, RotateCcw, XCircle } from "lucide-react";
 import RomanticLetterModal from "./RomanticLetterModal";
 import { PlaceHolderImages, type ImagePlaceholder } from "@/lib/placeholder-images";
 import { cn } from "@/lib/utils";
@@ -322,7 +322,7 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
   const [flippedQuestions, setFlippedQuestions] = useState<Record<number, boolean>>({});
 
 
-  const setupTrivia = () => {
+  const setupTrivia = useCallback(() => {
     const shuffledMcq = shuffleArray([...multipleChoiceQuestions]);
     const allQuestions = [...shuffledMcq, ...openEndedQuestions];
     
@@ -335,22 +335,13 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
     setShownLetters({});
     setPuzzleModalOpen(false);
     setFlippedQuestions({});
-  };
+  }, []);
 
   useEffect(() => {
     setupTrivia();
-  }, []);
+  }, [setupTrivia]);
   
-  const currentQuestion = questions[currentQuestionIndex];
-  const imagePlaceholder = PlaceHolderImages.find(img => img.id === currentQuestion?.image);
-
-  const handleAnswerChange = (value: string) => {
-    if (answerStatus !== 'unanswered') return;
-     if (currentQuestion.type === 'open-ended' && flippedQuestions[currentQuestion.id]) return;
-    setAnswers(prev => ({ ...prev, [currentQuestion.id]: value }));
-  };
-  
-  const showLetterIfNeeded = (trigger: keyof typeof LETTERS) => {
+  const showLetterIfNeeded = useCallback((trigger: keyof typeof LETTERS) => {
     if (LETTERS[trigger] && !shownLetters[trigger]) {
       const letterData = LETTERS[trigger];
       const letterImages = letterData.imageIds
@@ -362,14 +353,17 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
       return true; // Indicates a letter was shown
     }
     return false;
-  };
+  }, [shownLetters]);
 
-  const goToNextQuestion = () => {
+  const goToNextQuestion = useCallback(() => {
     setAnswerStatus("unanswered");
 
-    const isLastMcq = currentQuestion?.type === 'multiple-choice' && questions[currentQuestionIndex + 1]?.type === 'open-ended';
-    if (isLastMcq) {
-      if(showLetterIfNeeded(20)) return; // Show letter and pause
+    const currentQ = questions[currentQuestionIndex];
+    const nextQ = questions[currentQuestionIndex + 1];
+    
+    // Check if transitioning from the last MCQ to the first open-ended question
+    if (currentQ?.type === 'multiple-choice' && nextQ?.type === 'open-ended') {
+        if(showLetterIfNeeded(20)) return; // Show letter 4 and pause.
     }
     
     if (currentQuestionIndex < questions.length - 1) {
@@ -381,13 +375,16 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
         setStage("failed");
       }
     }
-  };
+  }, [currentQuestionIndex, questions, score, showLetterIfNeeded]);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (answerStatus !== 'unanswered') {
       goToNextQuestion();
       return;
     }
+
+    const currentQuestion = questions[currentQuestionIndex];
+    if (!currentQuestion) return;
 
     if (currentQuestion.type === 'open-ended') {
       if (flippedQuestions[currentQuestion.id]) {
@@ -409,7 +406,7 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
         return;
     }
     
-    const correctAnswer = (currentQuestion as MultipleChoiceQuestion).correctAnswer;
+    const correctAnswer = currentQuestion.correctAnswer;
     let isCorrect = false;
 
     if (Array.isArray(correctAnswer)) {
@@ -430,11 +427,11 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
     } else {
         setAnswerStatus('incorrect');
     }
-  };
+  }, [answerStatus, answers, currentQuestionIndex, flippedQuestions, goToNextQuestion, questions, score, showLetterIfNeeded, toast]);
 
-  const handleRetry = () => {
+  const handleRetry = useCallback(() => {
     setupTrivia();
-  };
+  }, [setupTrivia]);
 
   if (stage === "intro") {
     return (
@@ -502,10 +499,13 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
         </>
       )
   }
-
+  
+  const currentQuestion = questions[currentQuestionIndex];
   if (!currentQuestion || stage !== 'playing' || !questions.length) {
     return null;
   }
+  
+  const imagePlaceholder = PlaceHolderImages.find(img => img.id === currentQuestion.image);
 
   return (
     <>
@@ -536,21 +536,21 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
                   
                   {currentQuestion.type === 'multiple-choice' && (
                     <RadioGroup
-                      onValueChange={handleAnswerChange}
+                      onValueChange={(value) => setAnswers(prev => ({ ...prev, [currentQuestion.id]: value }))}
                       value={answers[currentQuestion.id] || ""}
                       className="grid grid-cols-1 sm:grid-cols-2 gap-3"
                       disabled={answerStatus !== 'unanswered'}
                     >
-                      {(currentQuestion as MultipleChoiceQuestion).options.map((option, index) => (
+                      {currentQuestion.options.map((option, index) => (
                         <Label 
                           key={`${option}-${index}`}
                           htmlFor={`${option}-${index}`}
                           className={cn(
                             "flex items-center space-x-3 p-4 rounded-lg border-2 border-border has-[input:checked]:border-primary has-[input:checked]:bg-primary/5 cursor-pointer transition-all",
                             answerStatus !== 'unanswered' &&
-                              (Array.isArray((currentQuestion as MultipleChoiceQuestion).correctAnswer)
-                                ? (currentQuestion as MultipleChoiceQuestion).correctAnswer.includes(option)
-                                : (currentQuestion as MultipleChoiceQuestion).correctAnswer === option) &&
+                              (Array.isArray(currentQuestion.correctAnswer)
+                                ? currentQuestion.correctAnswer.includes(option)
+                                : currentQuestion.correctAnswer === option) &&
                               "border-green-500 bg-green-500/5",
                             answerStatus === 'incorrect' && answers[currentQuestion.id] === option && "border-destructive bg-destructive/5"
                           )}
@@ -574,14 +574,14 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
                               placeholder="Escribe tu respuesta aquí, mi chula..."
                               className="min-h-[160px] text-base"
                               value={answers[currentQuestion.id] || ""}
-                              onChange={(e) => handleAnswerChange(e.target.value)}
+                              onChange={(e) => setAnswers(prev => ({ ...prev, [currentQuestion.id]: e.target.value }))}
                               disabled={!!flippedQuestions[currentQuestion.id]}
                               />
                           </div>
 
                           <div className="absolute w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] bg-primary/10 p-6 rounded-lg flex flex-col justify-center items-center text-center">
                               <p className="text-foreground/80 italic text-lg">
-                                  &ldquo;{(currentQuestion as OpenEndedQuestion).creatorAnswer}&rdquo;
+                                  &ldquo;{currentQuestion.creatorAnswer}&rdquo;
                               </p>
                           </div>
                       </div>
@@ -606,21 +606,21 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
 
                 {currentQuestion.type === 'multiple-choice' && (
                   <RadioGroup
-                    onValueChange={handleAnswerChange}
+                    onValueChange={(value) => setAnswers(prev => ({ ...prev, [currentQuestion.id]: value }))}
                     value={answers[currentQuestion.id] || ""}
                     className="grid grid-cols-1 sm:grid-cols-2 gap-3"
                     disabled={answerStatus !== 'unanswered'}
                   >
-                    {(currentQuestion as MultipleChoiceQuestion).options.map((option, index) => (
+                    {currentQuestion.options.map((option, index) => (
                       <Label 
                         key={`${option}-${index}`}
                         htmlFor={`${option}-${index}`}
                         className={cn(
                           "flex items-center space-x-3 p-4 rounded-lg border-2 border-border has-[input:checked]:border-primary has-[input:checked]:bg-primary/5 cursor-pointer transition-all",
                           answerStatus !== 'unanswered' &&
-                            (Array.isArray((currentQuestion as MultipleChoiceQuestion).correctAnswer)
-                              ? (currentQuestion as MultipleChoiceQuestion).correctAnswer.includes(option)
-                              : (currentQuestion as MultipleChoiceQuestion).correctAnswer === option) &&
+                            (Array.isArray(currentQuestion.correctAnswer)
+                              ? currentQuestion.correctAnswer.includes(option)
+                              : currentQuestion.correctAnswer === option) &&
                             "border-green-500 bg-green-500/5",
                           answerStatus === 'incorrect' && answers[currentQuestion.id] === option && "border-destructive bg-destructive/5"
                         )}
@@ -645,14 +645,14 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
                               placeholder="Escribe tu respuesta aquí, mi chula..."
                               className="min-h-[160px] text-base"
                               value={answers[currentQuestion.id] || ""}
-                              onChange={(e) => handleAnswerChange(e.target.value)}
+                              onChange={(e) => setAnswers(prev => ({ ...prev, [currentQuestion.id]: e.target.value }))}
                               disabled={!!flippedQuestions[currentQuestion.id]}
                               />
                           </div>
 
                           <div className="absolute w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] bg-primary/10 p-6 rounded-lg flex flex-col justify-center items-center text-center">
                               <p className="text-foreground/80 italic text-lg">
-                                  &ldquo;{(currentQuestion as OpenEndedQuestion).creatorAnswer}&rdquo;
+                                  &ldquo;{currentQuestion.creatorAnswer}&rdquo;
                               </p>
                           </div>
                       </div>
@@ -701,9 +701,9 @@ export default function TriviaStage({ onSuccess }: TriviaStageProps) {
         letter={letterToShow}
         onClose={() => {
           setLetterToShow(null);
-          // Special case for letter 20, move to next question after closing.
-          if (shownLetters[20]) {
-            goToNextQuestion();
+          // After closing a letter, proceed to the next question if applicable.
+          if (answerStatus !== 'unanswered') {
+              goToNextQuestion();
           }
         }}
       />

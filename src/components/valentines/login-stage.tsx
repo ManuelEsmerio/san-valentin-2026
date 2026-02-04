@@ -33,6 +33,8 @@ const formSchema = z.object({
   }),
 });
 
+const acceptedNicknames = ['mi chula', 'chula'];
+
 export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
   const { toast } = useToast();
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
@@ -45,7 +47,6 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    const acceptedNicknames = ['mi chula', 'chula'];
     const isNicknameCorrect = acceptedNicknames.includes(
       values.nickname.trim().toLowerCase()
     );

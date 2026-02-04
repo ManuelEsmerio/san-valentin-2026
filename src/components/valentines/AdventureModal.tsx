@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
@@ -49,7 +49,7 @@ export default function AdventureModal({ isOpen, onConfirm }: AdventureModalProp
     }
   }, [isOpen]);
 
-  const moveNoButton = () => {
+  const moveNoButton = useCallback(() => {
     if (noClickCount >= 10) {
       setNoClickCount(prev => prev + 1); // This will make it 11 and hide the button
       return;
@@ -76,7 +76,7 @@ export default function AdventureModal({ isOpen, onConfirm }: AdventureModalProp
 
       setNoButtonPosition({ top: `${newTop}px`, left: `${newLeft}px` });
     }
-  };
+  }, [noClickCount]);
 
   if (!isShowing) {
     return null;

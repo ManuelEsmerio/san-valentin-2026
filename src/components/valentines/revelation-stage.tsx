@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   Carousel,
   CarouselContent,
@@ -76,10 +76,10 @@ export default function RevelationStage() {
     setFireworks(generatedFireworks);
   }, []);
 
-  const handleReplay = () => {
+  const handleReplay = useCallback(() => {
     localStorage.removeItem('valentines-app-stage');
     window.location.reload();
-  };
+  }, []);
 
   return (
     <>

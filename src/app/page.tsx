@@ -1,14 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import CountdownStage from '@/components/valentines/countdown-stage';
-import LoginStage from '@/components/valentines/login-stage';
-import WelcomeStage from '@/components/valentines/welcome-stage';
-import GameStage from '@/components/valentines/game-stage';
-import TriviaStage from '@/components/valentines/trivia-stage';
-import RevelationStage from '@/components/valentines/revelation-stage';
+import { useState, useEffect, useCallback } from 'react';
+import dynamic from 'next/dynamic';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
+import { Skeleton } from '@/components/ui/skeleton';
 
 type Stage = 'login' | 'welcome' | 'game' | 'trivia' | 'revelation';
 
@@ -19,6 +15,32 @@ const stageInfo: Record<Stage, { step: number; title: string }> = {
   trivia: { step: 3, title: 'Lo Que Sabemos' },
   revelation: { step: 4, title: 'Aquí' },
 };
+
+const StageLoading = () => (
+  <div className="w-full max-w-lg mx-auto">
+    <Skeleton className="h-[450px] w-full rounded-xl" />
+  </div>
+);
+
+const CountdownStage = dynamic(() => import('@/components/valentines/countdown-stage'), {
+  loading: () => <div className="fixed inset-0" />,
+});
+const LoginStage = dynamic(() => import('@/components/valentines/login-stage'), {
+  loading: () => <StageLoading />,
+});
+const WelcomeStage = dynamic(() => import('@/components/valentines/welcome-stage'), {
+  loading: () => <StageLoading />,
+});
+const GameStage = dynamic(() => import('@/components/valentines/game-stage'), {
+  loading: () => <StageLoading />,
+});
+const TriviaStage = dynamic(() => import('@/components/valentines/trivia-stage'), {
+  loading: () => <StageLoading />,
+});
+const RevelationStage = dynamic(() => import('@/components/valentines/revelation-stage'), {
+  loading: () => <StageLoading />,
+});
+
 
 export default function Home() {
   const [showCountdown, setShowCountdown] = useState(true);
@@ -42,12 +64,12 @@ export default function Home() {
     }
   }, [isClient]);
 
-  const setStageAndSave = (newStage: Stage) => {
+  const setStageAndSave = useCallback((newStage: Stage) => {
     if (isClient) {
       localStorage.setItem('valentines-app-stage', newStage);
     }
     setStage(newStage);
-  };
+  }, [isClient]);
 
   // Only show countdown if the state is still true and no stage has been loaded from storage.
   if (showCountdown && isClient) {
@@ -56,7 +78,13 @@ export default function Home() {
 
   // A simple loading state to prevent flash of content before client-side check is complete.
   if (!isClient) {
-    return null; 
+    return (
+        <div className="w-full flex flex-col items-center">
+            <div className="w-full max-w-lg">
+                <StageLoading/>
+            </div>
+        </div>
+    );
   }
 
   const currentStep = stageInfo[stage]?.step;

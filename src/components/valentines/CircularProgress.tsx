@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { cn } from '@/lib/utils';
 
 type EmotionalState = {
@@ -27,7 +27,7 @@ const getEmotionalState = (questionNumber: number): EmotionalState => {
 };
 
 
-const HeartConfetti = () => {
+const HeartConfetti = memo(() => {
     return (
       <div className="absolute inset-0 pointer-events-none">
         {Array.from({ length: 12 }).map((_, i) => (
@@ -46,14 +46,15 @@ const HeartConfetti = () => {
         ))}
       </div>
     );
-};
+});
+HeartConfetti.displayName = 'HeartConfetti';
 
 type CircularProgressProps = {
   current: number;
   total: number;
 };
 
-export default function CircularProgress({ current, total }: CircularProgressProps) {
+function CircularProgress({ current, total }: CircularProgressProps) {
   const [emojiState, setEmojiState] = useState(getEmotionalState(0));
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -131,3 +132,5 @@ export default function CircularProgress({ current, total }: CircularProgressPro
     </div>
   );
 }
+
+export default memo(CircularProgress);

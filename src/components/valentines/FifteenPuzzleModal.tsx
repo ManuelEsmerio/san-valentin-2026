@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Map, MapPin, BarChart2, RotateCcw, ShieldQuestion } from 'lucide-react';
@@ -80,11 +80,11 @@ export default function FifteenPuzzleModal({ isOpen, onSuccess }: FifteenPuzzleM
   const [isRiddleModalOpen, setRiddleModalOpen] = useState(false);
   const { toast } = useToast();
   
-  const initializeGame = (currentDifficulty: Difficulty) => {
+  const initializeGame = useCallback((currentDifficulty: Difficulty) => {
     setTiles(shuffleTiles(currentDifficulty));
     setMoves(0);
     setGameStatus('playing');
-  };
+  }, []);
   
   useEffect(() => {
     if (isOpen) {
@@ -99,13 +99,13 @@ export default function FifteenPuzzleModal({ isOpen, onSuccess }: FifteenPuzzleM
       }, 300);
       return () => clearTimeout(timer);
     }
-  }, [isOpen]);
+  }, [isOpen, initializeGame]);
 
-  const checkIfSolved = (currentTiles: number[]) => {
+  const checkIfSolved = useCallback((currentTiles: number[]) => {
     return currentTiles.every((tile, index) => tile === index);
-  };
+  }, []);
 
-  const handleTileClick = (clickedIndex: number) => {
+  const handleTileClick = useCallback((clickedIndex: number) => {
     if (gameStatus !== 'playing') return;
 
     const emptyIndex = tiles.indexOf(EMPTY_TILE);
@@ -145,11 +145,11 @@ export default function FifteenPuzzleModal({ isOpen, onSuccess }: FifteenPuzzleM
           setGameStatus('lost');
       }
     }
-  };
+  }, [gameStatus, tiles, moves, checkIfSolved, losses, toast]);
 
-  const handleRestart = () => {
+  const handleRestart = useCallback(() => {
     initializeGame(difficulty);
-  };
+  }, [initializeGame, difficulty]);
   
   const coordinates = "19.4173° N, 99.1652° W";
   const lat = "19.4173";

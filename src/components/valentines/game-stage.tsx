@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Heart, Lock, Trophy, Target, ChevronUp, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -86,12 +86,7 @@ export default function GameStage({ onSuccess }: GameStageProps) {
     ctx.globalCompositeOperation = "destination-over";
   };
 
-  const startGame = () => {
-    resetGame();
-    setGameState("playing");
-  };
-
-  const resetGame = () => {
+  const resetGame = useCallback(() => {
     snakeRef.current = [{ x: 10, y: 10 }];
     foodRef.current = {
       x: Math.floor(Math.random() * GRID_SIZE),
@@ -100,7 +95,12 @@ export default function GameStage({ onSuccess }: GameStageProps) {
     directionRef.current = { x: 0, y: -1 };
     setScore(0);
     setGameState("idle");
-  };
+  }, []);
+
+  const startGame = useCallback(() => {
+    resetGame();
+    setGameState("playing");
+  }, [resetGame]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -221,20 +221,20 @@ export default function GameStage({ onSuccess }: GameStageProps) {
     };
   }, [gameState, score, highScore, targetScore]);
 
-  const handleOpenKeywordModal = () => {
+  const handleOpenKeywordModal = useCallback(() => {
     setMapModalOpen(false);
     setKeywordModalOpen(true);
-  };
+  }, []);
   
-  const handleReturnToMap = () => {
+  const handleReturnToMap = useCallback(() => {
     setKeywordModalOpen(false);
     setMapModalOpen(true);
-  }
+  }, []);
 
-  const handleKeywordSuccess = () => {
+  const handleKeywordSuccess = useCallback(() => {
     setKeywordModalOpen(false);
     onSuccess();
-  }
+  }, [onSuccess]);
 
   const heartsNeeded = targetScore - score;
   const hintProgress = (score / targetScore) * 100;
