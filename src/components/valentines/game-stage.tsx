@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { Heart, Lock, Trophy, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Gamepad2, Info } from "lucide-react";
+import { Heart, Lock, Trophy, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Gamepad2, Info, LockOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Progress } from "../ui/progress";
 import MapModal from "./MapModal";
@@ -369,22 +369,33 @@ export default function GameStage({ onSuccess, user }: GameStageProps) {
                 </div>
             </div>
 
-            <div className="bg-card/50 dark:bg-zinc-800/30 p-6 rounded-3xl border-2 border-dashed border-primary/20">
+            <div className={cn(
+                "bg-card/50 dark:bg-zinc-800/30 p-6 rounded-3xl border-2 border-dashed transition-colors",
+                gameState === 'won' ? "border-green-500/50" : "border-primary/20"
+            )}>
                 <div className="flex items-center gap-3 mb-4">
-                    <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
-                        <Lock className="w-4 h-4"/>
+                    <div className={cn(
+                        "w-8 h-8 rounded-full flex items-center justify-center transition-colors",
+                        gameState === 'won' ? "bg-green-500/10 text-green-500" : "bg-muted text-muted-foreground"
+                    )}>
+                        {gameState === 'won' ? <LockOpen className="w-4 h-4"/> : <Lock className="w-4 h-4"/>}
                     </div>
-                    <h3 className="font-bold text-foreground">Pista 1: Bloqueada</h3>
+                    <h3 className={cn(
+                        "font-bold transition-colors",
+                        gameState === 'won' ? "text-green-600 dark:text-green-400" : "text-foreground"
+                    )}>
+                        {gameState === 'won' ? 'Pista 1: Desbloqueada' : 'Pista 1: Bloqueada'}
+                    </h3>
                 </div>
                 <p className="text-sm text-muted-foreground mb-6 italic">
                     "En el centro de lo que parece vacío, encontrarás lo que buscas..."
                 </p>
                 <div className="space-y-2">
                     <div className="flex justify-between text-[10px] font-bold uppercase tracking-tighter text-muted-foreground mb-1">
-                        <span>Desbloqueo</span>
+                        <span>{gameState === 'won' ? 'DESBLOQUEADO' : 'DESBLOQUEO'}</span>
                         <span>{Math.round(hintProgress)}%</span>
                     </div>
-                    <Progress value={hintProgress} className="h-1.5" />
+                    <Progress value={hintProgress} className={cn("h-1.5", gameState === 'won' && "[&>div]:bg-green-500")} />
                 </div>
             </div>
             
