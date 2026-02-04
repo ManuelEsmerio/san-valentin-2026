@@ -11,9 +11,10 @@ type KeywordModalProps = {
   isOpen: boolean;
   onSuccess: () => void;
   onBack: () => void;
+  correctKeyword: string;
+  title: string;
+  description: string;
 };
-
-const CORRECT_KEYWORD = "amor";
 
 const ERROR_MESSAGES = [
   {
@@ -30,7 +31,7 @@ const ERROR_MESSAGES = [
   },
 ];
 
-export default function KeywordModal({ isOpen, onSuccess, onBack }: KeywordModalProps) {
+export default function KeywordModal({ isOpen, onSuccess, onBack, correctKeyword, title, description }: KeywordModalProps) {
   const [keyword, setKeyword] = useState('');
   const [isShowing, setIsShowing] = useState(false);
   const [errorCount, setErrorCount] = useState(0);
@@ -48,7 +49,7 @@ export default function KeywordModal({ isOpen, onSuccess, onBack }: KeywordModal
   }, [isOpen]);
 
   const handleSubmit = () => {
-    if (keyword.trim().toLowerCase() === CORRECT_KEYWORD) {
+    if (keyword.trim().toLowerCase() === correctKeyword) {
       onSuccess();
     } else {
       const currentError = ERROR_MESSAGES[errorCount % ERROR_MESSAGES.length];
@@ -83,11 +84,10 @@ export default function KeywordModal({ isOpen, onSuccess, onBack }: KeywordModal
         <div className="p-6 sm:p-8 text-center">
           <div className="flex justify-center items-center gap-2 mb-4">
             <KeyRound className="text-primary h-8 w-8" />
-            <h2 className="text-2xl font-bold text-foreground">Palabra Clave Requerida</h2>
+            <h2 className="text-2xl font-bold text-foreground">{title}</h2>
           </div>
           <p className="text-muted-foreground mb-6">
-          Para continuar, necesitas la palabra que encontraste en la pista.
-          Escríbela aquí para seguir avanzando.
+            {description}
           </p>
           <div className="flex flex-col gap-4">
             <Input

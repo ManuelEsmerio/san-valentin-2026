@@ -492,6 +492,9 @@ export default function GameStage({ onSuccess, user }: GameStageProps) {
         isOpen={isKeywordModalOpen}
         onSuccess={handleKeywordSuccess}
         onBack={handleReturnToMap}
+        correctKeyword="amor"
+        title="Palabra Clave Requerida"
+        description="Para continuar, necesitas la palabra que encontraste en la pista. Escríbela aquí para seguir avanzando."
       />
     </>
   );

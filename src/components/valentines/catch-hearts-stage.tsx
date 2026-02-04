@@ -1,16 +1,17 @@
 'use client';
 
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
-import { Heart, Trophy, Clock, XCircle, CheckCircle2, Gamepad2, Info } from 'lucide-react';
+import { Heart, Trophy, Clock, Info, Gamepad2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Progress } from '../ui/progress';
 import SimpleCircularProgress from './SimpleCircularProgress';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import MapModal from './MapModal';
+import KeywordModal from './KeywordModal';
 
 // --- Game Constants ---
-const GAME_DURATION = 30; // Shorter game
-const TARGET_SCORE = 300; // Adjusted target
+const GAME_DURATION = 30;
 const CATCHER_WIDTH = 100;
 const CATCHER_HEIGHT = 20;
 const HIGH_SCORE_KEY = 'valentines-catch-highscore';
@@ -28,7 +29,7 @@ type Item = {
   points: number;
 };
 
-// --- Item Configuration (Simplified) ---
+// --- Item Configuration ---
 const ITEM_CONFIG: Record<ItemType, { icon: string; points: number }> = {
   heart: { icon: '❤️', points: 10 },
   flower: { icon: '🌹', points: 15 },
@@ -46,17 +47,17 @@ const drawItemOnCanvas = (ctx: CanvasRenderingContext2D, item: Item) => {
 
 // --- Game Overlays ---
 const GameOverlay = ({ status, onStart, onRetry, score, highScore }: { status: GameState; onStart: () => void; onRetry: () => void; score: number, highScore: number }) => {
-  if (status === 'playing' || status === 'idle') return null;
+  if (status !== 'won' && status !== 'lost') return null;
 
   const isWon = status === 'won';
-  const Icon = isWon ? CheckCircle2 : XCircle;
+  const Icon = isWon ? Trophy : RotateCcw;
   const title = isWon ? '¡Lo lograste!' : '¡Se acabó el tiempo!';
-  const buttonText = isWon ? 'Siguiente Desafío' : 'Reintentar';
+  const buttonText = isWon ? 'Ver Siguiente Pista' : 'Reintentar';
 
   return (
     <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex flex-col items-center justify-center text-center p-4 z-10 animate-fade-in">
       <div className="bg-card p-8 rounded-2xl shadow-2xl max-w-sm w-full">
-        <Icon className={cn("h-16 w-16 mx-auto mb-4", isWon ? "text-green-500" : "text-destructive")} />
+        <Icon className={cn("h-16 w-16 mx-auto mb-4", isWon ? "text-green-500" : "text-primary")} />
         <h3 className="text-2xl font-bold text-foreground mb-2">{title}</h3>
         <p className="text-muted-foreground mb-1">Tu puntaje: <span className="font-bold text-foreground">{score}</span></p>
         <p className="text-muted-foreground mb-6">Récord: <span className="font-bold text-foreground">{highScore}</span></p>
@@ -69,24 +70,34 @@ const GameOverlay = ({ status, onStart, onRetry, score, highScore }: { status: G
 };
 
 // --- Main Component ---
-export default function CatchHeartsStage({ onSuccess }: { onSuccess: () => void }) {
+export default function CatchHeartsStage({ onSuccess, user }: { onSuccess: () => void; user: string | null; }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [gameState, setGameState] = useState<GameState>('idle');
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(GAME_DURATION);
   const [highScore, setHighScore] = useState(0);
   const [isInstructionsModalOpen, setInstructionsModalOpen] = useState(false);
+  const [isMapModalOpen, setMapModalOpen] = useState(false);
+  const [isKeywordModalOpen, setKeywordModalOpen] = useState(false);
+  
+  const isDevMode = user === 'manuel';
+  const TARGET_SCORE = useMemo(() => isDevMode ? 100 : 300, [isDevMode]);
+  
+  const coordinates = "19.4103° N, 99.1724° W";
+  const lat = "19.4103";
+  const long = "-99.1724";
+  const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${long}`;
+  const iframeUrl = `https://maps.google.com/maps?q=${lat},${long}&hl=es&z=14&output=embed`;
 
   const scoreRef = useRef(score);
-  useEffect(() => {
-    scoreRef.current = score;
-  }, [score]);
-
-  const gameLoopRef = useRef<number>();
   const itemsRef = useRef<Item[]>([]);
   const catcherXRef = useRef(0);
   const nextItemIdRef = useRef(0);
   const lastSpawnTimeRef = useRef(0);
+
+  useEffect(() => {
+    scoreRef.current = score;
+  }, [score]);
 
   useEffect(() => {
     try {
@@ -133,22 +144,28 @@ export default function CatchHeartsStage({ onSuccess }: { onSuccess: () => void 
     } else {
       setGameState('lost');
     }
-  }, [updateHighScore]);
-
-  const getRandomItemType = (currentScore: number): ItemType => {
-      const negativeItemChance = Math.min(0.4, 0.20 + (currentScore / TARGET_SCORE) * 0.2);
-      const rand = Math.random();
-
-      const positiveItems = (Object.keys(ITEM_CONFIG) as ItemType[]).filter(k => ITEM_CONFIG[k].points > 0);
-      const negativeItems = (Object.keys(ITEM_CONFIG) as ItemType[]).filter(k => ITEM_CONFIG[k].points < 0);
-
-      if (rand > negativeItemChance) {
-        return positiveItems[Math.floor(Math.random() * positiveItems.length)];
-      } else {
-        return negativeItems[Math.floor(Math.random() * negativeItems.length)];
-      }
-  };
+  }, [updateHighScore, TARGET_SCORE]);
   
+  const handleWin = useCallback(() => {
+    setMapModalOpen(true);
+  }, []);
+
+  const handleOpenKeywordModal = useCallback(() => {
+    setMapModalOpen(false);
+    setKeywordModalOpen(true);
+  }, []);
+  
+  const handleReturnToMap = useCallback(() => {
+    setKeywordModalOpen(false);
+    setMapModalOpen(true);
+  }, []);
+
+  const handleKeywordSuccess = useCallback(() => {
+    setKeywordModalOpen(false);
+    onSuccess();
+  }, [onSuccess]);
+
+
   useEffect(() => {
     if (gameState !== 'playing') return;
 
@@ -167,7 +184,7 @@ export default function CatchHeartsStage({ onSuccess }: { onSuccess: () => void 
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas || gameState !== 'playing') return;
 
     const handleMouseMove = (e: MouseEvent) => {
         if(!canvasRef.current) return;
@@ -182,78 +199,90 @@ export default function CatchHeartsStage({ onSuccess }: { onSuccess: () => void 
     canvas.addEventListener('mousemove', handleMouseMove);
     canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
 
-    if (gameState === "playing") {
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
-      
-      const dpr = window.devicePixelRatio || 1;
-      const rect = canvas.getBoundingClientRect();
-      if (canvas.width !== rect.width * dpr || canvas.height !== rect.height * dpr) {
-        canvas.width = rect.width * dpr;
-        canvas.height = rect.height * dpr;
-        ctx.scale(dpr, dpr);
-      }
-      
-      const gameLoop = (timestamp: number) => {
-        if (gameState !== 'playing' || !canvasRef.current) return;
-
-        const currentScore = scoreRef.current;
-        const baseSpeed = 2 + (currentScore / 100);
-        const spawnInterval = Math.max(200, 500 - (currentScore / 10));
-
-        if (timestamp - lastSpawnTimeRef.current > spawnInterval) { 
-          lastSpawnTimeRef.current = timestamp;
-          const type = getRandomItemType(currentScore);
-          const config = ITEM_CONFIG[type];
-          itemsRef.current.push({
-            id: nextItemIdRef.current++,
-            x: Math.random() * rect.width,
-            y: -30,
-            speed: baseSpeed + Math.random() * 2,
-            type,
-            icon: config.icon,
-            points: config.points,
-          });
-        }
-
-        ctx.clearRect(0, 0, rect.width, rect.height);
-
-        const newItems: Item[] = [];
-        for (const item of itemsRef.current) {
-            item.y += item.speed;
-        
-            const catcherLeft = catcherXRef.current - CATCHER_WIDTH / 2;
-            const catcherRight = catcherXRef.current + CATCHER_WIDTH / 2;
-            if (item.y + 30 >= rect.height - CATCHER_HEIGHT && item.y <= rect.height && item.x >= catcherLeft && item.x <= catcherRight) {
-                setScore(s => Math.max(0, s + item.points));
-            } else if (item.y < rect.height + 50) {
-                drawItemOnCanvas(ctx, item);
-                newItems.push(item);
-            }
-        }
-        itemsRef.current = newItems;
-
-        ctx.fillStyle = 'hsl(var(--primary) / 0.7)';
-        ctx.beginPath();
-        ctx.roundRect(catcherXRef.current - CATCHER_WIDTH / 2, rect.height - CATCHER_HEIGHT, CATCHER_WIDTH, CATCHER_HEIGHT, [10, 10, 0, 0]);
-        ctx.fill();
-
-        gameLoopRef.current = requestAnimationFrame(gameLoop);
-      };
-      
-      gameLoopRef.current = requestAnimationFrame(gameLoop);
-    } else {
-        if (gameLoopRef.current) cancelAnimationFrame(gameLoopRef.current);
+    let animationFrameId: number;
+    
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    if (canvas.width !== rect.width * dpr || canvas.height !== rect.height * dpr) {
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
     }
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    ctx.scale(dpr, dpr);
+    
+    const gameLoop = (timestamp: number) => {
+      const currentScore = scoreRef.current;
+      const baseSpeed = 2 + (currentScore / 100);
+      const spawnInterval = Math.max(200, 500 - (currentScore / 10));
+
+      if (timestamp - lastSpawnTimeRef.current > spawnInterval) { 
+        lastSpawnTimeRef.current = timestamp;
+        const type = getRandomItemType();
+        const config = ITEM_CONFIG[type];
+        itemsRef.current.push({
+          id: nextItemIdRef.current++,
+          x: Math.random() * rect.width,
+          y: -30,
+          speed: baseSpeed + Math.random() * 2,
+          type,
+          icon: config.icon,
+          points: config.points,
+        });
+      }
+
+      ctx.clearRect(0, 0, rect.width, rect.height);
+
+      const newItems: Item[] = [];
+      for (const item of itemsRef.current) {
+          item.y += item.speed;
+      
+          const catcherLeft = catcherXRef.current - CATCHER_WIDTH / 2;
+          const catcherRight = catcherXRef.current + CATCHER_WIDTH / 2;
+          if (item.y + 30 >= rect.height - CATCHER_HEIGHT && item.y <= rect.height && item.x >= catcherLeft && item.x <= catcherRight) {
+              setScore(s => Math.max(0, s + item.points));
+          } else if (item.y < rect.height + 50) {
+              newItems.push(item);
+          }
+      }
+      itemsRef.current = newItems;
+
+      itemsRef.current.forEach(item => drawItemOnCanvas(ctx, item));
+
+      ctx.fillStyle = 'hsl(var(--primary) / 0.7)';
+      ctx.beginPath();
+      ctx.roundRect(catcherXRef.current - CATCHER_WIDTH / 2, rect.height - CATCHER_HEIGHT, CATCHER_WIDTH, CATCHER_HEIGHT, [10, 10, 0, 0]);
+      ctx.fill();
+
+      animationFrameId = requestAnimationFrame(gameLoop);
+    };
+    
+    animationFrameId = requestAnimationFrame(gameLoop);
 
     return () => {
-      if (gameLoopRef.current) cancelAnimationFrame(gameLoopRef.current);
+      cancelAnimationFrame(animationFrameId);
       if (canvas) {
         canvas.removeEventListener('mousemove', handleMouseMove);
         canvas.removeEventListener('touchmove', handleTouchMove);
       }
     };
   }, [gameState]);
+
+
+  const getRandomItemType = (): ItemType => {
+      const currentScore = scoreRef.current;
+      const negativeItemChance = Math.min(0.4, 0.20 + (currentScore / TARGET_SCORE) * 0.2);
+      const rand = Math.random();
+
+      const positiveItems = (Object.keys(ITEM_CONFIG) as ItemType[]).filter(k => ITEM_CONFIG[k].points > 0);
+      const negativeItems = (Object.keys(ITEM_CONFIG) as ItemType[]).filter(k => ITEM_CONFIG[k].points < 0);
+
+      if (rand > negativeItemChance) {
+        return positiveItems[Math.floor(Math.random() * positiveItems.length)];
+      } else {
+        return negativeItems[Math.floor(Math.random() * negativeItems.length)];
+      }
+  };
 
   const totalChallenges = 5;
   const completedChallenges = 1;
@@ -302,7 +331,7 @@ export default function CatchHeartsStage({ onSuccess }: { onSuccess: () => void 
                   (gameState === "lost" || gameState === "won") && "opacity-10"
                 )} />
               )}
-              <GameOverlay status={gameState} onStart={onSuccess} onRetry={startGame} score={score} highScore={highScore} />
+              <GameOverlay status={gameState} onStart={handleWin} onRetry={startGame} score={score} highScore={highScore} />
             </div>
           </div>
 
@@ -372,6 +401,24 @@ export default function CatchHeartsStage({ onSuccess }: { onSuccess: () => void 
               </DialogFooter>
           </DialogContent>
       </Dialog>
+
+      <MapModal 
+        isOpen={isMapModalOpen}
+        onClose={() => setMapModalOpen(false)}
+        onNextChallenge={handleOpenKeywordModal}
+        coordinates={coordinates}
+        googleMapsUrl={googleMapsUrl}
+        iframeUrl={iframeUrl}
+      />
+
+      <KeywordModal
+        isOpen={isKeywordModalOpen}
+        onSuccess={handleKeywordSuccess}
+        onBack={handleReturnToMap}
+        correctKeyword="confianza"
+        title="Segunda Palabra Clave"
+        description="Has encontrado la segunda pista. Ingresa la palabra clave para desbloquear el siguiente desafío."
+      />
     </>
   );
 }
