@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { HelpCircle } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import RomanticCalendar from '@/components/valentines/RomanticCalendar';
@@ -26,9 +27,9 @@ import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
 const formSchema = z.object({
-  nickname: z.string().min(1, 'Dime quién eres...'),
+  nickname: z.string().min(1, 'Por favor, ingresa tu apodo.'),
   anniversary: z.date({
-    required_error: 'Por favor, elige nuestra fecha especial.',
+    required_error: 'Por favor, elige una fecha.',
     invalid_type_error: 'Esa no parece ser una fecha válida.',
   }),
 });
@@ -99,7 +100,7 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
           Holaaa Chula
         </h2>
         <p className="text-muted-foreground text-center mb-8">
-          Comencemos nuestro viaje juntos. Por favor, verifica tu amor.
+          ¿Preparada para disfrutar de estos desafíos?
         </p>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -108,9 +109,23 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
               name="nickname"
               render={({ field }) => (
                 <FormItem>
-                  <label className="text-foreground text-base font-medium leading-normal pb-2">
-                    ¿Cómo te digo?
-                  </label>
+                  <div className="flex items-center gap-2 pb-2">
+                    <label className="text-foreground text-base font-medium leading-none">
+                      Usuario
+                    </label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button type="button" aria-label="Hint for user">
+                          <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-60">
+                        <p className="text-sm">
+                          Pista: es el apodo con el cual te tengo registrada. 😉
+                        </p>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
                   <FormControl>
                     <div className="relative">
                       <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary/50">
@@ -132,9 +147,23 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
               name="anniversary"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <label className="text-foreground text-base font-medium leading-normal pb-2">
-                    Nuestra fecha especial
-                  </label>
+                  <div className="flex items-center gap-2 pb-2">
+                    <label className="text-foreground text-base font-medium leading-none">
+                      Fecha
+                    </label>
+                     <Popover>
+                      <PopoverTrigger asChild>
+                        <button type="button" aria-label="Hint for date">
+                          <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-60">
+                        <p className="text-sm">
+                          Pista: Es la fecha de nuestro <span className="italic text-primary font-semibold">aniversario</span>.
+                        </p>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
                   <Popover
                     open={isCalendarOpen}
                     onOpenChange={setIsCalendarOpen}
