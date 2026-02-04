@@ -9,7 +9,7 @@ import MapModal from "./MapModal";
 import KeywordModal from "./KeywordModal";
 
 const GRID_SIZE = 20;
-const CANVAS_SIZE = 600;
+const CANVAS_SIZE = 800;
 const TILE_SIZE = CANVAS_SIZE / GRID_SIZE;
 
 type GameStageProps = {
@@ -271,7 +271,7 @@ export default function GameStage({ onSuccess }: GameStageProps) {
       <div className="w-full p-2 rounded-xl border-2 border-primary/20 bg-card/80">
         <div
           className={cn(
-            "flex flex-col items-center gap-6 rounded-lg border-4 border-primary/30 bg-card/90 px-6 py-10 shadow-inner relative overflow-hidden min-h-[600px] justify-center",
+            "flex flex-col items-center gap-6 rounded-lg border-4 border-primary/30 bg-card/90 px-6 py-10 shadow-inner relative overflow-hidden min-h-[800px] justify-center",
             "dark:bg-black/20"
           )}
         >
@@ -296,9 +296,6 @@ export default function GameStage({ onSuccess }: GameStageProps) {
               <p className="text-muted-foreground text-sm font-normal leading-normal max-w-xs">
                 Recoge {targetScore} corazones para desbloquear la primera pista de
                 tu regalo de San Valentín.
-              </p>
-              <p className="text-muted-foreground text-xs mt-2 hidden md:block">
-                Usa las flechas del teclado para moverte.
               </p>
               <div className="flex flex-col sm:flex-row items-center gap-4">
                 <Button

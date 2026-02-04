@@ -11,7 +11,7 @@ type Stage = 'login' | 'welcome' | 'game' | 'trivia' | 'puzzle' | 'revelation';
 const stageInfo: Record<Stage, { step: number; title: string; subtitle: string }> = {
   login: { step: 0, title: 'El Inicio', subtitle: 'Verifica tu amor para comenzar.' },
   welcome: { step: 0, title: 'Un Momento', subtitle: '' },
-  game: { step: 1, title: 'Desafío 1: Snake Game', subtitle: 'Usa las flechas del teclado para recolectar corazones' },
+  game: { step: 1, title: 'Desafío 1: Snake Game', subtitle: '' },
   trivia: { step: 2, title: 'Desafío 2: Trivia', subtitle: 'Demuestra cuánto nos conocemos' },
   puzzle: { step: 3, title: 'Desafío 3: Puzzle Fifteen', subtitle: 'Ordena los números para revelar la pista final' },
   revelation: { step: 4, title: 'La Sorpresa Final', subtitle: '' },
@@ -76,7 +76,8 @@ export default function Home() {
   const currentStep = stageInfo[stage]?.step;
   const currentTitle = stageInfo[stage]?.title;
   const currentSubtitle = stageInfo[stage]?.subtitle;
-  const progress = Math.max(0, currentStep - 1) / 3 * 100;
+  const totalChallenges = 5;
+  const progress = Math.max(0, currentStep - 1) / totalChallenges * 100;
 
   const renderStage = () => {
     switch (stage) {
@@ -120,7 +121,7 @@ export default function Home() {
             </p>
             <div className="flex items-center gap-4">
               <p className="text-primary text-sm font-bold leading-normal">
-                {currentStep - 1} de 3 Completados
+                {currentStep - 1} de {totalChallenges} Completados
               </p>
             </div>
           </div>
