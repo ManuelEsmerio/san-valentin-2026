@@ -1,13 +1,14 @@
 'use client';
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { Heart, Lock, Trophy, Target, ChevronUp, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { Heart, Lock, Trophy, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Gamepad2, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Progress } from "../ui/progress";
 import MapModal from "./MapModal";
 import KeywordModal from "./KeywordModal";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import SimpleCircularProgress from "./SimpleCircularProgress";
 
 const GRID_SIZE = 20;
 const CANVAS_SIZE = 800;
@@ -44,7 +45,7 @@ export default function GameStage({ onSuccess, user }: GameStageProps) {
   const [isInstructionsModalOpen, setInstructionsModalOpen] = useState(false);
 
   const isDevMode = user === 'manuel';
-  const initialTargetScore = isDevMode ? 5 : 35;
+  const initialTargetScore = useMemo(() => isDevMode ? 5 : 35, [isDevMode]);
   const [targetScore, setTargetScore] = useState(initialTargetScore);
 
   const snakeRef = useRef([{ x: 10, y: 10 }]);
@@ -126,18 +127,15 @@ export default function GameStage({ onSuccess, user }: GameStageProps) {
         y: snake[0].y + directionRef.current.y,
       };
 
-      // Wrap around logic for walls
       if (head.x < 0) head.x = GRID_SIZE - 1;
       if (head.x >= GRID_SIZE) head.x = 0;
       if (head.y < 0) head.y = GRID_SIZE - 1;
       if (head.y >= GRID_SIZE) head.y = 0;
 
-      // Check for self-collision
       if (snake.some((segment) => segment.x === head.x && segment.y === head.y)) {
         setGameState("lost");
         if (score > highScore) setHighScore(score);
         
-        // Difficulty adjustment logic
         if (!isDevMode) {
             setTargetScore(15);
         }
@@ -249,109 +247,156 @@ export default function GameStage({ onSuccess, user }: GameStageProps) {
     onSuccess();
   }, [onSuccess]);
 
-  const heartsNeeded = targetScore - score;
   const hintProgress = (score / targetScore) * 100;
+  const totalChallenges = 5;
+  const completedChallenges = 0;
+  const overallProgress = (completedChallenges / totalChallenges) * 100;
 
   return (
-    <div className="w-full flex flex-col items-center gap-6">
-      <div className="w-full flex flex-wrap justify-center gap-4">
-        <div className="flex min-w-[180px] flex-1 flex-col items-center gap-2 rounded-xl p-4 border border-primary/20 bg-card shadow-sm">
-            <div className="flex items-center gap-2 text-primary">
-                <Heart className="w-5 h-5"/>
-                <p className="text-foreground text-sm font-medium leading-normal">Recolectados</p>
+    <div className="w-full flex flex-col items-center gap-6 animate-fade-in">
+        <header className="w-full flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="text-center md:text-left">
+                <p className="text-primary font-bold tracking-[0.2em] text-xs uppercase mb-1">Desafío 01</p>
+                <h1 className="text-4xl md:text-5xl font-bold text-foreground">
+                    Snake <span className="text-primary italic">Romance</span>
+                </h1>
             </div>
-            <p className="text-primary tracking-light text-4xl font-bold leading-tight">{score}</p>
+            <div className="bg-card/50 dark:bg-zinc-800/30 rounded-2xl p-5 w-full md:w-96 border border-border">
+                <div className="flex justify-between items-end mb-3">
+                    <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Progreso Total</span>
+                    <span className="text-primary font-bold italic">{completedChallenges} de {totalChallenges} Completados</span>
+                </div>
+                <Progress value={overallProgress} className="h-2"/>
+            </div>
+        </header>
+
+      <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="lg:col-span-8">
+            <div
+            className={cn(
+                "flex flex-col items-center justify-center gap-6 rounded-2xl bg-card/80 p-2 border-2 border-primary/10 relative overflow-hidden aspect-[4/3] md:aspect-[16/10]"
+            )}
+            >
+                <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:30px_30px]"></div>
+
+                {gameState === "idle" && (
+                    <div className="flex flex-col items-center gap-4 z-10 text-center animate-fade-in p-8">
+                        <div className="relative bg-background w-20 h-20 rounded-3xl flex items-center justify-center shadow-lg border border-primary/10">
+                            <Gamepad2 className="text-primary h-10 w-10"/>
+                        </div>
+                        <h3 className="text-2xl font-bold text-foreground pt-4">
+                            Heart Snake Board
+                        </h3>
+                        <p className="max-w-xs text-muted-foreground">
+                            Domina el arte del movimiento para recolectar todos los corazones y desbloquear el siguiente nivel de nuestro viaje.
+                        </p>
+                        <Button
+                            onClick={openInstructions}
+                            className="mt-6 h-12 px-8 rounded-xl text-base font-bold tracking-wider shadow-lg shadow-primary/20"
+                            size="lg"
+                        >
+                            Empezar Desafío
+                        </Button>
+                    </div>
+                )}
+
+                {(gameState === "playing" || gameState === "won" || gameState === "lost") && (
+                    <canvas
+                    ref={canvasRef}
+                    width={CANVAS_SIZE}
+                    height={CANVAS_SIZE}
+                    className={cn(
+                        "rounded-lg bg-pink-100/20 dark:bg-pink-900/10 transition-opacity duration-500",
+                        (gameState === "lost" || gameState === "won") && "opacity-10",
+                        "w-full h-auto aspect-square"
+                    )}
+                    />
+                )}
+
+                {(gameState === "won" || gameState === "lost") && (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4 animate-fade-in z-20">
+                    <h3 className="text-2xl font-bold text-foreground">
+                        {gameState === "won"
+                        ? "¡Felicidades, lo lograste!"
+                        : "¡Oh no! Fin del juego"}
+                    </h3>
+                    <p className="text-muted-foreground mt-2 mb-6">
+                        {gameState === "won"
+                        ? "Has recolectado todos los corazones."
+                        : `No te preocupes, ¡inténtalo de nuevo! La nueva meta es ${targetScore} corazones.`}
+                    </p>
+                    <div className="flex flex-col sm:flex-row items-center gap-4">
+                        <Button
+                            onClick={gameState === 'won' ? () => setMapModalOpen(true) : startGame}
+                            className="min-w-[200px] h-12 px-6 text-base font-bold tracking-wider"
+                        >
+                            {gameState === 'won' ? 'Ver Pista' : 'Reintentar'}
+                        </Button>
+                    </div>
+                    {gameState === "won" && <VictoryHearts />}
+                    </div>
+                )}
+            </div>
         </div>
 
-        <div className="flex min-w-[180px] flex-1 flex-col items-center gap-2 rounded-xl p-4 border border-border bg-card shadow-sm">
-            <div className="flex items-center gap-2 text-muted-foreground">
-                <Trophy className="w-5 h-5"/>
-                <p className="text-foreground text-sm font-medium leading-normal">Récord</p>
+        <div className="lg:col-span-4 space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+                <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-3xl flex flex-col items-center justify-center text-center">
+                    <SimpleCircularProgress progress={(score / targetScore) * 100} size={80} strokeWidth={8}>
+                        <Heart className="h-6 w-6 text-primary" />
+                    </SimpleCircularProgress>
+                    <span className="mt-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Recolectados</span>
+                    <span className="text-2xl font-bold text-foreground">{score}</span>
+                </div>
+                <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-3xl flex flex-col items-center justify-center text-center">
+                    <SimpleCircularProgress progress={100} size={80} strokeWidth={8}>
+                         <span className="material-symbols-outlined text-primary text-3xl">flag</span>
+                    </SimpleCircularProgress>
+                     <span className="mt-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Meta</span>
+                    <span className="text-2xl font-bold text-foreground">{targetScore}</span>
+                </div>
             </div>
-            <p className="text-foreground tracking-light text-4xl font-bold leading-tight">{highScore}</p>
-        </div>
-        
-        <div className="flex min-w-[180px] flex-1 flex-col items-center gap-2 rounded-xl p-4 border border-border bg-card shadow-sm">
-            <div className="flex items-center gap-2 text-muted-foreground">
-                <Target className="w-5 h-5"/>
-                <p className="text-foreground text-sm font-medium leading-normal">Meta</p>
+
+            <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-5 rounded-2xl flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                        <Trophy className="w-6 h-6"/>
+                    </div>
+                    <div>
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground block">Mejor Récord</span>
+                        <span className="text-lg font-bold text-foreground">{highScore} Puntos</span>
+                    </div>
+                </div>
             </div>
-            <p className="text-foreground tracking-light text-4xl font-bold leading-tight">{targetScore}</p>
+
+            <div className="bg-card/50 dark:bg-zinc-800/30 p-6 rounded-3xl border-2 border-dashed border-primary/20">
+                <div className="flex items-center gap-3 mb-4">
+                    <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
+                        <Lock className="w-4 h-4"/>
+                    </div>
+                    <h3 className="font-bold text-foreground">Pista 1: Bloqueada</h3>
+                </div>
+                <p className="text-sm text-muted-foreground mb-6 italic">
+                    "En el centro de lo que parece vacío, encontrarás lo que buscas..."
+                </p>
+                <div className="space-y-2">
+                    <div className="flex justify-between text-[10px] font-bold uppercase tracking-tighter text-muted-foreground mb-1">
+                        <span>Desbloqueo</span>
+                        <span>{Math.round(hintProgress)}%</span>
+                    </div>
+                    <Progress value={hintProgress} className="h-1.5" />
+                </div>
+            </div>
+            
+            <div className="p-4 bg-primary/5 rounded-2xl border border-primary/10">
+                <div className="flex gap-2 items-center text-xs font-medium text-primary">
+                    <Info className="h-4 w-4 shrink-0"/>
+                    Usa las flechas del teclado para guiar al corazón.
+                </div>
+            </div>
         </div>
       </div>
 
-
-      <div className="w-full p-2 rounded-xl border-2 border-primary/20 bg-card/80">
-        <div
-          className={cn(
-            "flex flex-col items-center justify-center gap-6 rounded-lg border-4 border-primary/30 bg-primary/5 px-6 py-10 shadow-inner relative overflow-hidden min-h-[400px] md:min-h-[500px]",
-            "dark:bg-black/20"
-          )}
-        >
-          {gameState === "idle" && (
-            <div className="flex flex-col items-center gap-4 z-10 text-center animate-fade-in p-8">
-              <div className="flex items-center gap-2">
-                <Heart className="h-5 w-5 text-primary fill-primary" />
-                <Heart className="h-5 w-5 text-primary fill-primary" />
-                <Heart className="h-5 w-5 text-primary/50 fill-primary/50" />
-              </div>
-              <h3 className="text-xl font-bold uppercase tracking-[0.2em] text-foreground/80 pt-4">
-                Heart Snake Board
-              </h3>
-              <Heart className="h-6 w-6 text-primary fill-primary animate-pulse" />
-              <p className="max-w-xs text-muted-foreground pt-4">
-                Para seguir avanzando, debes de completar este desafío.
-              </p>
-              <Button
-                onClick={openInstructions}
-                className="mt-6 h-14 px-8 rounded-full text-base font-bold tracking-wider shadow-lg shadow-primary/20"
-                size="lg"
-              >
-                EMPEZAR JUEGO
-              </Button>
-            </div>
-          )}
-
-          {(gameState === "playing" ||
-            gameState === "won" ||
-            gameState === "lost") && (
-            <canvas
-              ref={canvasRef}
-              width={CANVAS_SIZE}
-              height={CANVAS_SIZE}
-              className={cn(
-                "rounded-lg bg-pink-100/20 dark:bg-pink-900/10",
-                (gameState === "lost" || gameState === "won") && "opacity-20",
-                "w-full h-auto aspect-square"
-              )}
-            />
-          )}
-
-          {(gameState === "won" || gameState === "lost") && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4 animate-fade-in z-20">
-              <h3 className="text-2xl font-bold text-foreground">
-                {gameState === "won"
-                  ? "¡Felicidades, lo lograste!"
-                  : "¡Oh no! Fin del juego"}
-              </h3>
-              <p className="text-muted-foreground mt-2 mb-6">
-                {gameState === "won"
-                  ? "Has recolectado todos los corazones."
-                  : `No te preocupes, ¡inténtalo de nuevo! La nueva meta es ${targetScore} corazones.`}
-              </p>
-              <div className="flex flex-col sm:flex-row items-center gap-4">
-                <Button
-                    onClick={gameState === 'won' ? () => setMapModalOpen(true) : startGame}
-                    className="min-w-[200px] h-12 px-6 text-base font-bold tracking-wider"
-                >
-                    {gameState === 'won' ? 'Ver Pista' : 'Reintentar'}
-                </Button>
-              </div>
-              {gameState === "won" && <VictoryHearts />}
-            </div>
-          )}
-        </div>
-      </div>
 
       {gameState === 'playing' && (
         <div className="md:hidden mt-4 grid grid-cols-3 gap-3 w-48">
@@ -400,23 +445,6 @@ export default function GameStage({ onSuccess, user }: GameStageProps) {
             <ChevronDown className="h-8 w-8" />
           </Button>
           <div />
-        </div>
-      )}
-
-      {gameState !== "won" && (
-        <div className="w-full mt-2 p-6 bg-primary/10 border border-dashed border-primary/40 rounded-xl flex flex-col items-center gap-4">
-          <div className="flex items-center gap-3">
-            <Lock className="text-primary" />
-            <h3 className="text-primary font-bold text-lg">
-              Pista 1: Bloqueada
-            </h3>
-          </div>
-          <p className="text-center text-sm text-foreground/70">
-            {score < targetScore
-              ? `Necesitas ${heartsNeeded} corazones más para revelar la primera ubicación de nuestra cita especial.`
-              : "¡Pista desbloqueada! Completa el juego para verla."}
-          </p>
-          <Progress value={hintProgress} className="h-2 w-full" />
         </div>
       )}
       

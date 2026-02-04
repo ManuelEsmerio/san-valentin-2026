@@ -6,15 +6,17 @@ import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
 import StageLoading from '@/components/valentines/StageLoading';
 
-type Stage = 'login' | 'welcome' | 'game' | 'trivia' | 'puzzle' | 'revelation';
+type Stage = 'login' | 'welcome' | 'game' | 'catch-hearts' | 'trivia' | 'memory-game' | 'puzzle' | 'revelation';
 
 const stageInfo: Record<Stage, { step: number; title: string; subtitle: string }> = {
   login: { step: 0, title: 'El Inicio', subtitle: 'Verifica tu amor para comenzar.' },
   welcome: { step: 0, title: 'Un Momento', subtitle: '' },
   game: { step: 1, title: 'Desafío 1: Snake Game', subtitle: '' },
-  trivia: { step: 2, title: 'Desafío 2: Trivia', subtitle: 'Demuestra cuánto nos conocemos' },
-  puzzle: { step: 3, title: 'Desafío 3: Puzzle Fifteen', subtitle: 'Ordena los números para revelar la pista final' },
-  revelation: { step: 4, title: 'La Sorpresa Final', subtitle: '' },
+  'catch-hearts': { step: 2, title: 'Desafío 2: Atrapa los Corazones', subtitle: 'Demuestra tu agilidad.' },
+  trivia: { step: 3, title: 'Desafío 3: Trivia', subtitle: 'Demuestra cuánto nos conocemos' },
+  'memory-game': { step: 4, title: 'Desafío 4: Memoria de Recuerdos', subtitle: 'Encuentra los pares.' },
+  puzzle: { step: 5, title: 'Desafío 5: Puzzle Fifteen', subtitle: 'Ordena los números para revelar la pista final' },
+  revelation: { step: 6, title: 'La Sorpresa Final', subtitle: '' },
 };
 
 const CountdownStage = dynamic(() => import('@/components/valentines/countdown-stage'), {
@@ -29,7 +31,13 @@ const WelcomeStage = dynamic(() => import('@/components/valentines/welcome-stage
 const GameStage = dynamic(() => import('@/components/valentines/game-stage'), {
   loading: () => <StageLoading />,
 });
+const CatchHeartsStage = dynamic(() => import('@/components/valentines/catch-hearts-stage'), {
+  loading: () => <StageLoading />,
+});
 const TriviaStage = dynamic(() => import('@/components/valentines/trivia-stage'), {
+  loading: () => <StageLoading />,
+});
+const MemoryGameStage = dynamic(() => import('@/components/valentines/memory-game-stage'), {
   loading: () => <StageLoading />,
 });
 const PuzzleStage = dynamic(() => import('@/components/valentines/puzzle-stage'), {
@@ -89,7 +97,7 @@ export default function Home() {
   const currentStep = stageInfo[stage]?.step;
   const currentTitle = stageInfo[stage]?.title;
   const currentSubtitle = stageInfo[stage]?.subtitle;
-  const totalChallenges = 3;
+  const totalChallenges = 5;
   const progress = Math.max(0, currentStep - 1) / totalChallenges * 100;
 
   const renderStage = () => {
@@ -99,9 +107,13 @@ export default function Home() {
       case 'welcome':
         return <WelcomeStage key="welcome" onSuccess={() => setStageAndSave('game')} />;
       case 'game':
-        return <GameStage key="game" onSuccess={() => setStageAndSave('trivia')} user={loggedInUser} />;
+        return <GameStage key="game" onSuccess={() => setStageAndSave('catch-hearts')} user={loggedInUser} />;
+      case 'catch-hearts':
+        return <CatchHeartsStage key="catch-hearts" onSuccess={() => setStageAndSave('trivia')} />;
       case 'trivia':
-        return <TriviaStage key="trivia" onSuccess={() => setStageAndSave('puzzle')} />;
+        return <TriviaStage key="trivia" onSuccess={() => setStageAndSave('memory-game')} />;
+      case 'memory-game':
+        return <MemoryGameStage key="memory-game" onSuccess={() => setStageAndSave('puzzle')} />;
       case 'puzzle':
         return <PuzzleStage key="puzzle" onSuccess={() => setStageAndSave('revelation')} />;
       case 'revelation':
@@ -115,7 +127,7 @@ export default function Home() {
 
   return (
     <div className="w-full flex flex-col items-center">
-      {(stage === 'game' || stage === 'trivia' || stage === 'puzzle') && (
+      {(stage !== 'game' && (stage === 'trivia' || stage === 'puzzle' || stage === 'catch-hearts' || stage === 'memory-game')) && (
         <div className={cn("w-full text-center mb-6", containerClass)}>
           <h1 className="text-foreground tracking-light text-[24px] sm:text-[40px] font-bold leading-tight px-4 pb-1">
             {currentTitle}
@@ -126,7 +138,7 @@ export default function Home() {
         </div>
       )}
 
-      {(stage === 'game' || stage === 'trivia' || stage === 'puzzle') && (
+      {(stage !== 'game' && (stage === 'trivia' || stage === 'puzzle' || stage === 'catch-hearts' || stage === 'memory-game')) && (
         <div className={cn("w-full flex flex-col gap-3 p-4 bg-card/50 rounded-xl mb-6 border border-border", containerClass)}>
           <div className="flex gap-4 justify-between items-center">
             <p className="text-foreground/90 text-base font-medium leading-normal">
