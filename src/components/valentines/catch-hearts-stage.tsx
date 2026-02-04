@@ -2,23 +2,20 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import { Heart, Play, Trophy, Clock, XCircle, CheckCircle2, Star, Shield, HelpCircle, Gamepad2, Info } from 'lucide-react';
+import { Heart, Trophy, Clock, XCircle, CheckCircle2, Gamepad2, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useToast } from '@/hooks/use-toast';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Progress } from '../ui/progress';
 import SimpleCircularProgress from './SimpleCircularProgress';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 // --- Game Constants ---
-const GAME_DURATION = 60;
-const TARGET_SCORE = 300;
+const GAME_DURATION = 30; // Shorter game
+const TARGET_SCORE = 250; // Adjusted target
 const CATCHER_WIDTH = 100;
 const CATCHER_HEIGHT = 20;
-const STAR_POWERUP_DURATION = 5000; // 5 seconds
 const HIGH_SCORE_KEY = 'valentines-catch-highscore';
 
-type ItemType = 'heart' | 'flower' | 'chocolate' | 'letter' | 'gift' | 'broken_heart' | 'trash' | 'clock' | 'star' | 'diamond';
+type ItemType = 'heart' | 'flower' | 'chocolate' | 'letter' | 'gift' | 'broken_heart' | 'trash';
 type GameState = 'idle' | 'playing' | 'won' | 'lost';
 
 type Item = {
@@ -31,23 +28,15 @@ type Item = {
   points: number;
 };
 
-type PowerUps = {
-  star: { active: boolean; timeoutId: NodeJS.Timeout | null };
-  diamond: { active: boolean };
-};
-
-// --- Item Configuration ---
-const ITEM_CONFIG: Record<ItemType, { icon: string; points: number; baseProb: number }> = {
-  heart: { icon: '❤️', points: 10, baseProb: 0.35 },
-  flower: { icon: '🌹', points: 15, baseProb: 0.15 },
-  chocolate: { icon: '🍫', points: 20, baseProb: 0.10 },
-  letter: { icon: '💌', points: 25, baseProb: 0.05 },
-  gift: { icon: '🎁', points: 30, baseProb: 0.03 },
-  broken_heart: { icon: '💔', points: -15, baseProb: 0.10 },
-  trash: { icon: '🗑️', points: -10, baseProb: 0.12 },
-  clock: { icon: '⏱️', points: 10, baseProb: 0.03 }, // Points are seconds
-  star: { icon: '⭐', points: 0, baseProb: 0.04 },
-  diamond: { icon: '💎', points: 0, baseProb: 0.03 },
+// --- Item Configuration (Simplified) ---
+const ITEM_CONFIG: Record<ItemType, { icon: string; points: number }> = {
+  heart: { icon: '❤️', points: 10 },
+  flower: { icon: '🌹', points: 15 },
+  chocolate: { icon: '🍫', points: 20 },
+  letter: { icon: '💌', points: 25 },
+  gift: { icon: '🎁', points: 30 },
+  broken_heart: { icon: '💔', points: -15 },
+  trash: { icon: '🗑️', points: -10 },
 };
 
 const drawItemOnCanvas = (ctx: CanvasRenderingContext2D, item: Item) => {
@@ -81,13 +70,11 @@ const GameOverlay = ({ status, onStart, onRetry, score, highScore }: { status: G
 
 // --- Main Component ---
 export default function CatchHeartsStage({ onSuccess }: { onSuccess: () => void }) {
-  const { toast } = useToast();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [gameState, setGameState] = useState<GameState>('idle');
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(GAME_DURATION);
   const [highScore, setHighScore] = useState(0);
-  const [powerUps, setPowerUps] = useState<PowerUps>({ star: { active: false, timeoutId: null }, diamond: { active: false } });
   const [isInstructionsModalOpen, setInstructionsModalOpen] = useState(false);
 
   const gameLoopRef = useRef<number>();
@@ -123,12 +110,10 @@ export default function CatchHeartsStage({ onSuccess }: { onSuccess: () => void 
     setTimeLeft(GAME_DURATION);
     itemsRef.current = [];
     nextItemIdRef.current = 0;
-    if (powerUps.star.timeoutId) clearTimeout(powerUps.star.timeoutId);
-    setPowerUps({ star: { active: false, timeoutId: null }, diamond: { active: false } });
     if (canvasRef.current) {
         catcherXRef.current = canvasRef.current.width / 2;
     }
-  }, [powerUps.star.timeoutId]);
+  }, []);
 
   const startGame = () => {
     setInstructionsModalOpen(false);
@@ -146,31 +131,17 @@ export default function CatchHeartsStage({ onSuccess }: { onSuccess: () => void 
   }, [updateHighScore]);
 
   const getRandomItemType = (currentScore: number): ItemType => {
-      let positiveProb = 0.68;
-      let negativeProb = 0.22;
-      // Progressive difficulty
-      if (currentScore > 150) {
-        positiveProb = 0.58;
-        negativeProb = 0.32;
-      }
-      if (currentScore > 300) {
-        positiveProb = 0.48;
-        negativeProb = 0.42;
-      }
-      
+      // Progressive difficulty: negative items become more common as score increases
+      const negativeItemChance = Math.min(0.4, 0.20 + (currentScore / TARGET_SCORE) * 0.2);
       const rand = Math.random();
-      let cumulativeProb = 0;
-      
-      const positiveItems = (Object.keys(ITEM_CONFIG) as ItemType[]).filter(k => ITEM_CONFIG[k].points > 0 && k !== 'clock');
-      const negativeItems = (Object.keys(ITEM_CONFIG) as ItemType[]).filter(k => ITEM_CONFIG[k].points < 0);
-      const specialItems = (Object.keys(ITEM_CONFIG) as ItemType[]).filter(k => ITEM_CONFIG[k].points === 0 || k === 'clock');
 
-      if (rand < positiveProb) {
-          return positiveItems[Math.floor(Math.random() * positiveItems.length)];
-      } else if (rand < positiveProb + negativeProb) {
-          return negativeItems[Math.floor(Math.random() * negativeItems.length)];
+      const positiveItems = (Object.keys(ITEM_CONFIG) as ItemType[]).filter(k => ITEM_CONFIG[k].points > 0);
+      const negativeItems = (Object.keys(ITEM_CONFIG) as ItemType[]).filter(k => ITEM_CONFIG[k].points < 0);
+
+      if (rand > negativeItemChance) {
+        return positiveItems[Math.floor(Math.random() * positiveItems.length)];
       } else {
-          return specialItems[Math.floor(Math.random() * specialItems.length)];
+        return negativeItems[Math.floor(Math.random() * negativeItems.length)];
       }
   };
   
@@ -237,34 +208,7 @@ export default function CatchHeartsStage({ onSuccess }: { onSuccess: () => void 
         const catcherLeft = catcherXRef.current - CATCHER_WIDTH / 2;
         const catcherRight = catcherXRef.current + CATCHER_WIDTH / 2;
         if (item.y + 30 >= rect.height - CATCHER_HEIGHT && item.y <= rect.height && item.x >= catcherLeft && item.x <= catcherRight) {
-            
-            if (item.points < 0) {
-                if (powerUps.diamond.active) {
-                    setPowerUps(p => ({ ...p, diamond: { active: false } }));
-                    toast({ title: "¡Protegida!", description: "El diamante te ha salvado de los puntos negativos." });
-                } else {
-                    setScore(s => Math.max(0, s + item.points));
-                }
-            } else {
-                 if (item.type === 'clock') {
-                    setTimeLeft(t => t + item.points);
-                    toast({ title: "¡Tiempo Extra!", description: `+${item.points} segundos añadidos.` });
-                 } else if (item.type === 'star') {
-                    if (powerUps.star.timeoutId) clearTimeout(powerUps.star.timeoutId);
-                    const newTimeoutId = setTimeout(() => {
-                        setPowerUps(p => ({...p, star: { active: false, timeoutId: null }}));
-                        toast({ title: 'Poder Estelar Terminado', description: 'Los puntos vuelven a la normalidad.' });
-                    }, STAR_POWERUP_DURATION);
-                    setPowerUps(p => ({...p, star: { active: true, timeoutId: newTimeoutId }}));
-                    toast({ title: "¡Poder Estelar!", description: "¡Puntos dobles por 5 segundos!" });
-                 } else if (item.type === 'diamond') {
-                    setPowerUps(p => ({...p, diamond: { active: true }}));
-                    toast({ title: "¡Protección!", description: "Estás protegida del siguiente objeto negativo." });
-                 } else {
-                    const pointsToAdd = powerUps.star.active ? item.points * 2 : item.points;
-                    setScore(s => s + pointsToAdd);
-                 }
-            }
+            setScore(s => Math.max(0, s + item.points));
             return false;
         }
         
@@ -298,7 +242,7 @@ export default function CatchHeartsStage({ onSuccess }: { onSuccess: () => void 
         canvas.removeEventListener('touchmove', handleTouchMove);
       }
     };
-  }, [gameState, score, powerUps, toast]);
+  }, [gameState, score]);
 
   const totalChallenges = 5;
   const completedChallenges = 1;
@@ -380,50 +324,14 @@ export default function CatchHeartsStage({ onSuccess }: { onSuccess: () => void 
                 </div>
               </div>
             </div>
-
-            <div className="bg-card/50 dark:bg-zinc-800/30 p-6 rounded-3xl border border-border">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-8 h-8 rounded-full bg-muted text-muted-foreground flex items-center justify-center">
-                  <Info className="w-4 h-4" />
+            
+            <div className="p-4 bg-primary/5 rounded-2xl border border-primary/10">
+                <div className="flex gap-2 items-center text-xs font-medium text-primary">
+                    <Info className="h-4 w-4 shrink-0"/>
+                    Usa el mouse o tu dedo para guiar la cesta.
                 </div>
-                <h3 className="font-bold text-foreground">Guía del Juego</h3>
-              </div>
-              <p className="text-sm text-muted-foreground mb-6 italic">Atrapa los objetos buenos y evita los malos para alcanzar la meta de {TARGET_SCORE} puntos.</p>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" className="w-full"><HelpCircle className="w-4 h-4 mr-2" /> Ver Puntuación</Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-80">
-                  <div className="grid gap-4">
-                    <div className="space-y-2">
-                      <h4 className="font-medium leading-none">Puntuación de Objetos</h4>
-                      <p className="text-sm text-muted-foreground">Cada objeto tiene un valor. ¡Elige sabiamente!</p>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2 text-sm">
-                      <p className="font-medium flex items-center gap-2">❤️ +10</p>
-                      <p className="font-medium flex items-center gap-2">🌹 +15</p>
-                      <p className="font-medium flex items-center gap-2">🍫 +20</p>
-                      <p className="font-medium flex items-center gap-2">💌 +25</p>
-                      <p className="font-medium flex items-center gap-2">🎁 +30</p>
-                      <p className="font-medium flex items-center gap-2 text-destructive">💔 -15</p>
-                      <p className="font-medium flex items-center gap-2 text-destructive">🗑️ -10</p>
-                      <p className="font-medium flex items-center gap-2 text-blue-500">⏱️ +10s</p>
-                      <p className="font-medium flex items-center gap-2 text-yellow-500">⭐ x2 Pts</p>
-                      <p className="font-medium flex items-center gap-2 text-cyan-500">💎 Escudo</p>
-                    </div>
-                  </div>
-                </PopoverContent>
-              </Popover>
             </div>
 
-            <div className="flex items-center gap-4 p-4 bg-card/50 dark:bg-zinc-800/30 rounded-2xl border border-border min-h-[72px]">
-              <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Poder Activo:</span>
-              <div className="flex gap-2">
-                {powerUps.star.active && <div className="h-10 w-10 rounded-full bg-yellow-400/20 text-yellow-400 flex items-center justify-center border border-yellow-400/50 animate-pulse"><Star className="h-6 w-6" /></div>}
-                {powerUps.diamond.active && <div className="h-10 w-10 rounded-full bg-cyan-400/20 text-cyan-400 flex items-center justify-center border border-cyan-400/50"><Shield className="h-6 w-6" /></div>}
-                {!powerUps.star.active && !powerUps.diamond.active && <span className="text-sm text-muted-foreground italic">Ninguno</span>}
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -433,10 +341,18 @@ export default function CatchHeartsStage({ onSuccess }: { onSuccess: () => void 
               <DialogHeader>
                   <DialogTitle className="text-2xl text-center font-bold">Desafío 2: Atrapa los Detalles</DialogTitle>
                    <DialogDescription asChild>
-                      <div className="text-center pt-4 space-y-3 text-base text-muted-foreground">
-                          <p>Usa el ratón o tu dedo para mover la cesta y atrapar los objetos que caen.</p>
-                          <p>Alcanza <span className="font-bold text-primary">{TARGET_SCORE}</span> puntos en {GAME_DURATION} segundos para ganar, ¡pero cuidado con los objetos negativos!</p>
-                          <p className="pt-2">¡A jugar, mi chula!</p>
+                      <div className="text-center pt-4 space-y-6 text-base text-muted-foreground">
+                        <p>Usa el ratón o tu dedo para mover la cesta y atrapar los objetos buenos. ¡Evita los malos!</p>
+                        <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-left w-fit mx-auto">
+                            <p className="font-medium flex items-center gap-2">❤️ Corazones: <span className="font-bold text-foreground">+10</span></p>
+                            <p className="font-medium flex items-center gap-2">🌹 Flores: <span className="font-bold text-foreground">+15</span></p>
+                            <p className="font-medium flex items-center gap-2">🍫 Chocolates: <span className="font-bold text-foreground">+20</span></p>
+                            <p className="font-medium flex items-center gap-2">💌 Cartas: <span className="font-bold text-foreground">+25</span></p>
+                            <p className="font-medium flex items-center gap-2">🎁 Regalos: <span className="font-bold text-foreground">+30</span></p>
+                            <p className="font-medium flex items-center gap-2 text-destructive">💔 Corazón roto: <span className="font-bold text-destructive">-15</span></p>
+                            <p className="font-medium flex items-center gap-2 text-destructive">🗑️ Basura: <span className="font-bold text-destructive">-10</span></p>
+                        </div>
+                        <p>Alcanza <span className="font-bold text-primary">{TARGET_SCORE}</span> puntos en {GAME_DURATION} segundos para ganar.</p>
                       </div>
                   </DialogDescription>
               </DialogHeader>
