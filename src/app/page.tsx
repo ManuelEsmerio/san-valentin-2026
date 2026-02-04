@@ -11,7 +11,7 @@ type Stage = 'login' | 'welcome' | 'game' | 'catch-hearts' | 'trivia' | 'memory-
 const stageInfo: Record<Stage, { step: number; title: string; subtitle: string }> = {
   login: { step: 0, title: 'El Inicio', subtitle: 'Verifica tu amor para comenzar.' },
   welcome: { step: 0, title: 'Un Momento', subtitle: '' },
-  game: { step: 1, title: 'Desafío 1: Snake Game', subtitle: '' },
+  game: { step: 1, title: 'Desafío 1: Snake Romance', subtitle: '' },
   'catch-hearts': { step: 2, title: 'Desafío 2: Atrapa los Corazones', subtitle: 'Demuestra tu agilidad.' },
   trivia: { step: 3, title: 'Desafío 3: Trivia', subtitle: 'Demuestra cuánto nos conocemos' },
   'memory-game': { step: 4, title: 'Desafío 4: Memoria de Recuerdos', subtitle: 'Encuentra los pares.' },

@@ -288,7 +288,7 @@ export default function GameStage({ onSuccess, user }: GameStageProps) {
                             Heart Snake Board
                         </h3>
                         <p className="max-w-xs text-muted-foreground">
-                            Domina el arte del movimiento para recolectar todos los corazones y desbloquear el siguiente nivel de nuestro viaje.
+                            Para seguir avanzando, debes de completar este desafío.
                         </p>
                         <Button
                             onClick={openInstructions}
@@ -451,7 +451,7 @@ export default function GameStage({ onSuccess, user }: GameStageProps) {
       <Dialog open={isInstructionsModalOpen} onOpenChange={setInstructionsModalOpen}>
         <DialogContent className="sm:max-w-xl">
             <DialogHeader>
-                <DialogTitle className="text-2xl text-center font-bold">Desafío 1: Snake Game</DialogTitle>
+                <DialogTitle className="text-2xl text-center font-bold">Desafío 1: Snake Romance</DialogTitle>
                  <DialogDescription asChild>
                     <div className="text-center pt-4 space-y-3 text-base text-muted-foreground">
                         <div>Usa las flechas del teclado (o los botones en pantalla) para mover la serpiente de corazones.</div>
