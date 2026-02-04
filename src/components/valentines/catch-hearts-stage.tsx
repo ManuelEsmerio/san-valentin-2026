@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
-import { Heart, Clock, Info, Gamepad2, Lock, LockOpen } from 'lucide-react';
+import { Heart, Clock, Info, Gamepad2, Lock, LockOpen, Trophy } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import SimpleCircularProgress from './SimpleCircularProgress';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -295,7 +295,7 @@ export default function CatchHeartsStage({ onSuccess, user }: { onSuccess: () =>
       <div className="w-full relative">
         <div className="flex flex-col items-center gap-6 animate-fade-in">
           <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <div className="lg:col-span-8">
+            <div className="lg:col-span-8 relative">
               <div className="relative overflow-hidden aspect-square flex flex-col items-center justify-center gap-6 rounded-2xl bg-card p-0 border-2 border-primary/10">
                 <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:30px_30px]"></div>
 
@@ -319,6 +319,7 @@ export default function CatchHeartsStage({ onSuccess, user }: { onSuccess: () =>
                   )} />
                 )}
               </div>
+              <GameOverlay status={gameState} onStart={handleWin} onRetry={startGame} score={score} highScore={highScore} />
             </div>
 
             <div className="lg:col-span-4 space-y-4">
@@ -342,7 +343,7 @@ export default function CatchHeartsStage({ onSuccess, user }: { onSuccess: () =>
               <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-2xl flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-                    <span className="material-symbols-outlined text-2xl">trophy</span>
+                    <Trophy className="w-5 h-5" />
                   </div>
                   <div>
                     <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground block">Mejor Récord</span>
@@ -392,7 +393,7 @@ export default function CatchHeartsStage({ onSuccess, user }: { onSuccess: () =>
             </div>
           </div>
         </div>
-        <GameOverlay status={gameState} onStart={handleWin} onRetry={startGame} score={score} highScore={highScore} />
+        
       </div>
       
       <Dialog open={isInstructionsModalOpen} onOpenChange={setInstructionsModalOpen}>
@@ -433,7 +434,7 @@ export default function CatchHeartsStage({ onSuccess, user }: { onSuccess: () =>
         isOpen={isKeywordModalOpen}
         onSuccess={handleKeywordSuccess}
         onBack={handleReturnToMap}
-        correctKeyword="confianza"
+        correctKeyword="sorpresa"
         title="Segunda Palabra Clave"
         description="Has encontrado la segunda pista. Ingresa la palabra clave para desbloquear el siguiente desafío."
       />

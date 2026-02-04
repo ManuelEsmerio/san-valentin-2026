@@ -5,30 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
-import { KeyRound, ChevronLeft, Gift, DoorOpen, Puzzle } from 'lucide-react';
+import { ChevronLeft, Gift, DoorOpen, Puzzle } from 'lucide-react';
 
 type RiddleModalProps = {
   isOpen: boolean;
   onSuccess: () => void;
   onBack: () => void;
 };
-
-// --- Keyword Constants ---
-const CORRECT_KEYWORD = "comunicacion";
-const KEYWORD_ERROR_MESSAGES = [
-  {
-    title: 'Hey… 😌',
-    description: 'Esto no se adivina, se descubre. La pista está en el lugar físico.',
-  },
-  {
-    title: 'Mmm… todavía no.',
-    description: 'La palabra clave es importante. Asegúrate de tener la correcta.',
-  },
-  {
-    title: 'Casi… pero no 😅',
-    description: 'Ve por la pista y vuelve. Te espero aquí.',
-  },
-];
 
 // --- Riddle Constants ---
 const RIDDLE_TEXT = `No es un lugar público,
@@ -41,7 +24,7 @@ No se abre con palabras,
 pero hoy una llave te guiará.
 
 ¿Qué lugar es?`;
-const CORRECT_RIDDLE_ANSWERS = ["mi cuarto", "el cuarto"];
+const CORRECT_RIDDLE_ANSWERS = ["tu habitacion", "tu habitación"];
 const RIDDLE_HINTS = [
     "Es un lugar cotidiano, pero no cualquiera entra sin permiso.",
     "Ahí terminan sus días y comienzan sus sueños.",
@@ -50,11 +33,8 @@ const RIDDLE_HINTS = [
 
 
 export default function RiddleModal({ isOpen, onSuccess, onBack }: RiddleModalProps) {
-  const [modalStage, setModalStage] = useState<'keyword' | 'riddle' | 'success'>('keyword');
-  const [keywordValue, setKeywordValue] = useState('');
+  const [modalStage, setModalStage] = useState<'riddle' | 'success'>('riddle');
   const [riddleValue, setRiddleValue] = useState('');
-  
-  const [keywordErrorCount, setKeywordErrorCount] = useState(0);
   const [riddleHintCount, setRiddleHintCount] = useState(0);
 
   const [isShowing, setIsShowing] = useState(false);
@@ -64,31 +44,14 @@ export default function RiddleModal({ isOpen, onSuccess, onBack }: RiddleModalPr
     if (isOpen) {
       setIsShowing(true);
       // Reset state when modal opens
-      setModalStage('keyword');
-      setKeywordValue('');
+      setModalStage('riddle');
       setRiddleValue('');
-      setKeywordErrorCount(0);
       setRiddleHintCount(0);
     } else {
       const timer = setTimeout(() => setIsShowing(false), 300);
       return () => clearTimeout(timer);
     }
   }, [isOpen]);
-
-  const handleKeywordSubmit = () => {
-    if (keywordValue.trim().toLowerCase() === CORRECT_KEYWORD) {
-      setModalStage('riddle');
-    } else {
-      setKeywordValue(''); // Clear input on wrong answer
-      const currentError = KEYWORD_ERROR_MESSAGES[keywordErrorCount % KEYWORD_ERROR_MESSAGES.length];
-      toast({
-        variant: 'destructive',
-        title: currentError.title,
-        description: currentError.description,
-      });
-      setKeywordErrorCount(prev => prev + 1);
-    }
-  };
 
   const handleRiddleSubmit = () => {
     const cleanedAnswer = riddleValue.trim().toLowerCase();
@@ -119,35 +82,6 @@ export default function RiddleModal({ isOpen, onSuccess, onBack }: RiddleModalPr
 
   const renderContent = () => {
     switch(modalStage) {
-      case 'keyword':
-        return (
-          <div className="p-6 sm:p-8 text-center animate-fade-in">
-              <div className="flex justify-center items-center gap-2 mb-4">
-                  <KeyRound className="text-primary h-8 w-8" />
-                  <h2 className="text-2xl font-bold text-foreground">Palabra Clave Final</h2>
-              </div>
-              <p className="text-muted-foreground mb-6">
-                Para el último paso, necesitas la palabra que recibiste junto con la llave. Ingrésala para descubrir dónde usarla.
-              </p>
-              <div className="flex flex-col gap-3">
-                  <Input
-                    type="text"
-                    placeholder="Escribe la palabra clave"
-                    value={keywordValue}
-                    onKeyDown={(e) => e.key === 'Enter' && handleKeywordSubmit()}
-                    onChange={(e) => setKeywordValue(e.target.value)}
-                    className="h-12 text-center text-lg"
-                  />
-                  <Button onClick={handleKeywordSubmit} className="w-full h-12 text-lg font-bold">
-                      Desbloquear
-                  </Button>
-                  <Button variant="outline" onClick={onBack} className="w-full h-12 text-base font-bold">
-                      <ChevronLeft className="mr-2 h-4 w-4" />
-                      Volver al Mapa
-                  </Button>
-              </div>
-          </div>
-        );
       case 'riddle':
         return (
           <div className="p-6 sm:p-8 text-center animate-fade-in">
@@ -184,7 +118,7 @@ export default function RiddleModal({ isOpen, onSuccess, onBack }: RiddleModalPr
         return (
           <div className="p-6 sm:p-8 text-center animate-fade-in">
               <Gift className="text-primary h-12 w-12 mx-auto mb-4 animate-heart-beat" />
-              <h2 className="text-2xl font-bold text-foreground mb-2">¡Correcto! Es tu cuarto.</h2>
+              <h2 className="text-2xl font-bold text-foreground mb-2">¡Correcto! Es tu habitación.</h2>
               <p className="text-muted-foreground mb-6">
                   La llave que te dieron abre la puerta a tu sorpresa final. Tu regalo te está esperando adentro. ¡Ve a descubrirlo!
               </p>

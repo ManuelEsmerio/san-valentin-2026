@@ -102,7 +102,7 @@ export default function MemoryGameStage({ onSuccess, user }: Props) {
   const long = "-99.1718";
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${long}`;
   const iframeUrl = `https://maps.google.com/maps?q=${lat},${long}&hl=es&z=14&output=embed`;
-  const CORRECT_KEYWORD = "futuro";
+  const CORRECT_KEYWORD = "en";
 
   useEffect(() => {
     const storedBestTime = localStorage.getItem(BEST_TIME_KEY);
@@ -247,7 +247,7 @@ export default function MemoryGameStage({ onSuccess, user }: Props) {
     <>
       <div className="w-full relative">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-fade-in">
-          <div className="lg:col-span-8">
+          <div className="lg:col-span-8 relative">
             <div className={cn("relative overflow-hidden aspect-square flex flex-col items-center justify-center gap-6 rounded-2xl bg-card p-0 border-2 border-primary/10")}>
               <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:30px_30px]"></div>
 
@@ -286,6 +286,7 @@ export default function MemoryGameStage({ onSuccess, user }: Props) {
                 </div>
               )}
             </div>
+            {isGameOver && <GameOverlay status={gameState} />}
           </div>
 
           <div className="lg:col-span-4 space-y-6">
@@ -358,7 +359,7 @@ export default function MemoryGameStage({ onSuccess, user }: Props) {
               </div>
           </div>
         </div>
-        {isGameOver && <GameOverlay status={gameState} />}
+        
       </div>
 
       <Dialog open={isInstructionsOpen} onOpenChange={setInstructionsOpen}>

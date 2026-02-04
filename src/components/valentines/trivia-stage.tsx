@@ -18,6 +18,8 @@ import {
 import { cn } from "@/lib/utils";
 import CircularProgress from "./CircularProgress";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import MapModal from "./MapModal";
+import KeywordModal from "./KeywordModal";
 
 type TriviaStageProps = {
   onSuccess: () => void;
@@ -77,10 +79,50 @@ const openEndedQuestions: OpenEndedQuestion[] = [
 ];
 
 const LETTERS: Record<number, { title: string; content: string[]; imageIds: string[] }> = {
-  5: { title: 'Lo que más amo de ti…', content: ['Tu sonrisa, tu cariño y tu manera tan hermosa de querer hacen que cada día valga la pena. 💖', 'Aunque a veces no estemos de acuerdo y peleemos, yo te elijo a ti.', 'Gracias por tu paciencia, por entenderme cuando me cuesta explicarme, por quedarte incluso cuando no es fácil y por elegirnos una y otra vez.', 'A tu lado aprendí que el amor también es calma, apoyo y complicidad, y que también son pláticas incómodas, discusiones y peleas, pero siempre volver a escogernos.'], imageIds: ['letter-1-img-1', 'letter-1-img-2', 'letter-1-img-3'] },
-  10: { title: 'Mi recuerdo más preciado…', content: ['Tal vez no fue perfecto, pero fue real.', 'Los días que me quedé en Lagos solo con tal de verte, cuando todavía no conocía nada, pero sí tenía claro que quería conocerte a ti.', 'Tanto, que dormí en el suelo en casa de Edgar, hicimos carne asada y fueron días muy bonitos que siempre voy a apreciar profundamente.', 'Desde ese momento supe que algo especial estaba empezando entre nosotros. ✨'], imageIds: ['letter-2-img-1', 'letter-2-img-2', 'letter-2-img-3'] },
-  15: { title: 'Lo que quiero contigo…', content: ['Compartir risas, crear más recuerdos y seguir eligiéndonos todos los días,', 'en los días malos, cuando estemos cansados y sintamos que no podemos más, saber que estamos el uno para el otro, para apoyarnos y darnos la mano en esos momentos, sin importar lo que venga. 💕'], imageIds: ['letter-3-img-1', 'letter-3-img-2', 'letter-3-img-3'] },
-  20: { title: 'Lo que nos unió a pesar de la distancia…', content: ['Al principio, todo era pantalla y voz. Pero cada videollamada nos acercaba más, como si el tiempo y la distancia se hicieran pequeños cuando te veía sonreír.', 'Hablábamos de todo y de nada, y aun así cada conversación me hacía sentir más cerca de ti.', 'A veces me quedaba despierto solo para verte un ratito más, aunque fuera cansado, aunque fuera tarde… porque tú valías la pena.', 'Esas llamadas fueron el inicio de algo que hoy es mucho más grande: nosotros. 💞'], imageIds: ['letter-4-img-1', 'letter-4-img-2', 'letter-4-img-3'] },
+  5: {
+    title: '¿Recuerdas ese día tan especial?',
+    content: [
+      'Fue cuando fuimos a nuestro primer concierto. Tenías la sonrisa más grande y hermosa que haya visto. No cabías de la emoción por ver a Coldplay, tanto que cantaste a todo pulmón ese día, sin importar lo mal que cantas 😂 (ntc).',
+      'Es un momento muy especial para mí y lo recuerdo siempre con una sonrisa.',
+      'Ese día también tuvimos nuestros problemas para llegar puntuales al estadio. Andábamos desesperados buscando Uber o camión, y se te notaba lo estresada que estabas porque pensabas que no ibas a ver a Coldplay.',
+      'Pero, de una manera u otra, solucionamos todo y disfrutamos el concierto.',
+      'Y así como ese día, juntos podemos con todo. ❤️'
+    ],
+    imageIds: ['letter-1-img-1', 'letter-1-img-2', 'letter-1-img-3']
+  },
+  10: {
+    title: 'Mi recuerdo más preciado…',
+    content: [
+      'Recuerdo una de mis primeras veces en Lagos, y aunque diga que iba a ver a Edgar 😂, en realidad iba a verte a ti.',
+      'Me quedaba varios días solo para poder verte, aunque fuera unos minutos en persona, y cada segundo contigo valía la pena.',
+      'Con ese poco tiempo que compartimos, me enamoré… y no solo de Lagos, sino de ti.',
+      'Me mostraste muchas cosas, lugares y momentos, pero siempre con la mejor compañía: tú.',
+      'Desde entonces supe que contigo todo se sentía especial y diferente. ✨'
+    ],
+    imageIds: ['letter-2-img-1', 'letter-2-img-2', 'letter-2-img-3']
+  },
+  15: {
+    title: 'Lo que quiero contigo…',
+    content: [
+      'Es algo que me fascina de ti, y sé que ahorita estás pasando por un mal momento. Comprendo que no es fácil ver ese lado tan bonito de ti en estos días.',
+      'Pero aun así, yo sigo aquí, creyendo en nosotros y en todo lo que podemos construir juntos.',
+      'Quiero acompañarte en tus procesos, apoyarte cuando te sientas cansada y recordarte lo valiosa que eres, incluso cuando tú no lo veas.',
+      'Quiero seguir eligiéndote todos los días, en los buenos y en los malos, sin rendirme a la primera dificultad.',
+      'Porque contigo no solo quiero momentos felices, quiero una historia real, sincera y duradera. 💕'
+    ],
+    imageIds: ['letter-3-img-1', 'letter-3-img-2', 'letter-3-img-3']
+  },
+  20: {
+    title: 'Lo que nos unió a pesar de la distancia…',
+    content: [
+      'Así empezó todo: días, semanas y meses hablando por videollamadas de todo tipo de cosas, desde lo más simple hasta lo más profundo.',
+      'La distancia fue un factor muy importante, pero nunca fue un obstáculo para nosotros. Ni eso logró detener lo que sentíamos.',
+      'Fueron noches en vela, horas en llamadas, miles de pláticas que nos acercaron cada vez más.',
+      'Siempre con tu sonrisa tan hermosa, esa que jamás había visto en nadie más, y que hacía que todo valiera la pena.',
+      'Desde entonces supe que lo nuestro no dependía de kilómetros, sino de ganas, amor y conexión. 💞'
+    ],
+    imageIds: ['letter-4-img-1', 'letter-4-img-2', 'letter-4-img-3']
+  },
 };
 
 const MIN_CORRECT_ANSWERS = 8;
@@ -154,14 +196,15 @@ const FailedScreen = memo(({ score, onRetry }: { score: number, onRetry: () => v
 ));
 FailedScreen.displayName = 'FailedScreen';
 
-const FinishedScreen = memo(() => (
+const FinishedScreen = memo(({ onShowHint }: { onShowHint: () => void }) => (
     <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5">
         <div className="px-4 sm:px-8 pb-10 pt-6">
             <Alert className="animate-fade-in text-center border-green-500/50">
                 <span className="material-symbols-outlined text-primary text-5xl">check_circle</span>
                 <AlertTitle className="font-headline mt-2 text-xl text-green-600">¡Perfecto! ¡Sabía que lo sabrías todo!</AlertTitle>
                 <AlertDescription className="font-body space-y-4 mt-4 text-foreground/80">
-                    <p>Has completado el desafío. Cargando el siguiente paso...</p>
+                    <p>Has completado el desafío. Estás un paso más cerca de la sorpresa final.</p>
+                    <Button onClick={onShowHint} className="w-full h-12 text-lg font-bold">Ver siguiente pista</Button>
                 </AlertDescription>
             </Alert>
         </div>
@@ -183,6 +226,8 @@ export default function TriviaStage({ onSuccess, user }: TriviaStageProps) {
   const [shownLetters, setShownLetters] = useState<Record<number, boolean>>({});
   const [flippedQuestions, setFlippedQuestions] = useState<Record<number, boolean>>({});
   const [isInstructionsModalOpen, setInstructionsModalOpen] = useState(false);
+  const [isMapModalOpen, setMapModalOpen] = useState(false);
+  const [isKeywordModalOpen, setKeywordModalOpen] = useState(false);
 
   const setupTrivia = useCallback(() => {
     const shuffledMcq = shuffleArray([...multipleChoiceQuestions]);
@@ -284,19 +329,31 @@ export default function TriviaStage({ onSuccess, user }: TriviaStageProps) {
     setupTrivia();
   }, [setupTrivia]);
 
-  useEffect(() => {
-    if (stage === "finished") {
-      const timer = setTimeout(() => {
-        onSuccess();
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [stage, onSuccess]);
-
   const handleStartGame = () => {
     setInstructionsModalOpen(false);
     setStage("playing");
   };
+
+  const handleOpenKeywordModal = useCallback(() => {
+    setMapModalOpen(false);
+    setKeywordModalOpen(true);
+  }, []);
+
+  const handleReturnToMap = useCallback(() => {
+    setKeywordModalOpen(false);
+    setMapModalOpen(true);
+  }, []);
+
+  const handleKeywordSuccess = useCallback(() => {
+    setKeywordModalOpen(false);
+    onSuccess();
+  }, [onSuccess]);
+    
+  const coordinates = "19.4216° N, 99.1687° W";
+  const lat = "19.4216";
+  const long = "-99.1687";
+  const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${long}`;
+  const iframeUrl = `https://maps.google.com/maps?q=${lat},${long}&hl=es&z=14&output=embed`;
 
   if (stage === "intro") {
     return (
@@ -312,7 +369,7 @@ export default function TriviaStage({ onSuccess, user }: TriviaStageProps) {
   }
 
   if (stage === "failed") return <FailedScreen score={score} onRetry={handleRetry} />;
-  if (stage === "finished") return <FinishedScreen />;
+  if (stage === "finished") return <FinishedScreen onShowHint={() => setMapModalOpen(true)} />;
 
   const currentQuestion = questions[currentQuestionIndex];
   if (!currentQuestion || stage !== "playing" || !questions.length) {
@@ -477,6 +534,22 @@ export default function TriviaStage({ onSuccess, user }: TriviaStageProps) {
               goToNextQuestion();
           }
         }}
+      />
+      <MapModal 
+        isOpen={isMapModalOpen}
+        onClose={() => setMapModalOpen(false)}
+        onNextChallenge={handleOpenKeywordModal}
+        coordinates={coordinates}
+        googleMapsUrl={googleMapsUrl}
+        iframeUrl={iframeUrl}
+      />
+      <KeywordModal
+        isOpen={isKeywordModalOpen}
+        onSuccess={handleKeywordSuccess}
+        onBack={handleReturnToMap}
+        correctKeyword="está"
+        title="Tercera Palabra Clave"
+        description="Has encontrado la tercera pista. Ingresa la palabra clave para desbloquear el siguiente desafío."
       />
     </>
   );
