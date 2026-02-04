@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
-import { Skeleton } from '@/components/ui/skeleton';
+import StageLoading from '@/components/valentines/StageLoading';
 
 type Stage = 'login' | 'welcome' | 'game' | 'trivia' | 'puzzle' | 'revelation';
 
@@ -17,14 +17,8 @@ const stageInfo: Record<Stage, { step: number; title: string; subtitle: string }
   revelation: { step: 4, title: 'La Sorpresa Final', subtitle: '' },
 };
 
-const StageLoading = () => (
-  <div className="w-full max-w-lg mx-auto">
-    <Skeleton className="h-[450px] w-full rounded-xl" />
-  </div>
-);
-
 const CountdownStage = dynamic(() => import('@/components/valentines/countdown-stage'), {
-  loading: () => <div className="fixed inset-0" />,
+  loading: () => <StageLoading />,
 });
 const LoginStage = dynamic(() => import('@/components/valentines/login-stage'), {
   loading: () => <StageLoading />,
@@ -76,13 +70,7 @@ export default function Home() {
   }
 
   if (!isClient) {
-    return (
-        <div className="w-full flex flex-col items-center">
-            <div className="w-full max-w-lg">
-                <StageLoading/>
-            </div>
-        </div>
-    );
+    return <StageLoading />;
   }
 
   const currentStep = stageInfo[stage]?.step;
