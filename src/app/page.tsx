@@ -43,6 +43,7 @@ export default function Home() {
   const [showCountdown, setShowCountdown] = useState(true);
   const [stage, setStage] = useState<Stage>('login');
   const [isClient, setIsClient] = useState(false);
+  const [loggedInUser, setLoggedInUser] = useState<string | null>(null);
 
   useEffect(() => {
     setIsClient(true);
@@ -51,6 +52,10 @@ export default function Home() {
   useEffect(() => {
     if (isClient) {
       const savedStage = localStorage.getItem('valentines-app-stage') as Stage | null;
+      const savedUser = localStorage.getItem('valentines-app-user');
+      if (savedUser) {
+        setLoggedInUser(savedUser);
+      }
       if (savedStage && stageInfo[savedStage]) {
         setStage(savedStage);
         setShowCountdown(false);
@@ -65,6 +70,14 @@ export default function Home() {
     setStage(newStage);
   }, [isClient]);
 
+  const handleLoginSuccess = useCallback((nickname: string) => {
+    if (isClient) {
+      localStorage.setItem('valentines-app-user', nickname);
+    }
+    setLoggedInUser(nickname);
+    setStageAndSave('welcome');
+  }, [isClient, setStageAndSave]);
+
   if (showCountdown && isClient) {
     return <CountdownStage onComplete={() => setShowCountdown(false)} />;
   }
@@ -76,17 +89,17 @@ export default function Home() {
   const currentStep = stageInfo[stage]?.step;
   const currentTitle = stageInfo[stage]?.title;
   const currentSubtitle = stageInfo[stage]?.subtitle;
-  const totalChallenges = 5;
+  const totalChallenges = 3;
   const progress = Math.max(0, currentStep - 1) / totalChallenges * 100;
 
   const renderStage = () => {
     switch (stage) {
       case 'login':
-        return <LoginStage key="login" onSuccess={() => setStageAndSave('welcome')} />;
+        return <LoginStage key="login" onSuccess={handleLoginSuccess} />;
       case 'welcome':
         return <WelcomeStage key="welcome" onSuccess={() => setStageAndSave('game')} />;
       case 'game':
-        return <GameStage key="game" onSuccess={() => setStageAndSave('trivia')} />;
+        return <GameStage key="game" onSuccess={() => setStageAndSave('trivia')} user={loggedInUser} />;
       case 'trivia':
         return <TriviaStage key="trivia" onSuccess={() => setStageAndSave('puzzle')} />;
       case 'puzzle':
@@ -94,7 +107,7 @@ export default function Home() {
       case 'revelation':
         return <RevelationStage key="revelation" />;
       default:
-        return <LoginStage key="login" onSuccess={() => setStageAndSave('welcome')} />;
+        return <LoginStage key="login" onSuccess={handleLoginSuccess} />;
     }
   };
 

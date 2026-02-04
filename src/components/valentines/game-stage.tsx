@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { Progress } from "../ui/progress";
 import MapModal from "./MapModal";
 import KeywordModal from "./KeywordModal";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const GRID_SIZE = 20;
 const CANVAS_SIZE = 800;
@@ -14,6 +15,7 @@ const TILE_SIZE = CANVAS_SIZE / GRID_SIZE;
 
 type GameStageProps = {
   onSuccess: () => void;
+  user: string | null;
 };
 
 type GameState = "idle" | "playing" | "won" | "lost";
@@ -30,16 +32,20 @@ const VictoryHearts = () => (
   </div>
 );
 
-export default function GameStage({ onSuccess }: GameStageProps) {
+export default function GameStage({ onSuccess, user }: GameStageProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
   const [gameState, setGameState] = useState<GameState>("idle");
-  const [targetScore, setTargetScore] = useState(20);
   const gameLoopRef = useRef<number>();
   
   const [isMapModalOpen, setMapModalOpen] = useState(false);
   const [isKeywordModalOpen, setKeywordModalOpen] = useState(false);
+  const [isInstructionsModalOpen, setInstructionsModalOpen] = useState(false);
+
+  const isDevMode = user === 'manuel';
+  const initialTargetScore = isDevMode ? 5 : 35;
+  const [targetScore, setTargetScore] = useState(initialTargetScore);
 
   const snakeRef = useRef([{ x: 10, y: 10 }]);
   const foodRef = useRef({ x: 15, y: 15 });
@@ -98,9 +104,14 @@ export default function GameStage({ onSuccess }: GameStageProps) {
   }, []);
 
   const startGame = useCallback(() => {
+    setInstructionsModalOpen(false);
     resetGame();
     setGameState("playing");
   }, [resetGame]);
+
+  const openInstructions = () => {
+    setInstructionsModalOpen(true);
+  };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -127,7 +138,9 @@ export default function GameStage({ onSuccess }: GameStageProps) {
         if (score > highScore) setHighScore(score);
         
         // Difficulty adjustment logic
-        setTargetScore(15);
+        if (!isDevMode) {
+            setTargetScore(15);
+        }
 
         return;
       }
@@ -219,7 +232,7 @@ export default function GameStage({ onSuccess }: GameStageProps) {
       window.removeEventListener("keydown", handleKeyDown);
       window.clearTimeout(gameLoopRef.current);
     };
-  }, [gameState, score, highScore, targetScore]);
+  }, [gameState, score, highScore, targetScore, isDevMode]);
 
   const handleOpenKeywordModal = useCallback(() => {
     setMapModalOpen(false);
@@ -271,7 +284,7 @@ export default function GameStage({ onSuccess }: GameStageProps) {
       <div className="w-full p-2 rounded-xl border-2 border-primary/20 bg-card/80">
         <div
           className={cn(
-            "flex flex-col items-center gap-6 rounded-lg border-4 border-primary/30 bg-card/90 px-6 py-10 shadow-inner relative overflow-hidden min-h-[800px] justify-center",
+            "flex flex-col items-center gap-6 rounded-lg border-4 border-primary/30 bg-card/90 px-6 py-10 shadow-inner relative overflow-hidden min-h-[400px] md:min-h-[800px] justify-center",
             "dark:bg-black/20"
           )}
         >
@@ -290,16 +303,12 @@ export default function GameStage({ onSuccess }: GameStageProps) {
                   Heart Snake Board
                 </p>
               </div>
-              <p className="text-foreground text-lg font-bold leading-tight tracking-[-0.015em]">
-                Ready to Play?
-              </p>
               <p className="text-muted-foreground text-sm font-normal leading-normal max-w-xs">
-                Recoge {targetScore} corazones para desbloquear la primera pista de
-                tu regalo de San Valentín.
+                Para seguir avanzando, debes de completar este desafío.
               </p>
               <div className="flex flex-col sm:flex-row items-center gap-4">
                 <Button
-                    onClick={startGame}
+                    onClick={openInstructions}
                     className="min-w-[200px] h-12 px-6 text-base font-bold tracking-wider hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/30 z-10"
                 >
                     EMPEZAR JUEGO
@@ -317,9 +326,9 @@ export default function GameStage({ onSuccess }: GameStageProps) {
               height={CANVAS_SIZE}
               className={cn(
                 "rounded-lg bg-pink-100/20 dark:bg-pink-900/10",
-                (gameState === "lost" || gameState === "won") && "opacity-20"
+                (gameState === "lost" || gameState === "won") && "opacity-20",
+                "w-full h-auto aspect-square"
               )}
-              style={{ maxWidth: "100%", height: "auto" }}
             />
           )}
 
@@ -415,6 +424,22 @@ export default function GameStage({ onSuccess }: GameStageProps) {
           <Progress value={hintProgress} className="h-2 w-full" />
         </div>
       )}
+      
+      <Dialog open={isInstructionsModalOpen} onOpenChange={setInstructionsModalOpen}>
+        <DialogContent>
+            <DialogHeader>
+                <DialogTitle className="text-2xl text-center">Desafío 1: Snake Game</DialogTitle>
+                <DialogDescription className="text-center pt-4 space-y-2">
+                    <p>Usa las flechas del teclado (o los botones en pantalla) para mover la serpiente de corazones.</p>
+                    <p>El objetivo es recolectar <span className="font-bold text-primary">{targetScore}</span> corazones sin chocar contigo misma.</p>
+                    <p className="pt-2">¡Mucha suerte, mi chula!</p>
+                </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+                <Button onClick={startGame} className="w-full h-12 text-lg">¡Vamos!</Button>
+            </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <MapModal 
         isOpen={isMapModalOpen}

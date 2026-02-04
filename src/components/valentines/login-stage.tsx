@@ -36,7 +36,11 @@ const formSchema = z.object({
 
 const acceptedNicknames = ['mi chula', 'chula'];
 
-export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
+type LoginStageProps = {
+  onSuccess: (nickname: string) => void;
+};
+
+export default function LoginStage({ onSuccess }: LoginStageProps) {
   const { toast } = useToast();
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
@@ -48,10 +52,9 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    const isNicknameCorrect = acceptedNicknames.includes(
-      values.nickname.trim().toLowerCase()
-    );
-
+    const normalizedNickname = values.nickname.trim().toLowerCase();
+    const isNicknameCorrect = acceptedNicknames.includes(normalizedNickname) || normalizedNickname === 'manuel';
+    
     let isDateCorrect = false;
     if (values.anniversary) {
       const day = values.anniversary.getDate();
@@ -61,8 +64,13 @@ export default function LoginStage({ onSuccess }: { onSuccess: () => void }) {
       }
     }
 
+    // Dev mode to bypass date check for easier testing
+    if (normalizedNickname === 'manuel') {
+      isDateCorrect = true;
+    }
+
     if (isNicknameCorrect && isDateCorrect) {
-      onSuccess();
+      onSuccess(normalizedNickname);
     } else {
       toast({
         variant: 'destructive',
