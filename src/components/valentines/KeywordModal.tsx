@@ -31,6 +31,14 @@ const ERROR_MESSAGES = [
   },
 ];
 
+const normalizeString = (str: string) => {
+  return str
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+};
+
 export default function KeywordModal({ isOpen, onSuccess, onBack, correctKeyword, title, description }: KeywordModalProps) {
   const [keyword, setKeyword] = useState('');
   const [isShowing, setIsShowing] = useState(false);
@@ -49,7 +57,7 @@ export default function KeywordModal({ isOpen, onSuccess, onBack, correctKeyword
   }, [isOpen]);
 
   const handleSubmit = () => {
-    if (keyword.trim().toLowerCase() === correctKeyword) {
+    if (normalizeString(keyword) === normalizeString(correctKeyword)) {
       onSuccess();
     } else {
       const currentError = ERROR_MESSAGES[errorCount % ERROR_MESSAGES.length];

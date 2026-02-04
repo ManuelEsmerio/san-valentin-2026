@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Map, MapPin, BarChart2, RotateCcw, ShieldQuestion } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import RiddleModal from './RiddleModal';
+import KeywordModal from './KeywordModal';
 
 // Puzzle constants
 const GRID_SIZE = 4;
@@ -78,7 +78,7 @@ export default function FifteenPuzzleModal({ isOpen, onSuccess, user }: FifteenP
   const [moves, setMoves] = useState(0);
   const [losses, setLosses] = useState(0);
   const [difficulty, setDifficulty] = useState<Difficulty>('normal');
-  const [isRiddleModalOpen, setRiddleModalOpen] = useState(false);
+  const [isKeywordModalOpen, setKeywordModalOpen] = useState(false);
   const { toast } = useToast();
   
   const initializeGame = useCallback((currentDifficulty: Difficulty) => {
@@ -96,7 +96,7 @@ export default function FifteenPuzzleModal({ isOpen, onSuccess, user }: FifteenP
     } else {
       const timer = setTimeout(() => {
         setIsShowing(false);
-        setRiddleModalOpen(false); // Ensure riddle modal also closes
+        setKeywordModalOpen(false); // Ensure keyword modal also closes
       }, 300);
       return () => clearTimeout(timer);
     }
@@ -224,7 +224,7 @@ export default function FifteenPuzzleModal({ isOpen, onSuccess, user }: FifteenP
                         </Button>
                         {user === 'manuel' && (
                             <Button
-                                onClick={() => setRiddleModalOpen(true)}
+                                onClick={() => setKeywordModalOpen(true)}
                                 variant="outline"
                                 className="px-6 py-3 h-auto rounded-full font-bold"
                             >
@@ -250,7 +250,7 @@ export default function FifteenPuzzleModal({ isOpen, onSuccess, user }: FifteenP
                           Reintentar
                       </Button>
                       {losses >= 3 && (
-                        <Button onClick={onSuccess} variant="secondary" className="w-full h-12 text-base font-bold">
+                        <Button onClick={() => setKeywordModalOpen(true)} variant="secondary" className="w-full h-12 text-base font-bold">
                             Saltar Desafío
                         </Button>
                       )}
@@ -289,7 +289,7 @@ export default function FifteenPuzzleModal({ isOpen, onSuccess, user }: FifteenP
               </div>
   
               <div className="flex flex-col gap-3">
-                  <Button onClick={() => setRiddleModalOpen(true)} className="w-full h-12 text-lg font-bold">
+                  <Button onClick={() => setKeywordModalOpen(true)} className="w-full h-12 text-lg font-bold">
                       Ir a la Sorpresa Final
                   </Button>
                   <Button asChild variant="outline" className="w-full h-12 text-base font-bold">
@@ -303,10 +303,13 @@ export default function FifteenPuzzleModal({ isOpen, onSuccess, user }: FifteenP
           )}
         </div>
       </div>
-      <RiddleModal 
-        isOpen={isRiddleModalOpen}
+      <KeywordModal
+        isOpen={isKeywordModalOpen}
         onSuccess={onSuccess}
-        onBack={() => setRiddleModalOpen(false)}
+        onBack={() => setKeywordModalOpen(false)}
+        correctKeyword="tu habitación"
+        title="Última Palabra Clave"
+        description="Estás a un paso de la sorpresa final. Ingresa la última parte de la frase secreta."
       />
     </>
   );

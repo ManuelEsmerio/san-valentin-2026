@@ -282,7 +282,8 @@ export default function RevelationStage() {
             <CarouselNext className="hidden sm:flex right-2" />
           </Carousel>
           
-          <div className="text-center bg-accent/50 p-6 rounded-lg">
+          <div className="text-center bg-accent/50 p-6 rounded-lg w-full max-w-2xl">
+            <p className="font-bold text-xl mb-4 text-primary">"Tu Sorpresa Está En Tu Habitación"</p>
             <p className="text-lg md:text-xl">
               Este es solo un pequeño recordatorio de todo lo que significas para
               mí y de lo increíble que es cada momento a tu lado.
