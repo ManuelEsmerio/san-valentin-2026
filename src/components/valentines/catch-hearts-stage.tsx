@@ -86,6 +86,7 @@ export default function CatchHeartsStage({ onGameWon, onAdvance, user, initialGa
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [gameState, setGameState] = useState<GameState>(initialGameState);
   const [score, setScore] = useState(0);
+  const [finalScore, setFinalScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(GAME_DURATION);
   const [highScore, setHighScore] = useState(0);
   const [isInstructionsModalOpen, setInstructionsModalOpen] = useState(false);
@@ -136,6 +137,7 @@ export default function CatchHeartsStage({ onGameWon, onAdvance, user, initialGa
 
   const resetGame = useCallback(() => {
     setScore(0);
+    setFinalScore(0);
     setTimeLeft(GAME_DURATION);
     itemsRef.current = [];
     nextItemIdRef.current = 0;
@@ -150,9 +152,10 @@ export default function CatchHeartsStage({ onGameWon, onAdvance, user, initialGa
     setGameState('playing');
   };
 
-  const handleGameEnd = useCallback((finalScore: number) => {
-    updateHighScore(finalScore);
-    if (finalScore >= TARGET_SCORE) {
+  const handleGameEnd = useCallback((scoreValue: number) => {
+    setFinalScore(scoreValue);
+    updateHighScore(scoreValue);
+    if (scoreValue >= TARGET_SCORE) {
       setGameState('won');
       if (initialGameState !== 'won') {
         onGameWon();
@@ -336,7 +339,7 @@ export default function CatchHeartsStage({ onGameWon, onAdvance, user, initialGa
                   )} />
                 )}
               </div>
-              <GameOverlay status={gameState} onStart={handleWin} onRetry={startGame} score={score} highScore={highScore} />
+              <GameOverlay status={gameState} onStart={handleWin} onRetry={startGame} score={finalScore} highScore={highScore} />
             </div>
 
             <div className="lg:col-span-4 space-y-4">
