@@ -6,7 +6,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { HelpCircle } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import RomanticCalendar from '@/components/valentines/RomanticCalendar';
@@ -82,49 +81,36 @@ export default function LoginStage({ onSuccess }: LoginStageProps) {
   }
 
   return (
-    <div className="w-full bg-card dark:bg-stone-900 rounded-xl shadow-xl overflow-hidden border border-primary/5">
-      <div className="p-1">
-        <div className="w-full h-48 bg-gradient-to-br from-pink-50 to-white dark:from-stone-800 dark:to-stone-900 flex items-center justify-center rounded-lg">
-          <div className="flex flex-col items-center gap-2">
-            <span className="material-symbols-rounded text-primary text-6xl">
-              celebration
-            </span>
-            <div className="flex gap-2">
-              <span className="material-symbols-rounded text-primary/40 text-xl">
-                favorite
-              </span>
-              <span className="material-symbols-rounded text-primary/40 text-xl">
-                favorite
-              </span>
-              <span className="material-symbols-rounded text-primary/40 text-xl">
-                favorite
-              </span>
-            </div>
+    <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl shadow-primary/10 overflow-hidden border border-primary/5">
+      <div className="bg-pink-50/50 dark:bg-pink-900/10 pt-10 pb-6 flex flex-col items-center justify-center space-y-2">
+        <div className="relative">
+          <span className="material-symbols-rounded text-primary text-4xl transform -rotate-12">celebration</span>
+          <div className="flex gap-1 mt-1">
+            <span className="material-symbols-rounded text-primary/40 text-sm">favorite</span>
+            <span className="material-symbols-rounded text-primary/60 text-base">favorite</span>
+            <span className="material-symbols-rounded text-primary/40 text-sm">favorite</span>
           </div>
         </div>
       </div>
-      <div className="px-4 sm:px-8 pb-10 pt-6">
-        <h2 className="text-foreground text-3xl font-bold leading-tight tracking-[-0.015em] mb-2 text-center">
-          Hola!
-        </h2>
-        <p className="text-muted-foreground text-center mb-8">
-          ¿Preparada para disfrutar de estos desafíos?
-        </p>
+      <div className="px-8 pb-10 pt-4 text-center">
+        <h1 className="text-4xl font-serif text-slate-900 dark:text-white mb-2">¡Hola!</h1>
+        <p className="text-slate-500 dark:text-slate-400 text-sm mb-10">¿Preparada para disfrutar de estos desafíos?</p>
+
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 text-left">
             <FormField
               control={form.control}
               name="nickname"
               render={({ field }) => (
                 <FormItem>
-                  <div className="flex items-center gap-2 pb-2">
-                    <label className="text-foreground text-base font-medium leading-none">
+                  <div className="flex items-center gap-2 mb-2">
+                    <label className="block text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                       Usuario
                     </label>
                     <Popover>
                       <PopoverTrigger asChild>
                         <button type="button" aria-label="Hint for user">
-                          <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+                          <span className="material-symbols-rounded text-xs text-slate-400 dark:text-slate-500">help_outline</span>
                         </button>
                       </PopoverTrigger>
                       <PopoverContent className="w-60">
@@ -136,11 +122,9 @@ export default function LoginStage({ onSuccess }: LoginStageProps) {
                   </div>
                   <FormControl>
                     <div className="relative">
-                      <span className="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-primary/50">
-                        person_heart
-                      </span>
+                      <span className="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-primary/60 text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
                       <Input
-                        className="h-14 pl-12 pr-4 text-base bg-card focus:border-primary border-border"
+                        className="w-full pl-12 pr-4 py-4 h-auto bg-slate-50 dark:bg-slate-800 border-none rounded-2xl focus:ring-2 focus:ring-primary/20 text-slate-700 dark:text-slate-200 placeholder:text-slate-400 text-sm transition-all"
                         placeholder="Tu apodo especial"
                         {...field}
                       />
@@ -154,15 +138,15 @@ export default function LoginStage({ onSuccess }: LoginStageProps) {
               control={form.control}
               name="anniversary"
               render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <div className="flex items-center gap-2 pb-2">
-                    <label className="text-foreground text-base font-medium leading-none">
+                <FormItem>
+                  <div className="flex items-center gap-2 mb-2">
+                    <label className="block text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                       Fecha
                     </label>
                      <Popover>
                       <PopoverTrigger asChild>
                         <button type="button" aria-label="Hint for date">
-                          <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+                           <span className="material-symbols-rounded text-xs text-slate-400 dark:text-slate-500">help_outline</span>
                         </button>
                       </PopoverTrigger>
                       <PopoverContent className="w-60">
@@ -178,24 +162,22 @@ export default function LoginStage({ onSuccess }: LoginStageProps) {
                   >
                     <PopoverTrigger asChild>
                       <FormControl>
-                        <Button
-                          variant={'outline'}
+                        <button
+                          type="button"
                           className={cn(
-                            'h-14 pl-3 text-left font-normal text-base relative',
-                            !field.value && 'text-muted-foreground'
+                            'w-full bg-accent hover:bg-accent/90 text-accent-foreground font-bold py-4 rounded-2xl shadow-lg shadow-yellow-500/20 flex items-center justify-center gap-3 transition-all active:scale-95',
+                            !field.value && 'text-opacity-70'
                           )}
                         >
-                          <span className="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-primary/50">
-                            calendar_month
-                          </span>
-                           <span className='pl-8'>
+                          <span className="material-symbols-rounded text-xl">calendar_today</span>
+                           <span>
                             {field.value ? (
                                 format(field.value, 'PPP', { locale: es })
                             ) : (
                                 <span>Elige una fecha</span>
                             )}
                            </span>
-                        </Button>
+                        </button>
                       </FormControl>
                     </PopoverTrigger>
                     <PopoverContent
@@ -215,15 +197,13 @@ export default function LoginStage({ onSuccess }: LoginStageProps) {
                 </FormItem>
               )}
             />
-            <div className="pt-4">
+            <div className="pt-2">
               <Button
                 type="submit"
-                className="w-full h-14 px-4 text-lg font-bold shadow-lg shadow-primary/20"
+                className="w-full bg-primary hover:bg-magenta text-white font-bold py-4 h-auto rounded-2xl shadow-xl shadow-primary/30 flex items-center justify-center gap-2 group transition-all mt-8"
               >
-                <span className="truncate">Entrar</span>
-                <span className="material-symbols-rounded ml-2">
-                  arrow_forward
-                </span>
+                <span>Entrar</span>
+                <span className="material-symbols-rounded transition-transform group-hover:translate-x-1">arrow_forward</span>
               </Button>
             </div>
           </form>
