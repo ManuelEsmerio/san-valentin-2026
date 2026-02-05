@@ -138,7 +138,6 @@ export default function FifteenPuzzleModal({ isOpen, onAdvance, onGameWon, user,
 
       if (checkIfSolved(newTiles)) {
         setTimeout(() => {
-            setGameStatus('solved');
             toast({
                 title: "¡Rompecabezas Resuelto!",
                 description: "Has revelado la última pista. ¡Felicidades!",
