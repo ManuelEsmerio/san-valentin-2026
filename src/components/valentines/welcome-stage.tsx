@@ -23,6 +23,11 @@ export default function WelcomeStage({ onSuccess }: WelcomeStageProps) {
             <p>Supera cada juego, descubre cada pista, y llega hasta el final.</p>
             <p>Prometo que valdrá la pena 😏❤️.</p>
         </div>
+        
+        <div className="bg-primary/5 border border-primary/10 rounded-lg p-3 text-sm text-primary/80 mb-8 max-w-sm font-medium">
+          <span className="font-bold">Un dato importante:</span> cada pista que obtengas es una palabra. Al final, deberás ordenarlas para revelar una frase secreta.
+        </div>
+
         <Button
           onClick={onSuccess}
           className="h-14 px-8 text-lg font-bold shadow-lg shadow-primary/30 rounded-md"
