@@ -51,9 +51,6 @@ export default function RootLayout({
           {children}
         </main>
         <footer className="py-6 text-center text-muted-foreground text-sm font-light z-10 relative">
-          <p className="flex items-center justify-center">
-            Diseñado para robarte sonrisas 😋💘
-          </p>
         </footer>
         <Toaster />
         <MusicPlayer />
