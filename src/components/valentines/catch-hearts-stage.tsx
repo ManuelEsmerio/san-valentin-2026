@@ -95,10 +95,10 @@ export default function CatchHeartsStage({ onGameWon, onAdvance, user, initialGa
   const isDevMode = user === 'manuel';
   const TARGET_SCORE = useMemo(() => isDevMode ? 100 : 300, [isDevMode]);
   
-  const coordinates = "19.4103° N, 99.1724° W";
-  const lat = "19.4103";
-  const long = "-99.1724";
-  const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${long}`;
+  const coordinates = "20.8819782° N, -103.8356295° W";
+  const lat = "20.8819782";
+  const long = "-103.8356295";
+  const googleMapsUrl = `https://maps.app.goo.gl/kK32LgfJWQNtBKzp7`;
   const iframeUrl = `https://maps.google.com/maps?q=${lat},${long}&hl=es&z=14&output=embed`;
 
   const scoreRef = useRef(score);
@@ -183,12 +183,12 @@ export default function CatchHeartsStage({ onGameWon, onAdvance, user, initialGa
 
 
   useEffect(() => {
-    if (gameState !== 'playing') return;
-
-    const timerId = setInterval(() => {
-      setTimeLeft(prevTime => prevTime > 0 ? prevTime - 1 : 0);
-    }, 1000);
-
+    let timerId: NodeJS.Timeout;
+    if (gameState === 'playing') {
+      timerId = setInterval(() => {
+        setTimeLeft(prevTime => prevTime > 0 ? prevTime - 1 : 0);
+      }, 1000);
+    }
     return () => clearInterval(timerId);
   }, [gameState]);
 
@@ -445,6 +445,14 @@ export default function CatchHeartsStage({ onGameWon, onAdvance, user, initialGa
         coordinates={coordinates}
         googleMapsUrl={googleMapsUrl}
         iframeUrl={iframeUrl}
+        title="¡Pista 2 Desbloqueada!"
+        description={
+          <>
+            <p>¡Felicidades! Ya superaste el segundo desafío y es hora de tomar algo para recargar energía.</p>
+            <p>¿Qué te parece un chocomilk y una buena palabra para poder continuar? 🥛💕</p>
+            <p className="mt-2">La pista la encontrarás en la lonchería con mi madrina. Ve a recoger un pedido a nombre de Mariana. 😘</p>
+          </>
+        }
       />
 
       <KeywordModal
