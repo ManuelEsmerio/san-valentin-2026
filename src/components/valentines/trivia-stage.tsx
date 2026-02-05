@@ -589,7 +589,7 @@ export default function TriviaStage({ onGameWon, onAdvance, user, initialGameSta
       <MapModal
         isOpen={isMapModalOpen}
         onClose={() => setMapModalOpen(false)}
-        onNextChallenge={user === 'manuel' ? onAdvance : handleOpenKeywordModal}
+        onNextChallenge={handleOpenKeywordModal}
         coordinates={coordinates}
         googleMapsUrl={googleMapsUrl}
         iframeUrl={iframeUrl}
