@@ -81,6 +81,8 @@ export default function MemoryGameStage({ onGameWon, onAdvance, user, initialGam
   const [timeLeft, setTimeLeft] = useState(GAME_DURATION);
   const [matchedPairs, setMatchedPairs] = useState(0);
   const [bestTime, setBestTime] = useState<number | null>(null);
+  const [finalTime, setFinalTime] = useState(0);
+  const [finalMoves, setFinalMoves] = useState(0);
 
   const [isChecking, setIsChecking] = useState(false);
   const [isInstructionsOpen, setInstructionsOpen] = useState(false);
@@ -204,6 +206,10 @@ export default function MemoryGameStage({ onGameWon, onAdvance, user, initialGam
       setGameState('won');
       if (timerRef.current) clearInterval(timerRef.current);
       const timeTaken = GAME_DURATION - timeLeft;
+      
+      setFinalTime(timeTaken);
+      setFinalMoves(moves);
+
       if (bestTime === null || timeTaken < bestTime) {
         setBestTime(timeTaken);
         localStorage.setItem(BEST_TIME_KEY, timeTaken.toString());
@@ -211,7 +217,7 @@ export default function MemoryGameStage({ onGameWon, onAdvance, user, initialGam
       setLosses(0);
       setNumPairs(TOTAL_PAIRS);
     }
-  }, [matchedPairs, gameState, numPairs, timeLeft, bestTime]);
+  }, [matchedPairs, gameState, numPairs, timeLeft, bestTime, moves]);
 
   useEffect(() => {
     if (gameState === 'won' && initialGameState !== 'won') {
@@ -242,7 +248,7 @@ export default function MemoryGameStage({ onGameWon, onAdvance, user, initialGam
     const isWon = status === 'won';
     const title = isWon ? "¡Victoria!" : "¡Se acabó el tiempo!";
     const description = isWon 
-        ? `Completado en ${GAME_DURATION - timeLeft}s con ${moves} movimientos.` 
+        ? `Completado en ${finalTime}s con ${finalMoves} movimientos.` 
         : losses >= 1 ? "No te preocupes, ahora será más fácil. ¡Inténtalo de nuevo!" : "No te preocupes, ¡inténtalo de nuevo!";
     const icon = isWon ? 'auto_awesome' : 'replay';
 

@@ -55,35 +55,75 @@ type AnswerStatus = "unanswered" | "correct" | "incorrect";
 
 // Data moved outside component to prevent redeclaration
 const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
-    { id: 1, type: 'multiple-choice', question: '¿Quién es más competitivo en juegos de mesa?', options: ['Yo', 'Tú', 'Los dos', 'Ninguno'], correctAnswer: 'Yo', image: 'trivia-1', hint: 'Siempre hay alguien que no quiere perder 🎲' },
-    { id: 2, type: 'multiple-choice', question: '¿Quién se roba más seguido la cobija?', options: ['Yo', 'Tú', 'Ambos', 'Nadie'], correctAnswer: 'Tú', image: 'trivia-2', hint: 'La lucha nocturna por sobrevivir al frío 🛏️' },
-    { id: 3, type: 'multiple-choice', question: '¿Quién canta peor?', options: ['Yo', 'Tú', 'Ambos desafinamos', 'Nadie, somos estrellas'], correctAnswer: 'Ambos desafinamos', image: 'trivia-3', hint: 'El karaoke nunca miente 🎤' },
-    { id: 4, type: 'multiple-choice', question: '¿Quién cocina mejor?', options: ['Yo', 'Tú', 'Ambos', 'Nadie, pedimos comida'], correctAnswer: 'Ambos', image: 'trivia-4', hint: 'El sazón nunca falla 🍳' },
-    { id: 6, type: 'multiple-choice', question: '¿Quién nunca de los nuncas lava el baño?', options: ['Yo', 'Tú', 'Ambos lo evitamos', 'Siempre lo hace otro'], correctAnswer: 'Tú', image: 'trivia-6', hint: 'La misión imposible del aseo 🚽' },
-    { id: 7, type: 'multiple-choice', question: '¿Quién ronca más fuerte?', options: ['Yo', 'Tú', 'Ambos', 'Nadie'], correctAnswer: 'Tú', image: 'trivia-7', hint: 'El concierto nocturno 🎶😴' },
-    { id: 8, type: 'multiple-choice', question: '¿Quién es más distraído?', options: ['Yo', 'Tú', 'Ambos', 'Nadie'], correctAnswer: 'Yo', image: 'trivia-8', hint: 'El clásico: ‘¿y mis llaves?’ 🔑' },
-    { id: 9, type: 'multiple-choice', question: '¿Quién es más enojón?', options: ['Yo', 'Tú', 'Ambos', 'Nadie'], correctAnswer: 'Ambos', image: 'trivia-9', hint: 'El que hace más caras 😡' },
-    { id: 11, type: 'multiple-choice', question: '¿Quién llora de la nada al ver videos de animalitos?', options: ['Yo', 'Tú', 'Ambos', 'Nadie'], correctAnswer: 'Tú', image: 'trivia-11', hint: 'Los animalitos siempre ganan 🐶🐱' },
-    { id: 12, type: 'multiple-choice', question: '¿Quién tiene una obsesión con las chichis del otro?', options: ['Yo', 'Tú', 'Ambos', 'Nadie'], correctAnswer: 'Ambos', image: 'trivia-12', hint: 'Una obsesión divertida 🤭' },
-    { id: 13, type: 'multiple-choice', question: '¿Qué es lo que más valoro de nuestra relación?', options: ['La confianza', 'La comunicación', 'Las acciones', 'Todo lo anterior'], correctAnswer: 'Todo lo anterior', image: 'trivia-13', hint: 'Es la base de todo.' },
-    { id: 14, type: 'multiple-choice', question: '¿Cómo describirías nuestra relación?', options: ['Divertida', 'Única', 'Auténtica', 'Todas las anteriores'], correctAnswer: ['Divertida', 'Única', 'Auténtica', 'Todas las anteriores'], image: 'trivia-14', hint: 'No hay respuesta incorrecta aquí.' },
-    { id: 16, type: 'multiple-choice', question: '¿A quién le huelen más las patas?', options: ['Tú', 'Tú, también', 'Definitivamente tú', 'No hay duda: tú'], correctAnswer: ['Tú', 'Tú, también', 'Definitivamente tú', 'No hay duda: tú'], image: 'trivia-16', hint: 'Ni el aromatizante pudo contra eso 😂🦶' },
-    { id: 17, type: 'multiple-choice', question: '¿Quién dura más tiempo en el baño?', options: ['Tú', 'Tú (con el celular)', 'Tú, pero dices que ya sales', 'Todas las anteriores'], correctAnswer: ['Tú', 'Tú (con el celular)', 'Tú, pero dices que ya sales', 'Todas las anteriores'], image: 'trivia-17', hint: 'Según tú: ‘ya casi’ 🚿📱' },
-    { id: 18, type: 'multiple-choice', question: '¿Quién es más pedorro?', options: ['Tú', 'Tú, pero lo niegas', 'Tú y luego te haces el sorprendido', 'Todas aplican'], correctAnswer: ['Tú', 'Tú, pero lo niegas', 'Tú y luego te haces el sorprendido', 'Todas aplican'], image: 'trivia-18', hint: 'El amor todo lo soporta… incluso eso 💨😂' },
-    { id: 19, type: 'multiple-choice', question: '¿Qué momento simple disfruto más contigo?', options: ['Platicar sin prisa', 'Reírnos de tonterías', 'Estar en silencio', 'Todo lo anterior'], correctAnswer: 'Todo lo anterior', image: 'trivia-19', hint: 'Lo simple también es especial.' },
-    { id: 22, type: "multiple-choice", question: "¿A quién le da más hueva bañarse?", options: ["Tú", "Tú (pero dices que ahorita)", "Tú, pero mañana seguro sí", "Todas las anteriores 👀"], correctAnswer: ["Tú", "Tú (pero dices que ahorita)", "Tú, pero mañana seguro sí", "Todas las anteriores 👀"], image: "trivia-22", hint: "El agua no muerde… pero parece que sí 😂🚿",},
-    { id: 23, type: "multiple-choice", question: "¿Qué es lo que más nos gusta hacer juntos?", options: ["Ver películas", "Salir a comer", "Viajar", "Todo lo anterior"], correctAnswer: "Todo lo anterior", image: "trivia-23", hint: "La mejor compañía para cualquier plan 🍿",},
-    { id: 24, type: "multiple-choice", question: "¿Cómo describirías nuestra relación?", options: ["Divertida", "Única", "Auténtica", "Todas las anteriores"], correctAnswer: ["Divertida", "Única", "Auténtica", "Todas las anteriores"], image: "trivia-24", hint: "No hay respuesta incorrecta aquí.",},
-    { id: 21, type: "multiple-choice", question: "¿Qué significa para mí compartir este juego contigo?", options: ["Un recuerdo", "Un detalle", "Un momento", "Un poco de todo"], correctAnswer: "Un poco de todo", image: "trivia-21", hint: "Nada aquí es casual.",},
-    { id: 25, type: 'multiple-choice', question: '¿Quién es más probable que se pierda usando un mapa?', options: ['Yo', 'Tú', 'Ambos', 'El GPS nos odia'], correctAnswer: 'Yo', image: 'trivia-25', hint: 'A veces la orientación no es lo nuestro 🗺️' },
-    { id: 26, type: 'multiple-choice', question: '¿Quién elige siempre la película (y el otro se aguanta)?', options: ['Yo', 'Tú', 'Lo decidimos juntos', 'Netflix elige por nosotros'], correctAnswer: 'Lo decidimos juntos', image: 'trivia-26', hint: 'El control remoto tiene un dueño claro 📺' },
-    { id: 27, type: 'multiple-choice', question: '¿Quién se come a escondidas los postres del otro?', options: ['Yo', 'Tú', 'Es un crimen que no cometemos', 'Ambos somos culpables'], correctAnswer: 'Yo', image: 'trivia-27', hint: 'El misterio del postre desaparecido 🍰' },
-    { id: 28, type: 'multiple-choice', question: '¿Quién es más "ahorrador" (tacaño)?', options: ['Yo', 'Tú', 'Depende del día', 'Ambos somos generosos'], correctAnswer: 'Yo', image: 'trivia-28', hint: 'Cuidando los centavos 💰' },
+  { id: 1, type: 'multiple-choice', question: '¿Quién es más competitivo en juegos de mesa?', options: ['Yo','Tú','Los dos','Ninguno'], correctAnswer: 'Yo', image: 'trivia-1', hint: 'Siempre hay alguien que no quiere perder 🎲' },
+
+  { id: 2, type: 'multiple-choice', question: '¿Quién se roba más seguido la cobija?', options: ['Yo','Tú','Ambos','Nadie'], correctAnswer: 'Tú', image: 'trivia-2', hint: 'La lucha nocturna por sobrevivir al frío 🛏️' },
+
+  { id: 3, type: 'multiple-choice', question: '¿Quién canta peor?', options: ['Yo','Tú','Ambos desafinamos','Nadie, somos estrellas'], correctAnswer: ['Yo','Ambos desafinamos'], image: 'trivia-3', hint: 'El karaoke nunca miente 🎤' },
+
+  { id: 4, type: 'multiple-choice', question: '¿Quién cocina mejor?', options: ['Yo','Tú','Ambos','Nadie, pedimos comida'], correctAnswer: 'Ambos', image: 'trivia-4', hint: 'El sazón nunca falla 🍳' },
+
+  // 5 se omite
+
+  { id: 6, type: 'multiple-choice', question: '¿Quién ronca más fuerte?', options: ['Yo','Tú','Ambos','Nadie'], correctAnswer: 'Tú', image: 'trivia-6', hint: 'El concierto nocturno 🎶😴' },
+
+  { id: 7, type: 'multiple-choice', question: '¿Quién es más distraído?', options: ['Yo','Tú','Ambos','Nadie'], correctAnswer: 'Yo', image: 'trivia-7', hint: 'El clásico: ‘¿y mis llaves?’ 🔑' },
+
+  { id: 8, type: 'multiple-choice', question: '¿Quién llora al ver videos de animalitos?', options: ['Yo','Tú','Ambos','Nadie'], correctAnswer: 'Tú', image: 'trivia-8', hint: 'Los animalitos siempre ganan 🐶🐱' },
+
+  { id: 9, type: 'multiple-choice', question: '¿Qué es lo que más valoro de nuestra relación?', options: ['La confianza','La comunicación','Las acciones','Todo lo anterior'], correctAnswer: 'Todo lo anterior', image: 'trivia-9', hint: 'Es la base de todo 💙' },
+
+  // 10 se omite
+
+  { id: 11, type: 'multiple-choice', question: '¿Cómo describirías nuestra relación?', options: ['Divertida','Única','Auténtica','Todas las anteriores'], correctAnswer: ['Divertida','Única','Auténtica','Todas las anteriores'], image: 'trivia-11', hint: 'No hay respuesta incorrecta aquí ✨' },
+
+  { id: 12, type: 'multiple-choice', question: '¿Qué momento simple disfruto más contigo?', options: ['Platicar sin prisa','Reírnos de tonterías','Estar en silencio','Todo lo anterior'], correctAnswer: 'Todo lo anterior', image: 'trivia-12', hint: 'Lo simple también es especial 💫' },
+
+  { id: 13, type: 'multiple-choice', question: '¿Qué significa para mí compartir este juego contigo?', options: ['Un recuerdo','Un detalle','Un momento','Un poco de todo'], correctAnswer: ['Un recuerdo','Un detalle','Un momento','Un poco de todo'], image: 'trivia-13', hint: 'Nada aquí es casual 💝' },
+
+  { id: 14, type: 'multiple-choice', question: '¿Qué es lo que más nos gusta hacer juntos?', options: ['Ver películas','Salir a comer','Viajar','Todo lo anterior'], correctAnswer: ['Ver películas','Salir a comer','Viajar','Todo lo anterior'], image: 'trivia-14', hint: 'La mejor compañía para cualquier plan 🍿' },
+
+  // 15 se omite
+
+  { id: 16, type: 'multiple-choice', question: '¿Quién es más probable que se pierda usando un mapa?', options: ['Yo','Tú','Ambos','El GPS nos odia'], correctAnswer: 'Yo', image: 'trivia-16', hint: 'A veces la orientación falla 🗺️😂' },
+
+  { id: 17, type: 'multiple-choice', question: '¿Quién elige siempre la película?', options: ['Yo','Tú','Lo decidimos juntos','Netflix decide'], correctAnswer: 'Lo decidimos juntos', image: 'trivia-17', hint: 'El control remoto manda 📺' },
+
+  { id: 18, type: 'multiple-choice', question: '¿Quién se come los postres del otro?', options: ['Yo','Tú','Ambos','Nunca pasa'], correctAnswer: 'Yo', image: 'trivia-18', hint: 'El misterio del postre 🍰' },
+
+  { id: 19, type: 'multiple-choice', question: '¿Quién es más ahorrador?', options: ['Yo','Tú','Depende','Ambos'], correctAnswer: 'Yo', image: 'trivia-19', hint: 'Cuidando los centavos 💰' },
+
+  // 20 se omite
+
+  { id: 21, type: 'multiple-choice', question: '¿Quién tarda más en decidir qué vamos a comer?', options: ['Yo','Tú','Ambos','Pedimos lo mismo'], correctAnswer: 'Ambos', image: 'trivia-21', hint: 'Elegir comida es un reto 🍕😂' },
+
+  { id: 22, type: 'multiple-choice', question: '¿Quién da los mejores abrazos?', options: ['Yo','Tú','Ambos','Imposible decidir'], correctAnswer: 'Ambos', image: 'trivia-22', hint: 'Abrazos que curan 💙' },
+
+  { id: 23, type: 'multiple-choice', question: '¿Quién propone más planes sorpresa?', options: ['Yo','Tú','Ambos','Ninguno'], correctAnswer: 'Ambos', image: 'trivia-23', hint: 'Siempre hay sorpresas 🎁' },
+
+  { id: 24, type: 'multiple-choice', question: '¿Quién anima al otro cuando está triste?', options: ['Yo','Tú','Ambos','Siempre nos apoyamos'], correctAnswer: 'Siempre nos apoyamos', image: 'trivia-24', hint: 'Equipo para todo 💞' },
+
+  { id: 25, type: 'multiple-choice', question: '¿Quién se queda dormido primero?', options: ['Yo','Tú','Ambos','Depende del día'], correctAnswer: 'Depende del día', image: 'trivia-25', hint: 'Buenas noches 😴✨' }
 ];
+
+
 const openEndedQuestions: OpenEndedQuestion[] = [
-    { id: 29, type: 'open-ended', question: '¿Qué es lo que más valoras cuando te sientes en calma conmigo?', creatorAnswer: 'Valoro que, aun con malentendidos, conversaciones incómodas o silencios, sigamos eligiendo quedarnos un momento más y no salir corriendo cuando algo duele.', image: 'open-ended-1', hint: 'Una pregunta sobre el presente y la paz.' },
-    { id: 30, type: 'open-ended', question: '¿Qué sientes que nos ha costado más últimamente?', creatorAnswer: 'Siento que nos ha costado escucharnos de verdad, sin sentir que tenemos que defendernos o estar a la defensiva todo el tiempo.', image: 'open-ended-2', hint: 'Una reflexión sobre nuestra comunicación.' },
-    { id: 31, type: 'open-ended', question: '¿Qué necesitarías hoy para sentirte tranquila, sin presión?', creatorAnswer: 'Estar presente, apoyar en lo que esté en mis manos y respetar tu ritmo, sin exigencias ni promesas vacías.', image: 'open-ended-3', hint: 'Una pregunta sobre el presente y la paz.' }
+    { id: 26, type: 'open-ended', question: '¿Qué es lo que más valoras cuando te sientes en calma conmigo?', creatorAnswer: 'Valoro que, aun en los momentos complicados, sigamos eligiéndonos. Que nos quedemos, que nos escuchemos y que no huyamos cuando algo duele, porque nuestra paz nace de no rendirnos el uno con el otro. 💕', image: 'open-ended-1', hint: 'Una pregunta sobre el presente y la paz.' },
+    {
+      id: 27,
+      type: 'open-ended',
+      question: '¿Qué sientes que nos ha costado más últimamente?',
+      creatorAnswer: `
+        Siento que hemos caído en la monotonía de hacer siempre lo mismo, y sé que a ti te afecta más que a mí. Especialmente el no tener todavía tu espacio seguro, tus cosas, estar lejos de tu familia, lidiar con un trabajo difícil, con personas complicadas… y además un novio terco al que a veces le cuesta entender muchas cosas.
+        
+        Todo eso ha tenido un impacto muy fuerte en ti, y poco a poco ha ido apagando a la hermosa persona que eres. Eso me duele, porque te amo y me importa lo que sientes.
+        
+        Pero también sé que, con el apoyo adecuado y con los cambios correctos, vas a volver a sentirte mejor. Y yo quiero estar a tu lado para acompañarte en ese proceso y verlo contigo. 💙
+      `,
+      image: 'open-ended-2',
+      hint: 'Una reflexión sobre nuestra comunicación.'
+    },    
+    { id: 28, type: 'open-ended', question: '¿Qué te ayuda hoy a sentirte más tranquila cuando estamos juntos?', creatorAnswer: 'Que estés presente de verdad, que me apoyes en lo que puedas y que respetes mi ritmo. Sin exigencias, sin promesas vacías, solo estando conmigo.', image: 'open-ended-3', hint: 'Una pregunta sobre el presente y la paz.' }
 ];
 
 const LETTERS: Record<number, { title: string; content: string[]; imageIds: string[] }> = {
