@@ -99,6 +99,8 @@ export default function FifteenPuzzleModal({ isOpen, onAdvance, onGameWon, user,
         setLosses(0);
         setDifficulty('normal');
         initializeGame('normal');
+      } else {
+        setGameStatus('solved');
       }
     } else {
       const timer = setTimeout(() => {
@@ -120,7 +122,10 @@ export default function FifteenPuzzleModal({ isOpen, onAdvance, onGameWon, user,
         title: "¡Rompecabezas Resuelto!",
         description: "Has revelado la última pista. ¡Felicidades!",
       });
-      onGameWon();
+      // Defer this call to the next tick to avoid a React warning about updating a parent during a child's render.
+      setTimeout(() => {
+        onGameWon();
+      }, 0);
     }
   }, [gameStatus, initialGameState, onGameWon, toast]);
 
@@ -162,6 +167,12 @@ export default function FifteenPuzzleModal({ isOpen, onAdvance, onGameWon, user,
     initializeGame(difficulty);
   }, [initializeGame, difficulty]);
   
+  const handleKeywordSuccess = useCallback(() => {
+    if (onAdvance) {
+      onAdvance();
+    }
+  }, [onAdvance]);
+
   const coordinates = "20.8805° N, -103.8390° W";
   const lat = "20.8805";
   const long = "-103.8390";
@@ -285,11 +296,7 @@ export default function FifteenPuzzleModal({ isOpen, onAdvance, onGameWon, user,
       />
       <KeywordModal
         isOpen={isKeywordModalOpen}
-        onSuccess={() => {
-          if (onAdvance) {
-            onAdvance();
-          }
-        }}
+        onSuccess={handleKeywordSuccess}
         onBack={() => { setKeywordModalOpen(false); if(gameStatus === 'solved') setMapModalOpen(true); }}
         correctKeyword="tu habitación"
         title="Última Palabra Clave"
