@@ -327,7 +327,7 @@ export default function GameStage({ onGameWon, onAdvance, user, initialGameState
                     </Button>
                     {isDevMode && (
                         <Button
-                        onClick={() => setMapModalOpen(true)}
+                        onClick={onGameWon}
                         variant="outline"
                         className="h-12"
                         >

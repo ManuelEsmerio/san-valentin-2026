@@ -186,17 +186,17 @@ export default function CatchHeartsStage({ onGameWon, onAdvance, user, initialGa
     let timerId: NodeJS.Timeout;
     if (gameState === 'playing') {
       timerId = setInterval(() => {
-        setTimeLeft(prevTime => prevTime > 0 ? prevTime - 1 : 0);
+        setTimeLeft(prevTime => {
+          if (prevTime <= 1) {
+            handleGameEnd(scoreRef.current);
+            return 0;
+          }
+          return prevTime - 1;
+        });
       }, 1000);
     }
     return () => clearInterval(timerId);
-  }, [gameState]);
-
-  useEffect(() => {
-    if (gameState === 'playing' && timeLeft === 0) {
-      handleGameEnd(scoreRef.current);
-    }
-  }, [gameState, timeLeft, handleGameEnd]);
+  }, [gameState, handleGameEnd]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -321,7 +321,7 @@ export default function CatchHeartsStage({ onGameWon, onAdvance, user, initialGa
                         Empezar Desafío
                       </Button>
                       {isDevMode && (
-                          <Button onClick={() => setMapModalOpen(true)} variant="outline" className="h-12">
+                          <Button onClick={onGameWon} variant="outline" className="h-12">
                               Saltar Desafío (Dev)
                           </Button>
                       )}

@@ -270,26 +270,25 @@ export default function TriviaStage({ onGameWon, onAdvance, user, initialGameSta
 
   const goToNextQuestion = useCallback(() => {
     setAnswerStatus("unanswered");
-    setCurrentQuestionIndex(prevIndex => {
-      if (prevIndex < questions.length - 1) {
-        return prevIndex + 1;
-      } else {
-        if (scoreRef.current >= MIN_CORRECT_ANSWERS) {
-          setStage("finished");
-        } else {
-          setStage("failed");
-        }
-        return prevIndex;
-      }
-    });
-  }, [questions.length]);
+    const isLastQuestion = currentQuestionIndex >= questions.length - 1;
 
+    if (isLastQuestion) {
+      if (scoreRef.current >= MIN_CORRECT_ANSWERS) {
+        setStage("finished");
+      } else {
+        setStage("failed");
+      }
+    } else {
+      setCurrentQuestionIndex(prevIndex => prevIndex + 1);
+    }
+  }, [currentQuestionIndex, questions.length]);
+  
   useEffect(() => {
     if (stage === 'finished' && initialGameState !== 'finished') {
       onGameWon();
     }
   }, [stage, initialGameState, onGameWon]);
-  
+
   const handleAnswerSelected = useCallback((value: string) => {
     if (answerStatus !== 'unanswered') return;
 
@@ -389,7 +388,7 @@ export default function TriviaStage({ onGameWon, onAdvance, user, initialGameSta
   const renderMainContent = () => {
     switch (stage) {
       case "intro":
-        return <IntroScreen onStart={() => setInstructionsModalOpen(true)} onSkip={() => setMapModalOpen(true)} user={user} />;
+        return <IntroScreen onStart={() => setInstructionsModalOpen(true)} onSkip={onGameWon} user={user} />;
       case "failed":
         return <FailedScreen score={score} onRetry={handleRetry} />;
       case "finished":

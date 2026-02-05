@@ -254,7 +254,7 @@ export default function FifteenPuzzleModal({ isOpen, onAdvance, onGameWon, user,
                     Reiniciar
                 </Button>
                 {user === 'manuel' && (
-                    <Button onClick={() => setMapModalOpen(true)} variant="secondary" className="px-6 py-3 h-auto rounded-full font-bold">
+                    <Button onClick={onGameWon} variant="secondary" className="px-6 py-3 h-auto rounded-full font-bold">
                         Saltar (Dev)
                     </Button>
                 )}
