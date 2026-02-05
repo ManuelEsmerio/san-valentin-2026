@@ -4,7 +4,7 @@ import FifteenPuzzleModal from './FifteenPuzzleModal';
 
 type PuzzleStageProps = {
   onGameWon: () => void;
-  onAdvance: () => void;
+  onAdvance?: () => void;
   user: string | null;
   initialGameState?: 'playing' | 'solved' | 'lost';
 };

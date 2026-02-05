@@ -57,7 +57,7 @@ type GameStatus = 'playing' | 'solved' | 'lost';
 
 type FifteenPuzzleModalProps = {
   isOpen: boolean;
-  onAdvance: () => void;
+  onAdvance?: () => void;
   onGameWon: () => void;
   user: string | null;
   initialGameState?: GameStatus;
@@ -284,7 +284,11 @@ export default function FifteenPuzzleModal({ isOpen, onAdvance, onGameWon, user,
       />
       <KeywordModal
         isOpen={isKeywordModalOpen}
-        onSuccess={onAdvance}
+        onSuccess={() => {
+          if (onAdvance) {
+            onAdvance();
+          }
+        }}
         onBack={() => { setKeywordModalOpen(false); if(gameStatus === 'solved') setMapModalOpen(true); }}
         correctKeyword="tu habitación"
         title="Última Palabra Clave"
