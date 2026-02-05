@@ -374,10 +374,10 @@ export default function TriviaStage({ onGameWon, onAdvance, user, initialGameSta
     onAdvance();
   }, [onAdvance]);
     
-  const coordinates = "19.4216° N, 99.1687° W";
-  const lat = "19.4216";
-  const long = "-99.1687";
-  const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${long}`;
+  const coordinates = "20.883645° N, 103.837895° W";
+  const lat = "20.883645";
+  const long = "-103.837895";
+  const googleMapsUrl = `https://maps.app.goo.gl/xmT7CSVamfgz6AfF7`;
   const iframeUrl = `https://maps.google.com/maps?q=${lat},${long}&hl=es&z=14&output=embed`;
   
   const currentQuestion = questions[currentQuestionIndex];
@@ -564,13 +564,20 @@ export default function TriviaStage({ onGameWon, onAdvance, user, initialGameSta
           goToNextQuestion();
         }}
       />
-      <MapModal 
+      <MapModal
         isOpen={isMapModalOpen}
         onClose={() => setMapModalOpen(false)}
         onNextChallenge={handleOpenKeywordModal}
         coordinates={coordinates}
         googleMapsUrl={googleMapsUrl}
         iframeUrl={iframeUrl}
+        title="¡Tercera Pista Desbloqueada!"
+        description={
+          <>
+            <p>¡Ya vas a mitad de camino! La siguiente pista la tengo yo, así que ven a la florería para conocer la siguiente palabra para poder continuar.</p>
+            <p className="font-bold text-primary mt-2">📍 Tercera pista: Florería Florarte.</p>
+          </>
+        }
       />
       <KeywordModal
         isOpen={isKeywordModalOpen}
@@ -583,3 +590,5 @@ export default function TriviaStage({ onGameWon, onAdvance, user, initialGameSta
     </>
   );
 }
+
+    
