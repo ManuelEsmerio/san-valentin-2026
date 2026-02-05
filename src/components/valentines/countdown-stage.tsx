@@ -21,17 +21,6 @@ const CountdownUnit = ({ value, label }: { value: string; label: string }) => (
     </div>
 );
 
-const FloatingHearts = () => (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <span className="material-symbols-rounded absolute text-coral/30 text-5xl animate-float top-[10%] left-[15%]" style={{ animationDelay: '0s', fontVariationSettings: "'FILL' 1" }}>favorite</span>
-        <span className="material-symbols-rounded absolute text-magenta/40 text-7xl animate-float top-[60%] left-[5%]" style={{ animationDelay: '1s', fontVariationSettings: "'FILL' 1" }}>favorite</span>
-        <span className="material-symbols-rounded absolute text-gold/30 text-4xl animate-float top-[20%] right-[10%]" style={{ animationDelay: '2s', fontVariationSettings: "'FILL' 1" }}>favorite</span>
-        <span className="material-symbols-rounded absolute text-primary/40 text-6xl animate-float bottom-[15%] right-[20%]" style={{ animationDelay: '1.5s', fontVariationSettings: "'FILL' 1" }}>favorite</span>
-        <span className="material-symbols-rounded absolute text-coral/20 text-8xl animate-float bottom-[30%] left-[30%]" style={{ animationDelay: '3s', fontVariationSettings: "'FILL' 1" }}>favorite</span>
-        <span className="material-symbols-rounded absolute text-gold/20 text-3xl animate-float top-[50%] right-[35%]" style={{ animationDelay: '0.5s', fontVariationSettings: "'FILL' 1" }}>favorite</span>
-    </div>
-);
-
 const ThemeToggle = () => {
     const [theme, setTheme] = useState('light');
     const [isMounted, setIsMounted] = useState(false);
@@ -155,7 +144,6 @@ export default function CountdownStage({ onComplete }: { onComplete: () => void;
       onContextMenu={(e) => e.preventDefault()}
     >
       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/heart-pattern.png')] pointer-events-none opacity-[0.03] dark:opacity-[0.02]"></div>
-      <FloatingHearts />
       
       <main className="relative z-10 w-full max-w-4xl px-4 flex flex-col items-center justify-center">
         <div className="relative flex items-center justify-center p-12 md:p-20">

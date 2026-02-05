@@ -6,29 +6,6 @@ import { cn } from "@/lib/utils";
 import { useEffect, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 
-const HeartFloat = () => {
-    const [hearts, setHearts] = useState<any[]>([]);
-    useEffect(() => {
-        setHearts([
-            { left: '10%', delay: '0s', size: 'text-4xl', opacity: 'text-primary/20' },
-            { left: '25%', delay: '2s', size: 'text-2xl', opacity: 'text-primary/10' },
-            { left: '45%', delay: '4s', size: 'text-5xl', opacity: 'text-primary/20' },
-            { left: '65%', delay: '1s', size: 'text-3xl', opacity: 'text-primary/15' },
-            { left: '85%', delay: '3s', size: 'text-4xl', opacity: 'text-primary/25' },
-        ]);
-    }, []);
-
-    return (
-        <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-            {hearts.map((heart, i) => (
-                <div key={i} className={cn('heart-float', heart.opacity)} style={{ left: heart.left, animationDelay: heart.delay }}>
-                    <span className={cn('material-symbols-rounded', heart.size)} style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
-                </div>
-            ))}
-        </div>
-    );
-};
-
 export default function RevelationStage() {
   const collage_img1 = PlaceHolderImages.find((img) => img.id === "letter-1-img-1");
   const collage_img2 = PlaceHolderImages.find((img) => img.id === "letter-2-img-1");
@@ -41,7 +18,6 @@ export default function RevelationStage() {
 
   return (
     <>
-      <HeartFloat />
       <main className="relative z-10 w-full max-w-2xl bg-white dark:bg-gray-900 rounded-[2.5rem] shadow-2xl p-8 md:p-12 border border-rose-100 dark:border-rose-900/30">
         <header className="text-center mb-10">
             <div className="inline-block p-3 rounded-full bg-rose-50 dark:bg-rose-900/20 mb-4">

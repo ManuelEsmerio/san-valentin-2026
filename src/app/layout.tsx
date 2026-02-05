@@ -3,6 +3,7 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import ThemeToggle from '@/components/valentines/theme-toggle';
 import MusicPlayer from '@/components/valentines/MusicPlayer';
+import FloatingHearts from '@/components/valentines/FloatingHearts';
 
 export const metadata: Metadata = {
   title: "Para Mariana",
@@ -34,7 +35,8 @@ export default function RootLayout({
         />
       </head>
       <body className="font-sans antialiased bg-background text-foreground">
-        <header className="flex items-center justify-between px-4 sm:px-10 py-6 w-full">
+        <FloatingHearts />
+        <header className="flex items-center justify-between px-4 sm:px-10 py-6 w-full z-10 relative">
           <div className="flex items-center gap-2">
             <span className="material-symbols-rounded text-primary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>
                 favorite
@@ -45,10 +47,10 @@ export default function RootLayout({
           </div>
           <ThemeToggle />
         </header>
-        <main className="flex-1 flex flex-col items-center justify-center p-4 relative overflow-hidden">
+        <main className="flex-1 flex flex-col items-center justify-center p-4 relative overflow-hidden z-10">
           {children}
         </main>
-        <footer className="py-6 text-center text-muted-foreground text-sm font-light">
+        <footer className="py-6 text-center text-muted-foreground text-sm font-light z-10 relative">
           <p className="flex items-center justify-center">
             Diseñado para robarte sonrisas 😋💘
           </p>
