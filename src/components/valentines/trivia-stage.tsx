@@ -21,9 +21,13 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import MapModal from "./MapModal";
 import KeywordModal from "./KeywordModal";
 
+type GameStage = "intro" | "playing" | "failed" | "finished";
+
 type TriviaStageProps = {
-  onSuccess: () => void;
+  onGameWon: () => void;
+  onAdvance: () => void;
   user: string | null;
+  initialGameState?: GameStage;
 };
 
 type MultipleChoiceQuestion = {
@@ -215,13 +219,13 @@ const FinishedContent = ({ onShowHint }: { onShowHint: () => void }) => (
 );
 
 
-export default function TriviaStage({ onSuccess, user }: TriviaStageProps) {
+export default function TriviaStage({ onGameWon, onAdvance, user, initialGameState = 'intro' }: TriviaStageProps) {
   const [questions, setQuestions] = useState<TriviaQuestion[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [score, setScore] = useState(0);
   const [answerStatus, setAnswerStatus] = useState<AnswerStatus>("unanswered");
-  const [stage, setStage] = useState<"intro" | "playing" | "failed" | "finished">("intro");
+  const [stage, setStage] = useState<GameStage>(initialGameState);
   const { toast } = useToast();
 
   const [letterToShow, setLetterToShow] = useState<{ title: string; content: string[]; images: ImagePlaceholder[] } | null>(null);
@@ -239,10 +243,10 @@ export default function TriviaStage({ onSuccess, user }: TriviaStageProps) {
     setAnswers({});
     setScore(0);
     setAnswerStatus("unanswered");
-    setStage("intro");
+    setStage(initialGameState);
     setShownLetters({});
     setFlippedQuestions({});
-  }, []);
+  }, [initialGameState]);
 
   useEffect(() => {
     setupTrivia();
@@ -266,11 +270,14 @@ export default function TriviaStage({ onSuccess, user }: TriviaStageProps) {
     } else {
       if (score >= MIN_CORRECT_ANSWERS) {
         setStage("finished");
+        if (initialGameState !== 'finished') {
+          onGameWon();
+        }
       } else {
         setStage("failed");
       }
     }
-  }, [currentQuestionIndex, questions.length, score]);
+  }, [currentQuestionIndex, questions.length, score, onGameWon, initialGameState]);
   
   const handleNext = useCallback(() => {
     const currentQuestion = questions[currentQuestionIndex];
@@ -329,6 +336,7 @@ export default function TriviaStage({ onSuccess, user }: TriviaStageProps) {
 
   const handleRetry = useCallback(() => {
     setupTrivia();
+    setStage('playing');
   }, [setupTrivia]);
 
   const handleStartGame = () => {
@@ -348,8 +356,8 @@ export default function TriviaStage({ onSuccess, user }: TriviaStageProps) {
 
   const handleKeywordSuccess = useCallback(() => {
     setKeywordModalOpen(false);
-    onSuccess();
-  }, [onSuccess]);
+    onAdvance();
+  }, [onAdvance]);
     
   const coordinates = "19.4216° N, 99.1687° W";
   const lat = "19.4216";

@@ -3,17 +3,21 @@
 import FifteenPuzzleModal from './FifteenPuzzleModal';
 
 type PuzzleStageProps = {
-  onSuccess: () => void;
+  onGameWon: () => void;
+  onAdvance: () => void;
   user: string | null;
+  initialGameState?: 'playing' | 'solved' | 'lost';
 };
 
-export default function PuzzleStage({ onSuccess, user }: PuzzleStageProps) {
+export default function PuzzleStage({ onGameWon, onAdvance, user, initialGameState }: PuzzleStageProps) {
   // The modal is always open for this stage.
   return (
       <FifteenPuzzleModal
         isOpen={true}
-        onSuccess={onSuccess}
+        onAdvance={onAdvance}
+        onGameWon={onGameWon}
         user={user}
+        initialGameState={initialGameState}
       />
   );
 }

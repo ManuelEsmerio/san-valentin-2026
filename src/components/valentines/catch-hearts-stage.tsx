@@ -18,6 +18,13 @@ const HIGH_SCORE_KEY = 'valentines-catch-highscore';
 type ItemType = 'heart' | 'flower' | 'chocolate' | 'letter' | 'gift' | 'broken_heart' | 'trash';
 type GameState = 'idle' | 'playing' | 'won' | 'lost';
 
+type CatchHeartsStageProps = {
+  onGameWon: () => void;
+  onAdvance: () => void;
+  user: string | null;
+  initialGameState?: GameState;
+};
+
 type Item = {
   id: number;
   x: number;
@@ -75,9 +82,9 @@ const GameOverlay = ({ status, onStart, onRetry, score, highScore }: { status: G
 };
 
 // --- Main Component ---
-export default function CatchHeartsStage({ onSuccess, user }: { onSuccess: () => void; user: string | null; }) {
+export default function CatchHeartsStage({ onGameWon, onAdvance, user, initialGameState = 'idle' }: CatchHeartsStageProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [gameState, setGameState] = useState<GameState>('idle');
+  const [gameState, setGameState] = useState<GameState>(initialGameState);
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(GAME_DURATION);
   const [highScore, setHighScore] = useState(0);
@@ -147,10 +154,13 @@ export default function CatchHeartsStage({ onSuccess, user }: { onSuccess: () =>
     updateHighScore(finalScore);
     if (finalScore >= TARGET_SCORE) {
       setGameState('won');
+      if (initialGameState !== 'won') {
+        onGameWon();
+      }
     } else {
       setGameState('lost');
     }
-  }, [updateHighScore, TARGET_SCORE]);
+  }, [updateHighScore, TARGET_SCORE, onGameWon, initialGameState]);
   
   const handleWin = useCallback(() => {
     setMapModalOpen(true);
@@ -168,8 +178,8 @@ export default function CatchHeartsStage({ onSuccess, user }: { onSuccess: () =>
 
   const handleKeywordSuccess = useCallback(() => {
     setKeywordModalOpen(false);
-    onSuccess();
-  }, [onSuccess]);
+    onAdvance();
+  }, [onAdvance]);
 
 
   useEffect(() => {
@@ -350,7 +360,7 @@ export default function CatchHeartsStage({ onSuccess, user }: { onSuccess: () =>
               <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-2xl flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-                    <Trophy className="w-5 h-5" />
+                    <span className="material-symbols-outlined text-2xl">military_tech</span>
                   </div>
                   <div>
                     <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground block">Mejor Récord</span>

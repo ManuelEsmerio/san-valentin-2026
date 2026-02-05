@@ -53,11 +53,14 @@ const shuffleTiles = (difficulty: Difficulty) => {
     return tiles;
 };
 
+type GameStatus = 'playing' | 'solved' | 'lost';
 
 type FifteenPuzzleModalProps = {
   isOpen: boolean;
-  onSuccess: () => void;
+  onAdvance: () => void;
+  onGameWon: () => void;
   user: string | null;
+  initialGameState?: GameStatus;
 };
 
 const VictoryHearts = () => (
@@ -72,9 +75,9 @@ const VictoryHearts = () => (
     </div>
   );
 
-export default function FifteenPuzzleModal({ isOpen, onSuccess, user }: FifteenPuzzleModalProps) {
+export default function FifteenPuzzleModal({ isOpen, onAdvance, onGameWon, user, initialGameState = 'playing' }: FifteenPuzzleModalProps) {
   const [isShowing, setIsShowing] = useState(false);
-  const [gameStatus, setGameStatus] = useState<'playing' | 'solved' | 'lost'>('playing');
+  const [gameStatus, setGameStatus] = useState<GameStatus>(initialGameState);
   const [tiles, setTiles] = useState<number[]>([]);
   const [moves, setMoves] = useState(0);
   const [losses, setLosses] = useState(0);
@@ -92,9 +95,11 @@ export default function FifteenPuzzleModal({ isOpen, onSuccess, user }: FifteenP
   useEffect(() => {
     if (isOpen) {
       setIsShowing(true);
-      setLosses(0);
-      setDifficulty('normal');
-      initializeGame('normal');
+      if (initialGameState !== 'solved') {
+        setLosses(0);
+        setDifficulty('normal');
+        initializeGame('normal');
+      }
     } else {
       const timer = setTimeout(() => {
         setIsShowing(false);
@@ -103,7 +108,7 @@ export default function FifteenPuzzleModal({ isOpen, onSuccess, user }: FifteenP
       }, 300);
       return () => clearTimeout(timer);
     }
-  }, [isOpen, initializeGame]);
+  }, [isOpen, initializeGame, initialGameState]);
 
   const checkIfSolved = useCallback((currentTiles: number[]) => {
     return currentTiles.every((tile, index) => tile === index);
@@ -138,6 +143,9 @@ export default function FifteenPuzzleModal({ isOpen, onSuccess, user }: FifteenP
                 title: "¡Rompecabezas Resuelto!",
                 description: "Has revelado la última pista. ¡Felicidades!",
             });
+            if(initialGameState !== 'solved') {
+                onGameWon();
+            }
         }, 300);
       } else if (newMoves >= MOVE_LIMIT) {
           const newLosses = losses + 1;
@@ -147,7 +155,7 @@ export default function FifteenPuzzleModal({ isOpen, onSuccess, user }: FifteenP
           setGameStatus('lost');
       }
     }
-  }, [gameStatus, tiles, moves, checkIfSolved, losses, toast]);
+  }, [gameStatus, tiles, moves, checkIfSolved, losses, toast, onGameWon, initialGameState]);
 
   const handleRestart = useCallback(() => {
     initializeGame(difficulty);
@@ -272,11 +280,11 @@ export default function FifteenPuzzleModal({ isOpen, onSuccess, user }: FifteenP
       />
       <KeywordModal
         isOpen={isKeywordModalOpen}
-        onSuccess={onSuccess}
+        onSuccess={onAdvance}
         onBack={() => { setKeywordModalOpen(false); if(gameStatus === 'solved') setMapModalOpen(true); }}
         correctKeyword="tu habitación"
         title="Última Palabra Clave"
-        description="Estás a un paso de la sorpresa final. Ingresa la última parte de la frase secreta."
+        description="Estás a un paso de la frase secreta final. Ingresa la última parte."
       />
     </>
   );

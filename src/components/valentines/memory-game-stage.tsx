@@ -63,14 +63,18 @@ const MemoryCard = memo(({ card, onClick, isDisabled }: { card: CardType; onClic
 ));
 MemoryCard.displayName = 'MemoryCard';
 
+type GameState = 'idle' | 'playing' | 'won' | 'lost';
+
 // --- Main Component ---
 type Props = {
-  onSuccess: () => void;
+  onGameWon: () => void;
+  onAdvance: () => void;
   user: string | null;
+  initialGameState?: GameState;
 };
 
-export default function MemoryGameStage({ onSuccess, user }: Props) {
-  const [gameState, setGameState] = useState<'idle' | 'playing' | 'won' | 'lost'>('idle');
+export default function MemoryGameStage({ onGameWon, onAdvance, user, initialGameState = 'idle' }: Props) {
+  const [gameState, setGameState] = useState<GameState>(initialGameState);
   const [cards, setCards] = useState<CardType[]>([]);
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
   const [moves, setMoves] = useState(0);
@@ -206,8 +210,11 @@ export default function MemoryGameStage({ onSuccess, user }: Props) {
       }
       setLosses(0);
       setNumPairs(TOTAL_PAIRS);
+      if (initialGameState !== 'won') {
+        onGameWon();
+      }
     }
-  }, [matchedPairs, timeLeft, bestTime, gameState, numPairs]);
+  }, [matchedPairs, timeLeft, bestTime, gameState, numPairs, onGameWon, initialGameState]);
 
   const handleWin = useCallback(() => {
     setMapModalOpen(true);
@@ -220,8 +227,8 @@ export default function MemoryGameStage({ onSuccess, user }: Props) {
 
   const handleKeywordSuccess = useCallback(() => {
     setKeywordModalOpen(false);
-    onSuccess();
-  }, [onSuccess]);
+    onAdvance();
+  }, [onAdvance]);
 
   const handleReturnToMap = useCallback(() => {
     setKeywordModalOpen(false);

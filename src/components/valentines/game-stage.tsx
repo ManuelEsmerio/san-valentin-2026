@@ -13,12 +13,14 @@ const GRID_SIZE = 20;
 const CANVAS_SIZE = 800;
 const TILE_SIZE = CANVAS_SIZE / GRID_SIZE;
 
-type GameStageProps = {
-  onSuccess: () => void;
-  user: string | null;
-};
-
 type GameState = "idle" | "playing" | "won" | "lost";
+
+type GameStageProps = {
+  onGameWon: () => void;
+  onAdvance: () => void;
+  user: string | null;
+  initialGameState?: GameState;
+};
 
 const VictoryHearts = () => (
   <div className="relative mt-2 h-16 w-full pointer-events-none">
@@ -32,11 +34,11 @@ const VictoryHearts = () => (
   </div>
 );
 
-export default function GameStage({ onSuccess, user }: GameStageProps) {
+export default function GameStage({ onGameWon, onAdvance, user, initialGameState = 'idle' }: GameStageProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
-  const [gameState, setGameState] = useState<GameState>("idle");
+  const [gameState, setGameState] = useState<GameState>(initialGameState);
   const gameLoopRef = useRef<number>();
   
   const [isMapModalOpen, setMapModalOpen] = useState(false);
@@ -152,6 +154,9 @@ export default function GameStage({ onSuccess, user }: GameStageProps) {
         if (newScore >= targetScore) {
           setGameState("won");
           if (newScore > highScore) setHighScore(newScore);
+          if (initialGameState !== 'won') {
+            onGameWon();
+          }
           return;
         }
 
@@ -270,7 +275,7 @@ export default function GameStage({ onSuccess, user }: GameStageProps) {
       }
       window.clearTimeout(gameLoopRef.current);
     };
-  }, [gameState, score, highScore, targetScore, isDevMode]);
+  }, [gameState, score, highScore, targetScore, isDevMode, onGameWon, initialGameState]);
 
   const handleOpenKeywordModal = useCallback(() => {
     setMapModalOpen(false);
@@ -284,8 +289,8 @@ export default function GameStage({ onSuccess, user }: GameStageProps) {
 
   const handleKeywordSuccess = useCallback(() => {
     setKeywordModalOpen(false);
-    onSuccess();
-  }, [onSuccess]);
+    onAdvance();
+  }, [onAdvance]);
 
   const hintProgress = (score / targetScore) * 100;
 

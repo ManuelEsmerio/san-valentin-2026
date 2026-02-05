@@ -6,16 +6,35 @@ import { cn } from '@/lib/utils';
 import StageLoading from '@/components/valentines/StageLoading';
 import { Heart } from 'lucide-react';
 
-type Stage = 'login' | 'welcome' | 'game' | 'catch-hearts' | 'trivia' | 'memory-game' | 'puzzle' | 'revelation';
+type Stage = 
+  'login' | 
+  'welcome' | 
+  'game_before' | 'game_after' |
+  'catch-hearts_before' | 'catch-hearts_after' |
+  'trivia_before' | 'trivia_after' |
+  'memory-game_before' | 'memory-game_after' |
+  'puzzle_before' | 'puzzle_after' |
+  'revelation';
 
-const stageInfo: Record<Stage, { step: number; title: string; subtitle: string }> = {
+const stageInfo: Record<string, { step: number; title: string; subtitle: string }> = {
   login: { step: 0, title: 'El Inicio', subtitle: 'Verifica tu amor para comenzar.' },
   welcome: { step: 0, title: 'Un Momento', subtitle: '' },
-  game: { step: 1, title: 'Desafío 1: Snake Romance', subtitle: 'Guía al corazón y recolecta todos los puntos.' },
-  'catch-hearts': { step: 2, title: 'Desafío 2: Atrapa los Detalles del Amor', subtitle: 'Cada detalle cuenta en esta lluvia de amor.' },
-  trivia: { step: 3, title: 'Desafío 3: Trivia de Recuerdos', subtitle: 'Demuestra cuánto nos conocemos.' },
-  'memory-game': { step: 4, title: 'Desafío 4: Memoria de Recuerdos', subtitle: 'Encuentra los pares.' },
-  puzzle: { step: 5, title: 'Desafío 5: Puzzle Fifteen', subtitle: 'Ordena los números para revelar la pista final' },
+  
+  game_before: { step: 1, title: 'Desafío 1: Snake Romance', subtitle: 'Guía al corazón y recolecta todos los puntos.' },
+  game_after: { step: 1, title: 'Desafío 1: Snake Romance', subtitle: 'Guía al corazón y recolecta todos los puntos.' },
+
+  'catch-hearts_before': { step: 2, title: 'Desafío 2: Atrapa los Detalles del Amor', subtitle: 'Cada detalle cuenta en esta lluvia de amor.' },
+  'catch-hearts_after': { step: 2, title: 'Desafío 2: Atrapa los Detalles del Amor', subtitle: 'Cada detalle cuenta en esta lluvia de amor.' },
+
+  trivia_before: { step: 3, title: 'Desafío 3: Trivia de Recuerdos', subtitle: 'Demuestra cuánto nos conocemos.' },
+  trivia_after: { step: 3, title: 'Desafío 3: Trivia de Recuerdos', subtitle: 'Demuestra cuánto nos conocemos.' },
+
+  'memory-game_before': { step: 4, title: 'Desafío 4: Memoria de Recuerdos', subtitle: 'Encuentra los pares.' },
+  'memory-game_after': { step: 4, title: 'Desafío 4: Memoria de Recuerdos', subtitle: 'Encuentra los pares.' },
+
+  puzzle_before: { step: 5, title: 'Desafío 5: Puzzle Fifteen', subtitle: 'Ordena los números para revelar la pista final' },
+  puzzle_after: { step: 5, title: 'Desafío 5: Puzzle Fifteen', subtitle: 'Ordena los números para revelar la pista final' },
+
   revelation: { step: 6, title: 'La Sorpresa Final', subtitle: 'Has llegado al final de la aventura.' },
 };
 
@@ -67,6 +86,9 @@ export default function Home() {
       if (savedStage && stageInfo[savedStage]) {
         setStage(savedStage);
         setShowCountdown(false);
+      } else {
+        localStorage.removeItem('valentines-app-stage');
+        setStage('login');
       }
     }
   }, [isClient]);
@@ -95,11 +117,11 @@ export default function Home() {
   }
 
   const currentStep = stageInfo[stage]?.step;
-  const currentTitle = stageInfo[stage]?.title;
   const totalChallenges = 5;
-  const challengeProgress = Math.max(0, currentStep - 1);
+  const challengeProgress = stage.endsWith('_after') ? currentStep : Math.max(0, currentStep - 1);
   const isChallengeStage = stage !== 'login' && stage !== 'welcome' && stage !== 'revelation';
   
+  const currentTitle = stageInfo[stage]?.title || '';
   const [challengeLabel, ...titleParts] = currentTitle.split(': ');
   const mainTitle = titleParts.join(': ');
   const words = mainTitle.split(' ');
@@ -112,17 +134,38 @@ export default function Home() {
       case 'login':
         return <LoginStage key="login" onSuccess={handleLoginSuccess} />;
       case 'welcome':
-        return <WelcomeStage key="welcome" onSuccess={() => setStageAndSave('game')} />;
-      case 'game':
-        return <GameStage key="game" onSuccess={() => setStageAndSave('catch-hearts')} user={loggedInUser} />;
-      case 'catch-hearts':
-        return <CatchHeartsStage key="catch-hearts" onSuccess={() => setStageAndSave('trivia')} user={loggedInUser} />;
-      case 'trivia':
-        return <TriviaStage key="trivia" onSuccess={() => setStageAndSave('memory-game')} user={loggedInUser} />;
-      case 'memory-game':
-        return <MemoryGameStage key="memory-game" onSuccess={() => setStageAndSave('puzzle')} user={loggedInUser} />;
-      case 'puzzle':
-        return <PuzzleStage key="puzzle" onSuccess={() => setStageAndSave('revelation')} user={loggedInUser} />;
+        return <WelcomeStage key="welcome" onSuccess={() => setStageAndSave('game_before')} />;
+      
+      // Challenge 1
+      case 'game_before':
+        return <GameStage key="game_before" onGameWon={() => setStageAndSave('game_after')} user={loggedInUser} />;
+      case 'game_after':
+        return <GameStage key="game_after" initialGameState="won" onAdvance={() => setStageAndSave('catch-hearts_before')} user={loggedInUser} />;
+      
+      // Challenge 2
+      case 'catch-hearts_before':
+        return <CatchHeartsStage key="catch-hearts_before" onGameWon={() => setStageAndSave('catch-hearts_after')} user={loggedInUser} />;
+      case 'catch-hearts_after':
+        return <CatchHeartsStage key="catch-hearts_after" initialGameState="won" onAdvance={() => setStageAndSave('trivia_before')} user={loggedInUser} />;
+
+      // Challenge 3
+      case 'trivia_before':
+        return <TriviaStage key="trivia_before" onGameWon={() => setStageAndSave('trivia_after')} user={loggedInUser} />;
+      case 'trivia_after':
+        return <TriviaStage key="trivia_after" initialGameState="finished" onAdvance={() => setStageAndSave('memory-game_before')} user={loggedInUser} />;
+      
+      // Challenge 4
+      case 'memory-game_before':
+        return <MemoryGameStage key="memory-game_before" onGameWon={() => setStageAndSave('memory-game_after')} user={loggedInUser} />;
+      case 'memory-game_after':
+        return <MemoryGameStage key="memory-game_after" initialGameState="won" onAdvance={() => setStageAndSave('puzzle_before')} user={loggedInUser} />;
+
+      // Challenge 5
+      case 'puzzle_before':
+          return <PuzzleStage key="puzzle_before" onGameWon={() => setStageAndSave('puzzle_after')} user={loggedInUser} />;
+      case 'puzzle_after':
+          return <PuzzleStage key="puzzle_after" initialGameState="solved" onAdvance={() => setStageAndSave('revelation')} user={loggedInUser} />;
+
       case 'revelation':
         return <RevelationStage key="revelation" />;
       default:
@@ -130,7 +173,7 @@ export default function Home() {
     }
   };
 
-  const containerClass = stage === 'game' || stage === 'catch-hearts' || stage === 'trivia' || stage === 'memory-game' ? 'max-w-5xl' : stage === 'revelation' || stage === 'puzzle' ? 'max-w-2xl' : 'max-w-lg';
+  const containerClass = stage.startsWith('game') || stage.startsWith('catch-hearts') || stage.startsWith('trivia') || stage.startsWith('memory-game') ? 'max-w-5xl' : stage.startsWith('revelation') || stage.startsWith('puzzle') ? 'max-w-2xl' : 'max-w-lg';
 
   return (
     <div className="w-full flex flex-col items-center">
