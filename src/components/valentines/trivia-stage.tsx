@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect, useCallback, memo } from "react";
+import { useState, useEffect, useCallback, memo, useRef } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -235,6 +235,11 @@ export default function TriviaStage({ onGameWon, onAdvance, user, initialGameSta
   const [isMapModalOpen, setMapModalOpen] = useState(false);
   const [isKeywordModalOpen, setKeywordModalOpen] = useState(false);
 
+  const scoreRef = useRef(score);
+  useEffect(() => {
+    scoreRef.current = score;
+  }, [score]);
+  
   const setupTrivia = useCallback(() => {
     const shuffledMcq = shuffleArray([...multipleChoiceQuestions]);
     const allQuestions = [...shuffledMcq, ...openEndedQuestions];
@@ -265,73 +270,83 @@ export default function TriviaStage({ onGameWon, onAdvance, user, initialGameSta
 
   const goToNextQuestion = useCallback(() => {
     setAnswerStatus("unanswered");
-    if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-    } else {
-      if (score >= MIN_CORRECT_ANSWERS) {
-        setStage("finished");
-        if (initialGameState !== 'finished') {
-          onGameWon();
+    setCurrentQuestionIndex(prevIndex => {
+        if (prevIndex < questions.length - 1) {
+            return prevIndex + 1;
+        } else {
+            if (scoreRef.current >= MIN_CORRECT_ANSWERS) {
+                setStage("finished");
+                if (initialGameState !== 'finished') {
+                    onGameWon();
+                }
+            } else {
+                setStage("failed");
+            }
+            return prevIndex;
         }
-      } else {
-        setStage("failed");
-      }
-    }
-  }, [currentQuestionIndex, questions.length, score, onGameWon, initialGameState]);
+    });
+  }, [questions.length, onGameWon, initialGameState]);
   
-  const handleNext = useCallback(() => {
+  const handleAnswerSelected = useCallback((value: string) => {
+    if (answerStatus !== 'unanswered') return;
+
     const currentQuestion = questions[currentQuestionIndex];
-    if (!currentQuestion) return;
-
-    if (answerStatus !== "unanswered") {
-        const isLastMCQ = currentQuestion.type === "multiple-choice" && questions[currentQuestionIndex + 1]?.type === "open-ended";
-        if (isLastMCQ) {
-            if (showLetter(20)) return;
-        }
-        goToNextQuestion();
-        return;
-    }
-
-    if (currentQuestion.type === 'open-ended') {
-      if (flippedQuestions[currentQuestion.id]) {
-        goToNextQuestion();
-      } else {
-        const currentAnswer = answers[currentQuestion.id];
-        if (!currentAnswer || currentAnswer.trim() === '') {
-            toast({ title: "Un momento...", description: "Por favor, comparte tus pensamientos antes de continuar." });
-            return;
-        }
-        setFlippedQuestions(prev => ({ ...prev, [currentQuestion.id]: true }));
-      }
-      return;
-    }
+    if (currentQuestion.type !== 'multiple-choice') return;
     
-    const currentAnswer = answers[currentQuestion.id];
-    if (!currentAnswer) {
-        toast({ title: "Espera un poquito", description: "Debes seleccionar una respuesta." });
-        return;
-    }
-    
+    setAnswers(prev => ({ ...prev, [currentQuestion.id]: value }));
+
     const correctAnswer = currentQuestion.correctAnswer;
-    let isCorrect = false;
-
-    if (Array.isArray(correctAnswer)) {
-      isCorrect = correctAnswer.includes(currentAnswer);
-    } else {
-      isCorrect = currentAnswer === correctAnswer;
-    }
+    const isCorrect = Array.isArray(correctAnswer) ? correctAnswer.includes(value) : value === correctAnswer;
     
     if (isCorrect) {
-        const newScore = score + 1;
-        setScore(newScore);
-        const wasLetterShown = (newScore === 5 || newScore === 10 || newScore === 15) ? showLetter(newScore as keyof typeof LETTERS) : false;
-        if (!wasLetterShown) {
-          setAnswerStatus('correct');
-        }
+        setScore(s => s + 1);
+        setAnswerStatus('correct');
     } else {
         setAnswerStatus('incorrect');
     }
-  }, [answerStatus, answers, currentQuestionIndex, flippedQuestions, goToNextQuestion, questions, score, showLetter, toast]);
+  }, [answerStatus, currentQuestionIndex, questions]);
+  
+  useEffect(() => {
+    if (answerStatus === 'unanswered') return;
+
+    const currentQuestion = questions[currentQuestionIndex];
+    if (currentQuestion?.type !== 'multiple-choice') return;
+
+    let wasLetterShown = false;
+    if (answerStatus === 'correct') {
+        const newScore = score;
+        const letterKey = newScore as keyof typeof LETTERS;
+        const isLastMCQ = questions[currentQuestionIndex + 1]?.type === "open-ended";
+
+        if (LETTERS[letterKey] && !shownLetters[letterKey]) {
+            wasLetterShown = showLetter(letterKey);
+        } else if (isLastMCQ && !shownLetters[20]) {
+            wasLetterShown = showLetter(20);
+        }
+    }
+
+    if (!wasLetterShown) {
+        const timer = setTimeout(goToNextQuestion, 1200);
+        return () => clearTimeout(timer);
+    }
+  }, [answerStatus, currentQuestionIndex, goToNextQuestion, questions, score, showLetter, shownLetters]);
+
+
+  const handleNext = useCallback(() => {
+    const currentQuestion = questions[currentQuestionIndex];
+    if (!currentQuestion || currentQuestion.type !== 'open-ended') return;
+
+    if (flippedQuestions[currentQuestion.id]) {
+      goToNextQuestion();
+    } else {
+      const currentAnswer = answers[currentQuestion.id];
+      if (!currentAnswer || currentAnswer.trim() === '') {
+          toast({ title: "Un momento...", description: "Por favor, comparte tus pensamientos antes de continuar." });
+          return;
+      }
+      setFlippedQuestions(prev => ({ ...prev, [currentQuestion.id]: true }));
+    }
+  }, [answers, currentQuestionIndex, flippedQuestions, goToNextQuestion, questions, toast]);
 
 
   const handleRetry = useCallback(() => {
@@ -412,7 +427,7 @@ export default function TriviaStage({ onGameWon, onAdvance, user, initialGameSta
                     <div className="flex-1">
                       {currentQuestion.type === 'multiple-choice' && (
                         <RadioGroup
-                            onValueChange={(value) => setAnswers(prev => ({ ...prev, [currentQuestion.id]: value }))}
+                            onValueChange={handleAnswerSelected}
                             value={answers[currentQuestion.id] || ""}
                             className="grid grid-cols-1 sm:grid-cols-2 gap-3"
                             disabled={answerStatus !== 'unanswered'}
@@ -497,34 +512,33 @@ export default function TriviaStage({ onGameWon, onAdvance, user, initialGameSta
                 </div>
 
                 {/* Action Button/Feedback */}
-                <div className="pt-4">
-                  {answerStatus !== 'unanswered' ? (
-                    <div className={cn(
-                      "w-full p-4 rounded-lg flex items-center gap-4 animate-fade-in",
-                      answerStatus === 'correct' ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-300' : 'bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-300'
-                    )}>
-                      {answerStatus === 'correct' ? <CheckCircle2 /> : <XCircle />}
-                      <div className="flex-1">
-                        <h4 className="font-bold">{answerStatus === 'correct' ? "¡Correcto!" : "¡Casi!"}</h4>
-                        <p className="text-sm">{answerStatus === 'correct' ? "¡Esa es! Nunca olvidaré ese momento." : "No te preocupes, ¡lo importante es el amor!"}</p>
-                      </div>
-                      <Button onClick={handleNext} className="h-10 text-base font-bold shrink-0">
-                        Siguiente <span className="material-symbols-outlined ml-2 text-base">arrow_forward</span>
-                      </Button>
-                    </div>
-                  ) : (
-                    <Button 
-                        onClick={handleNext} 
-                        className="w-full h-12 text-lg font-bold"
-                        disabled={currentQuestion.type === 'open-ended' && !answers[currentQuestion.id] && !flippedQuestions[currentQuestion.id]}
-                    >
-                      {currentQuestion.type === 'open-ended' 
-                        ? (flippedQuestions[currentQuestion.id] ? 'Continuar' : 'Revelar mi respuesta')
-                        : 'Siguiente'
-                      }
-                    </Button>
-                  )}
-                </div>
+                 <div className="pt-4 min-h-[6rem]">
+                    {currentQuestion.type === 'multiple-choice' ? (
+                        <>
+                            {answerStatus !== 'unanswered' && (
+                                <div className={cn(
+                                    "w-full p-4 rounded-lg flex items-center gap-4 animate-fade-in",
+                                    answerStatus === 'correct' ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-300' : 'bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-300'
+                                )}>
+                                    {answerStatus === 'correct' ? <CheckCircle2 /> : <XCircle />}
+                                    <div className="flex-1">
+                                        <h4 className="font-bold">{answerStatus === 'correct' ? "¡Correcto!" : "¡Casi!"}</h4>
+                                        <p className="text-sm">{answerStatus === 'correct' ? "¡Esa es! Nunca olvidaré ese momento." : "No te preocupes, ¡lo importante es el amor!"}</p>
+                                    </div>
+                                </div>
+                            )}
+                        </>
+                    ) : (
+                        <Button 
+                            onClick={handleNext} 
+                            className="w-full h-12 text-lg font-bold"
+                            disabled={!answers[currentQuestion.id] && !flippedQuestions[currentQuestion.id]}
+                        >
+                          {flippedQuestions[currentQuestion.id] ? 'Continuar' : 'Revelar mi respuesta'}
+                        </Button>
+                    )}
+                 </div>
+
               </div>
             </div>
           </div>
@@ -547,11 +561,7 @@ export default function TriviaStage({ onGameWon, onAdvance, user, initialGameSta
         letter={letterToShow}
         onClose={() => {
           setLetterToShow(null);
-          const isMCQ = questions[currentQuestionIndex]?.type === "multiple-choice";
-          const isLastMCQ = isMCQ && questions[currentQuestionIndex + 1]?.type === "open-ended";
-          if (isLastMCQ || answerStatus !== 'unanswered') {
-              goToNextQuestion();
-          }
+          goToNextQuestion();
         }}
       />
       <MapModal 
