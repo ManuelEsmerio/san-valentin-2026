@@ -19,8 +19,8 @@ type ItemType = 'heart' | 'flower' | 'chocolate' | 'letter' | 'gift' | 'broken_h
 type GameState = 'idle' | 'playing' | 'won' | 'lost';
 
 type CatchHeartsStageProps = {
-  onGameWon: () => void;
-  onAdvance: () => void;
+  onGameWon?: () => void;
+  onAdvance?: () => void;
   user: string | null;
   initialGameState?: GameState;
 };
@@ -157,14 +157,17 @@ export default function CatchHeartsStage({ onGameWon, onAdvance, user, initialGa
     updateHighScore(scoreValue);
     if (scoreValue >= TARGET_SCORE) {
       setGameState('won');
-      if (initialGameState !== 'won') {
-        onGameWon();
-      }
     } else {
       setGameState('lost');
     }
-  }, [updateHighScore, TARGET_SCORE, onGameWon, initialGameState]);
+  }, [updateHighScore, TARGET_SCORE]);
   
+  useEffect(() => {
+    if (gameState === 'won' && initialGameState !== 'won') {
+      onGameWon?.();
+    }
+  }, [gameState, initialGameState, onGameWon]);
+
   const handleWin = useCallback(() => {
     setMapModalOpen(true);
   }, []);
@@ -181,7 +184,7 @@ export default function CatchHeartsStage({ onGameWon, onAdvance, user, initialGa
 
   const handleKeywordSuccess = useCallback(() => {
     setKeywordModalOpen(false);
-    onAdvance();
+    onAdvance?.();
   }, [onAdvance]);
 
 
