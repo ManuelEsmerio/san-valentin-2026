@@ -12,33 +12,39 @@ export default function MusicPlayer() {
 
   useEffect(() => {
     setIsMounted(true);
-    const audioEl = audioRef.current;
-    if (audioEl) {
-      audioEl.volume = 0.5;
-      
-      const handlePlay = () => setIsPlaying(true);
-      const handlePause = () => setIsPlaying(false);
-
-      setIsPlaying(!audioEl.paused);
-
-      audioEl.addEventListener('play', handlePlay);
-      audioEl.addEventListener('pause', handlePause);
-
-      return () => {
-        if(audioEl) {
-          audioEl.removeEventListener('play', handlePlay);
-          audioEl.removeEventListener('pause', handlePause);
-        }
-      };
-    }
   }, []);
 
+  useEffect(() => {
+    if (isMounted) {
+      const audioEl = audioRef.current;
+      if (audioEl) {
+        audioEl.volume = 0.5;
+        
+        const handlePlay = () => setIsPlaying(true);
+        const handlePause = () => setIsPlaying(false);
+
+        // Set initial state
+        setIsPlaying(!audioEl.paused);
+
+        audioEl.addEventListener('play', handlePlay);
+        audioEl.addEventListener('pause', handlePause);
+
+        return () => {
+          if (audioEl) {
+            audioEl.removeEventListener('play', handlePlay);
+            audioEl.removeEventListener('pause', handlePause);
+          }
+        };
+      }
+    }
+  }, [isMounted]);
+
   const togglePlayPause = () => {
-    if (!audioRef.current) return;
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play().catch(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (audio.paused) {
+      audio.play().catch(() => {
         toast({
           variant: 'destructive',
           title: 'No se encontró la música',
@@ -46,6 +52,8 @@ export default function MusicPlayer() {
             "Para activar la música, añade un archivo 'music.mp3' en la carpeta 'public/audio'.",
         });
       });
+    } else {
+      audio.pause();
     }
   };
 
