@@ -161,10 +161,10 @@ export default function FifteenPuzzleModal({ isOpen, onAdvance, onGameWon, user,
     initializeGame(difficulty);
   }, [initializeGame, difficulty]);
   
-  const coordinates = "19.4173° N, 99.1652° W";
-  const lat = "19.4173";
-  const long = "-99.1652";
-  const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${long}`;
+  const coordinates = "20.8805° N, -103.8390° W";
+  const lat = "20.8805";
+  const long = "-103.8390";
+  const googleMapsUrl = "https://maps.app.goo.gl/aP1eyTNWo6rGzdXXA";
   const iframeUrl = `https://maps.google.com/maps?q=${lat},${long}&hl=es&z=14&output=embed`;
   
   if (!isShowing) {
@@ -262,7 +262,7 @@ export default function FifteenPuzzleModal({ isOpen, onAdvance, onGameWon, user,
       >
         <div
           className={cn(
-            'relative w-full max-w-md m-4 bg-card text-card-foreground rounded-2xl shadow-2xl shadow-primary/20 border border-primary/10 transition-all duration-300 dark:bg-zinc-900 dark:border-zinc-800',
+            'relative w-full max-w-2xl m-4 bg-card text-card-foreground rounded-2xl shadow-2xl shadow-primary/20 border border-primary/10 transition-all duration-300 dark:bg-zinc-900 dark:border-zinc-800',
             isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
           )}
           onClick={(e) => e.stopPropagation()}
@@ -277,6 +277,10 @@ export default function FifteenPuzzleModal({ isOpen, onAdvance, onGameWon, user,
         coordinates={coordinates}
         googleMapsUrl={googleMapsUrl}
         iframeUrl={iframeUrl}
+        title="¡Última Pista!"
+        description={
+            <p>Esta es la última pista. Espero que este detalle te haya gustado tanto como a mí me encantó crearlo. Así que no te hago esperar más: ve a la pastelería de Yeimy a recoger tu rico postre y la última palabra para descubrir el gran premio.</p>
+        }
       />
       <KeywordModal
         isOpen={isKeywordModalOpen}
