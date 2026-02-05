@@ -46,7 +46,7 @@ export default function GameStage({ onGameWon, onAdvance, user, initialGameState
   const [isInstructionsModalOpen, setInstructionsModalOpen] = useState(false);
 
   const isDevMode = user === 'manuel';
-  const initialTargetScore = useMemo(() => isDevMode ? 5 : 35, [isDevMode]);
+  const initialTargetScore = useMemo(() => isDevMode ? 5 : 15, [isDevMode]);
   const [targetScore, setTargetScore] = useState(initialTargetScore);
 
   const snakeRef = useRef([{ x: 10, y: 10 }]);
