@@ -197,7 +197,10 @@ export default function CountdownStage({ onComplete }: { onComplete: () => void;
         </div>
       </main>
 
-      <footer className="absolute bottom-6 left-0 right-0 text-center">
+      <footer className="absolute bottom-6 left-0 right-0 text-center px-4">
+          <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">
+            Diseñado para robarte sonrisas 😋💘
+          </p>
           <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium">
               Tip: Mantén presionada la pantalla por 4 segundos o presiona Alt + E para una sorpresa.
           </p>
