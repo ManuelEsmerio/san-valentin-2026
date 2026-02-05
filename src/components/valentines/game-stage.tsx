@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { Heart, Lock, Trophy, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Gamepad2, Info, LockOpen } from "lucide-react";
+import { Heart, Lock, Trophy, Gamepad2, Info, LockOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
 import MapModal from "./MapModal";
 import KeywordModal from "./KeywordModal";
@@ -50,6 +50,7 @@ export default function GameStage({ onSuccess, user }: GameStageProps) {
   const snakeRef = useRef([{ x: 10, y: 10 }]);
   const foodRef = useRef({ x: 15, y: 15 });
   const directionRef = useRef({ x: 0, y: -1 });
+  const touchStartRef = useRef<{ x: number, y: number } | null>(null);
 
   const coordinates = "19.4326° N, 99.1332° W";
   const lat = "19.4326";
@@ -223,10 +224,50 @@ export default function GameStage({ onSuccess, user }: GameStageProps) {
       }
     };
 
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length === 1) {
+        touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      e.preventDefault();
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      if (!touchStartRef.current || e.changedTouches.length !== 1) return;
+
+      const touchEnd = { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY };
+      const dx = touchEnd.x - touchStartRef.current.x;
+      const dy = touchEnd.y - touchStartRef.current.y;
+      const absDx = Math.abs(dx);
+      const absDy = Math.abs(dy);
+
+      if (Math.max(absDx, absDy) > 20) {
+          const dir = directionRef.current;
+          if (absDx > absDy) {
+              if (dx > 0 && dir.x === 0) directionRef.current = { x: 1, y: 0 }; // Right
+              else if (dx < 0 && dir.x === 0) directionRef.current = { x: -1, y: 0 }; // Left
+          } else {
+              if (dy > 0 && dir.y === 0) directionRef.current = { x: 0, y: 1 }; // Down
+              else if (dy < 0 && dir.y === 0) directionRef.current = { x: 0, y: -1 }; // Up
+          }
+      }
+      touchStartRef.current = null;
+    };
+
     window.addEventListener("keydown", handleKeyDown);
+    canvas.addEventListener("touchstart", handleTouchStart, { passive: true });
+    canvas.addEventListener("touchmove", handleTouchMove, { passive: false });
+    canvas.addEventListener("touchend", handleTouchEnd, { passive: true });
 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
+      if (canvas) {
+        canvas.removeEventListener("touchstart", handleTouchStart);
+        canvas.removeEventListener("touchmove", handleTouchMove);
+        canvas.removeEventListener("touchend", handleTouchEnd);
+      }
       window.clearTimeout(gameLoopRef.current);
     };
   }, [gameState, score, highScore, targetScore, isDevMode]);
@@ -396,61 +437,11 @@ export default function GameStage({ onSuccess, user }: GameStageProps) {
             <div className="p-3 bg-primary/5 rounded-lg border border-primary/10">
               <div className="flex gap-2 items-center text-xs font-medium text-primary">
                 <Info className="h-4 w-4 shrink-0" />
-                Usa las flechas del teclado para guiar al corazón.
+                Usa las flechas o desliza el dedo para guiar al corazón.
               </div>
             </div>
           </div>
         </div>
-
-        {gameState === 'playing' && (
-          <div className="md:hidden mt-4 grid grid-cols-3 gap-3 w-48">
-            <div />
-            <Button
-              variant="secondary"
-              size="icon"
-              className="h-14 w-14 rounded-full"
-              onClick={() => {
-                if (directionRef.current.y === 0) directionRef.current = { x: 0, y: -1 };
-              }}
-            >
-              <ChevronUp className="h-8 w-8" />
-            </Button>
-            <div />
-            <Button
-              variant="secondary"
-              size="icon"
-              className="h-14 w-14 rounded-full"
-              onClick={() => {
-                if (directionRef.current.x === 0) directionRef.current = { x: -1, y: 0 };
-              }}
-            >
-              <ChevronLeft className="h-8 w-8" />
-            </Button>
-            <div />
-            <Button
-              variant="secondary"
-              size="icon"
-              className="h-14 w-14 rounded-full"
-              onClick={() => {
-                if (directionRef.current.x === 0) directionRef.current = { x: 1, y: 0 };
-              }}
-            >
-              <ChevronRight className="h-8 w-8" />
-            </Button>
-            <div />
-            <Button
-              variant="secondary"
-              size="icon"
-              className="h-14 w-14 rounded-full"
-              onClick={() => {
-                if (directionRef.current.y === 0) directionRef.current = { x: 0, y: 1 };
-              }}
-            >
-              <ChevronDown className="h-8 w-8" />
-            </Button>
-            <div />
-          </div>
-        )}
 
         <Dialog open={isInstructionsModalOpen} onOpenChange={setInstructionsModalOpen}>
           <DialogContent className="sm:max-w-md">
@@ -458,7 +449,7 @@ export default function GameStage({ onSuccess, user }: GameStageProps) {
               <DialogTitle className="text-2xl text-center font-bold">Desafío 1: Snake Romance</DialogTitle>
               <DialogDescription asChild>
                 <div className="text-center pt-4 space-y-3 text-base text-muted-foreground">
-                  <div>Usa las flechas del teclado (o los botones en pantalla) para mover la serpiente de corazones.</div>
+                  <div>Usa las flechas del teclado (o desliza el dedo) para mover la serpiente de corazones.</div>
                   <div>El objetivo es recolectar <span className="font-bold text-primary">{targetScore}</span> corazones sin chocar contigo misma.</div>
                   <div className="pt-2">¡Mucha suerte, mi chula!</div>
                 </div>
