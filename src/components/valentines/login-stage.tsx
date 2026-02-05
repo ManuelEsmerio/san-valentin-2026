@@ -165,7 +165,7 @@ export default function LoginStage({ onSuccess }: LoginStageProps) {
                         <button
                           type="button"
                           className={cn(
-                            'w-full bg-accent hover:bg-accent/90 text-accent-foreground font-bold py-4 rounded-2xl shadow-lg shadow-yellow-500/20 flex items-center justify-center gap-3 transition-all active:scale-95',
+                            'w-full bg-accent hover:bg-accent/90 text-white font-bold py-4 rounded-2xl shadow-lg shadow-yellow-500/20 flex items-center justify-center gap-3 transition-all active:scale-95',
                             !field.value && 'text-opacity-70'
                           )}
                         >
