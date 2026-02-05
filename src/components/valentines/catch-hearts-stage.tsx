@@ -186,17 +186,17 @@ export default function CatchHeartsStage({ onGameWon, onAdvance, user, initialGa
     if (gameState !== 'playing') return;
 
     const timerId = setInterval(() => {
-      setTimeLeft(prevTime => {
-        if (prevTime <= 1) {
-          clearInterval(timerId);
-          handleGameEnd(scoreRef.current);
-          return 0;
-        }
-        return prevTime - 1;
-      });
+      setTimeLeft(prevTime => prevTime > 0 ? prevTime - 1 : 0);
     }, 1000);
+
     return () => clearInterval(timerId);
-  }, [gameState, handleGameEnd]);
+  }, [gameState]);
+
+  useEffect(() => {
+    if (gameState === 'playing' && timeLeft === 0) {
+      handleGameEnd(scoreRef.current);
+    }
+  }, [gameState, timeLeft, handleGameEnd]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
