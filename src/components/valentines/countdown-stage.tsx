@@ -22,9 +22,10 @@ const CountdownUnit = ({ value, label }: { value: string; label: string }) => (
     </div>
 );
 
-const ThemeToggle = () => {
+const ThemeToggle = ({ onSkip }: { onSkip: () => void }) => {
     const [theme, setTheme] = useState('light');
     const [isMounted, setIsMounted] = useState(false);
+    const longPressTimer = useRef<NodeJS.Timeout>();
 
     useEffect(() => {
         setIsMounted(true);
@@ -46,11 +47,31 @@ const ThemeToggle = () => {
     const toggleTheme = () => {
         setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
     };
+    
+    const handlePressStart = () => {
+        longPressTimer.current = setTimeout(() => {
+            onSkip();
+        }, 3000); // 3 seconds
+    };
+
+    const handlePressEnd = () => {
+        if (longPressTimer.current) {
+            clearTimeout(longPressTimer.current);
+        }
+    };
+
 
     if (!isMounted) return <div className="w-10 h-10" />;
 
     return (
-        <button className="glass p-2 rounded-full text-slate-600 dark:text-slate-300 hover:text-primary transition-colors" onClick={toggleTheme}>
+        <button 
+          className="glass p-2 rounded-full text-slate-600 dark:text-slate-300 hover:text-primary transition-colors" 
+          onClick={toggleTheme}
+          onMouseDown={handlePressStart}
+          onMouseUp={handlePressEnd}
+          onTouchStart={handlePressStart}
+          onTouchEnd={handlePressEnd}
+        >
             <span className="material-symbols-rounded">{theme === 'dark' ? 'light_mode' : 'dark_mode'}</span>
         </button>
     );
@@ -58,8 +79,7 @@ const ThemeToggle = () => {
 
 export default function CountdownStage({ onComplete }: { onComplete: () => void; }) {
   const { toast } = useToast();
-  const longPressTimer = useRef<NodeJS.Timeout>();
-
+  
   const [timeLeft, setTimeLeft] = useState<TimeLeft | null>(null);
   const [isTimeUp, setIsTimeUp] = useState(false);
 
@@ -108,18 +128,6 @@ export default function CountdownStage({ onComplete }: { onComplete: () => void;
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onComplete]);
 
-  const handleTouchStart = () => {
-    longPressTimer.current = setTimeout(() => {
-      onComplete();
-    }, 4000);
-  };
-
-  const handleTouchEnd = () => {
-    if (longPressTimer.current) {
-      clearTimeout(longPressTimer.current);
-    }
-  };
-
   const handleDisabledClick = () => {
     toast({
         title: 'Un poco de paciencia, mi chula',
@@ -140,8 +148,6 @@ export default function CountdownStage({ onComplete }: { onComplete: () => void;
   return (
     <div 
       className="fixed inset-0 z-50 flex items-center justify-center bg-background text-slate-800 dark:text-slate-100 font-sans p-4 text-center"
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
       onContextMenu={(e) => e.preventDefault()}
     >
       <FloatingHearts />
@@ -199,11 +205,11 @@ export default function CountdownStage({ onComplete }: { onComplete: () => void;
 
       <footer className="absolute bottom-6 left-0 right-0 text-center px-4">
           <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium">
-              Tip: Mantén presionada la pantalla por 4 segundos o presiona Alt + E para una sorpresa.
+              Tip: Mantén presionado el ícono de sol/luna por 3 segundos o presiona Alt + E para una sorpresa.
           </p>
       </footer>
       <div className="absolute bottom-6 left-6 flex gap-2">
-          <ThemeToggle />
+          <ThemeToggle onSkip={onComplete} />
       </div>
     </div>
   );
