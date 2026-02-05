@@ -43,38 +43,42 @@
     --magenta: 341 78% 44%;
   }
   .dark {
-    --background: 348 68% 7%; /* #1A050A */
-    --foreground: 210 17% 95%;
-    --card: 222 47% 11%;
-    --card-foreground: 210 17% 95%;
-    --popover: 222 47% 11%;
-    --popover-foreground: 210 17% 95%;
-    --primary: 348 100% 65%; /* #FF4D6D */
+    --background: 0 0% 4%;
+    --foreground: 0 0% 98%;
+    --card: 330 15% 10%;
+    --card-foreground: 0 0% 98%;
+    --popover: 330 15% 10%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 330 100% 55%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 348 89% 60%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 214 9% 65%;
-    --muted-foreground: 214 9% 65%;
-    --accent: 43 100% 50%; /* #FFB700 - gold */
+    --secondary: 330 50% 30%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 330 10% 25%;
+    --muted-foreground: 330 10% 60%;
+    --accent: 43 100% 50%;
     --accent-foreground: 222 47% 11%;
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 98%;
-    --border: 348 90% 25%;
-    --input: 348 90% 25%;
-    --ring: 348 100% 65%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --border: 330 80% 25%;
+    --input: 330 80% 25%;
+    --ring: 330 100% 55%;
+    --chart-1: 330 70% 50%;
+    --chart-2: 340 80% 60%;
+    --chart-3: 350 90% 70%;
+    --chart-4: 320 60% 55%;
+    --chart-5: 310 50% 50%;
+    --radius: 1rem;
+    --sidebar-background: 0 0% 8%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 330 100% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 330 20% 15%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 330 20% 15%;
+    --sidebar-ring: 330 100% 55%;
+
+    --coral: 344 100% 72%;
+    --magenta: 330 100% 55%;
   }
 }
 

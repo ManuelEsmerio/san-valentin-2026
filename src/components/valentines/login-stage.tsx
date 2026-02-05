@@ -169,12 +169,12 @@ export default function LoginStage({ onSuccess }: LoginStageProps) {
                             !field.value && 'text-opacity-70'
                           )}
                         >
-                          <span className="material-symbols-rounded text-xl">calendar_today</span>
+                          <span className="material-symbols-rounded text-xl text-white">calendar_today</span>
                            <span>
                             {field.value ? (
                                 format(field.value, 'PPP', { locale: es })
                             ) : (
-                                <span>Elige una fecha</span>
+                                <span className='text-white'>Elige una fecha</span>
                             )}
                            </span>
                         </button>
