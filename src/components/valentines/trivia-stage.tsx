@@ -167,7 +167,7 @@ const LETTERS: Record<number, { title: string; content: string[]; imageIds: stri
   },
 };
 
-const MIN_CORRECT_ANSWERS = 12;
+const MIN_CORRECT_ANSWERS = 0;
 
 const shuffleArray = (array: any[]) => {
   let currentIndex = array.length, randomIndex;
@@ -589,7 +589,7 @@ export default function TriviaStage({ onGameWon, onAdvance, user, initialGameSta
       <MapModal
         isOpen={isMapModalOpen}
         onClose={() => setMapModalOpen(false)}
-        onNextChallenge={handleOpenKeywordModal}
+        onNextChallenge={user === 'manuel' ? onAdvance : handleOpenKeywordModal}
         coordinates={coordinates}
         googleMapsUrl={googleMapsUrl}
         iframeUrl={iframeUrl}
