@@ -116,18 +116,16 @@ export default function FifteenPuzzleModal({ isOpen, onAdvance, onGameWon, user,
     return currentTiles.every((tile, index) => tile === index);
   }, []);
 
+  const handleSuccess = useCallback(() => {
+    onGameWon();
+    setGameStatus('solved');
+  }, [onGameWon]);
+
   useEffect(() => {
     if (gameStatus === 'solved' && initialGameState !== 'solved') {
-      toast({
-        title: "¡Rompecabezas Resuelto!",
-        description: "Has revelado la última pista. ¡Felicidades!",
-      });
-      // Defer this call to the next tick to avoid a React warning about updating a parent during a child's render.
-      setTimeout(() => {
-        onGameWon();
-      }, 0);
+      // This logic was changed to handle success more directly
     }
-  }, [gameStatus, initialGameState, onGameWon, toast]);
+  }, [gameStatus, initialGameState, handleSuccess]);
 
   const handleTileClick = useCallback((clickedIndex: number) => {
     if (gameStatus !== 'playing') return;
@@ -152,7 +150,11 @@ export default function FifteenPuzzleModal({ isOpen, onAdvance, onGameWon, user,
       setMoves(newMoves);
 
       if (checkIfSolved(newTiles)) {
-        setGameStatus('solved');
+        handleSuccess();
+        toast({
+          title: "¡Rompecabezas Resuelto!",
+          description: "Has revelado la última pista. ¡Felicidades!",
+        });
       } else if (newMoves >= MOVE_LIMIT) {
           const newLosses = losses + 1;
           setLosses(newLosses);
@@ -161,16 +163,14 @@ export default function FifteenPuzzleModal({ isOpen, onAdvance, onGameWon, user,
           setGameStatus('lost');
       }
     }
-  }, [gameStatus, tiles, moves, checkIfSolved, losses]);
+  }, [gameStatus, tiles, moves, checkIfSolved, losses, handleSuccess, toast]);
 
   const handleRestart = useCallback(() => {
     initializeGame(difficulty);
   }, [initializeGame, difficulty]);
   
   const handleKeywordSuccess = useCallback(() => {
-    if (onAdvance) {
-      onAdvance();
-    }
+    onAdvance?.();
   }, [onAdvance]);
 
   const coordinates = "20.8805° N, -103.8390° W";
@@ -297,7 +297,10 @@ export default function FifteenPuzzleModal({ isOpen, onAdvance, onGameWon, user,
       <KeywordModal
         isOpen={isKeywordModalOpen}
         onSuccess={handleKeywordSuccess}
-        onBack={() => { setKeywordModalOpen(false); if(gameStatus === 'solved') setMapModalOpen(true); }}
+        onBack={() => {
+          setKeywordModalOpen(false);
+          setMapModalOpen(true);
+        }}
         correctKeyword="tu habitación"
         title="Última Palabra Clave"
         description="Estás a un paso de la frase secreta final. Ingresa la última parte."
