@@ -261,8 +261,8 @@ export default function MemoryGameStage({ onGameWon, onAdvance, user, initialGam
   
   const hintProgress = numPairs > 0 ? (matchedPairs / numPairs) * 100 : 0;
   const isGameOver = gameState === 'won' || gameState === 'lost';
-  const gridClass = numPairs === PAIRS_ON_EASY_MODE ? "grid-cols-4" : "grid-cols-4 sm:grid-cols-6";
-
+  const gridClass = numPairs === PAIRS_ON_EASY_MODE ? "grid-cols-4" : "grid-cols-6";
+  
   return (
     <>
       <div className="w-full relative">
