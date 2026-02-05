@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -90,7 +89,7 @@ export default function CountdownStage({ onComplete }: CountdownStageProps) {
   const handleTouchStart = () => {
     longPressTimer.current = setTimeout(() => {
       onComplete();
-    }, 7000); // 7 seconds
+    }, 4000); // 4 seconds
   };
 
   const handleTouchEnd = () => {
@@ -169,9 +168,9 @@ export default function CountdownStage({ onComplete }: CountdownStageProps) {
           </Button>
         </div>
       </div>
-      {/* <div className="absolute bottom-4 left-4 right-4 z-10 text-center text-white/30 text-xs animate-pulse">
-        <p>Tip: En móvil, mantén presionada la pantalla por 7 segundos para una sorpresa. En escritorio: Alt + E.</p>
-      </div> */}
+      <div className="absolute bottom-4 left-4 right-4 z-10 text-white/30 text-xs animate-pulse">
+        <p>Tip: Mantén presionada la pantalla por 4 segundos o presiona Alt + E para una sorpresa.</p>
+      </div>
     </div>
   );
 }
