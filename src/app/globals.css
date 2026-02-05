@@ -4,25 +4,25 @@
 
 @layer base {
   :root {
-    --background: 30 100% 99%;
+    --background: 30 100% 98%; /* #FFF9F2 */
     --foreground: 222 47% 11%;
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
-    --primary: 348 89% 60%;
+    --primary: 348 100% 65%; /* #FF4D6D */
     --primary-foreground: 0 0% 100%;
     --secondary: 356 100% 97%;
     --secondary-foreground: 348 89% 60%;
     --muted: 215 14% 47%;
     --muted-foreground: 215 14% 47%;
-    --accent: 45 96% 56%;
+    --accent: 43 100% 50%; /* #FFB700 - gold */
     --accent-foreground: 222 47% 11%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 356 100% 95%;
     --input: 356 100% 95%;
-    --ring: 348 89% 60%;
+    --ring: 348 100% 65%;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
@@ -37,27 +37,31 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    
+    /* Custom colors from new design */
+    --coral: 344 100% 72%;
+    --magenta: 341 78% 44%;
   }
   .dark {
-    --background: 353 44% 8%;
+    --background: 348 68% 7%; /* #1A050A */
     --foreground: 210 17% 95%;
     --card: 222 47% 11%;
     --card-foreground: 210 17% 95%;
     --popover: 222 47% 11%;
     --popover-foreground: 210 17% 95%;
-    --primary: 348 89% 60%;
+    --primary: 348 100% 65%; /* #FF4D6D */
     --primary-foreground: 0 0% 100%;
     --secondary: 348 89% 60%;
     --secondary-foreground: 0 0% 100%;
     --muted: 214 9% 65%;
     --muted-foreground: 214 9% 65%;
-    --accent: 45 96% 56%;
+    --accent: 43 100% 50%; /* #FFB700 - gold */
     --accent-foreground: 222 47% 11%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
     --border: 348 90% 25%;
     --input: 348 90% 25%;
-    --ring: 348 89% 60%;
+    --ring: 348 100% 65%;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
@@ -91,4 +95,14 @@
   10% { opacity: 0.6; }
   90% { opacity: 0.6; }
   100% { transform: translateY(-100vh) scale(1.5); opacity: 0; }
+}
+
+/* Glass effect from new design */
+.glass {
+    @apply border border-white/20 bg-white/15;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+.dark .glass {
+    @apply border-white/10 bg-black/20;
 }

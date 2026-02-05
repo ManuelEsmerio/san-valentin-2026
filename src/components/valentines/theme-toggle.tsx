@@ -40,7 +40,7 @@ export default function ThemeToggle() {
       className="h-10 w-10 flex items-center justify-center rounded-full hover:bg-card"
       aria-label="Toggle theme"
     >
-      <span className="material-symbols-outlined text-primary text-2xl">
+      <span className="material-symbols-rounded text-primary text-2xl">
         {theme === 'light' ? 'dark_mode' : 'light_mode'}
       </span>
     </button>

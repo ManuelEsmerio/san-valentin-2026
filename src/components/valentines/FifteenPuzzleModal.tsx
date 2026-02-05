@@ -65,13 +65,13 @@ type FifteenPuzzleModalProps = {
 
 const VictoryHearts = () => (
     <div className="relative mt-2 h-16 w-full pointer-events-none">
-        <span style={{ animationDelay: '0.2s', fontVariationSettings: "'FILL' 1" }} className="material-symbols-outlined text-primary/60 absolute left-1/2 -translate-x-[2.5rem] top-2 text-xl animate-heart-celebrate">favorite</span>
-        <span style={{ animationDelay: '0s', fontVariationSettings: "'FILL' 1" }} className="material-symbols-outlined text-primary/70 absolute left-1/2 -translate-x-1/2 text-2xl animate-heart-celebrate">favorite</span>
-        <span style={{ animationDelay: '0.2s', fontVariationSettings: "'FILL' 1" }} className="material-symbols-outlined text-primary/60 absolute left-1/2 translate-x-[1.5rem] top-2 text-xl animate-heart-celebrate">favorite</span>
+        <span style={{ animationDelay: '0.2s', fontVariationSettings: "'FILL' 1" }} className="material-symbols-rounded text-primary/60 absolute left-1/2 -translate-x-[2.5rem] top-2 text-xl animate-heart-celebrate">favorite</span>
+        <span style={{ animationDelay: '0s', fontVariationSettings: "'FILL' 1" }} className="material-symbols-rounded text-primary/70 absolute left-1/2 -translate-x-1/2 text-2xl animate-heart-celebrate">favorite</span>
+        <span style={{ animationDelay: '0.2s', fontVariationSettings: "'FILL' 1" }} className="material-symbols-rounded text-primary/60 absolute left-1/2 translate-x-[1.5rem] top-2 text-xl animate-heart-celebrate">favorite</span>
         
-        <span style={{ animationDelay: '0.4s', fontVariationSettings: "'FILL' 1" }} className="material-symbols-outlined text-primary/50 absolute left-1/2 -translate-x-[1.5rem] top-8 text-lg animate-heart-celebrate">favorite</span>
-        <span style={{ animationDelay: '0.4s', fontVariationSettings: "'FILL' 1" }} className="material-symbols-outlined text-primary/50 absolute left-1/2 translate-x-[0.5rem] top-8 text-lg animate-heart-celebrate">favorite</span>
-        <span style={{ animationDelay: '0.5s', fontVariationSettings: "'FILL' 1" }} className="material-symbols-outlined text-primary/40 absolute left-1/2 translate-x-[2.5rem] top-9 text-base animate-heart-celebrate">favorite</span>
+        <span style={{ animationDelay: '0.4s', fontVariationSettings: "'FILL' 1" }} className="material-symbols-rounded text-primary/50 absolute left-1/2 -translate-x-[1.5rem] top-8 text-lg animate-heart-celebrate">favorite</span>
+        <span style={{ animationDelay: '0.4s', fontVariationSettings: "'FILL' 1" }} className="material-symbols-rounded text-primary/50 absolute left-1/2 translate-x-[0.5rem] top-8 text-lg animate-heart-celebrate">favorite</span>
+        <span style={{ animationDelay: '0.5s', fontVariationSettings: "'FILL' 1" }} className="material-symbols-rounded text-primary/40 absolute left-1/2 translate-x-[2.5rem] top-9 text-base animate-heart-celebrate">favorite</span>
     </div>
   );
 
@@ -187,7 +187,7 @@ export default function FifteenPuzzleModal({ isOpen, onAdvance, onGameWon, user,
     if (gameStatus === 'lost') {
         return (
           <div className="p-6 sm:p-8 text-center animate-fade-in">
-               <span className="material-symbols-outlined text-destructive text-5xl mb-4">sentiment_dissatisfied</span>
+               <span className="material-symbols-rounded text-destructive text-5xl mb-4">sentiment_dissatisfied</span>
                <h2 className="text-2xl font-bold text-foreground mb-2">¡Casi lo logras!</h2>
                <p className="text-muted-foreground mb-6">
                   Has superado el límite de movimientos. ¡Pero no te preocupes, inténtalo de nuevo!
@@ -204,7 +204,7 @@ export default function FifteenPuzzleModal({ isOpen, onAdvance, onGameWon, user,
     if (gameStatus === 'solved') {
         return (
           <div className="p-6 sm:p-8 text-center animate-fade-in">
-            <span className="material-symbols-outlined text-green-500 text-5xl mb-4">auto_awesome</span>
+            <span className="material-symbols-rounded text-green-500 text-5xl mb-4">auto_awesome</span>
             <h2 className="text-2xl font-bold text-foreground mb-2">¡Rompecabezas Resuelto!</h2>
             <p className="text-muted-foreground mb-6">
                 Has revelado la última pista. ¡Felicidades!

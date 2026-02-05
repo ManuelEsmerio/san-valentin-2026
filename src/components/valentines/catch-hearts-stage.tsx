@@ -68,7 +68,7 @@ const GameOverlay = ({ status, onStart, onRetry, score, highScore }: { status: G
     <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex flex-col items-center justify-center text-center p-4 z-10 animate-fade-in">
       <div className="bg-card p-8 rounded-2xl shadow-2xl max-w-sm w-full">
         <div className={cn("h-16 w-16 mx-auto mb-4 rounded-full flex items-center justify-center", isWon ? "bg-green-100 dark:bg-green-900/30" : "bg-primary/10")}>
-            <span className="material-symbols-outlined text-4xl" style={{color: isWon ? 'hsl(var(--chart-2))' : 'hsl(var(--primary))'}}>{Icon}</span>
+            <span className="material-symbols-rounded text-4xl" style={{color: isWon ? 'hsl(var(--chart-2))' : 'hsl(var(--primary))'}}>{Icon}</span>
         </div>
         <h3 className="text-2xl font-bold text-foreground mb-2">{title}</h3>
         <p className="text-muted-foreground mb-1">Tu puntaje: <span className="font-bold text-foreground">{score}</span></p>
@@ -363,7 +363,7 @@ export default function CatchHeartsStage({ onGameWon, onAdvance, user, initialGa
               <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-2xl flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-                    <span className="material-symbols-outlined text-2xl">military_tech</span>
+                    <span className="material-symbols-rounded text-2xl">military_tech</span>
                   </div>
                   <div>
                     <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground block">Mejor Récord</span>

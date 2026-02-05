@@ -86,17 +86,17 @@ export default function LoginStage({ onSuccess }: LoginStageProps) {
       <div className="p-1">
         <div className="w-full h-48 bg-gradient-to-br from-pink-50 to-white dark:from-stone-800 dark:to-stone-900 flex items-center justify-center rounded-lg">
           <div className="flex flex-col items-center gap-2">
-            <span className="material-symbols-outlined text-primary text-6xl">
+            <span className="material-symbols-rounded text-primary text-6xl">
               celebration
             </span>
             <div className="flex gap-2">
-              <span className="material-symbols-outlined text-primary/40 text-xl">
+              <span className="material-symbols-rounded text-primary/40 text-xl">
                 favorite
               </span>
-              <span className="material-symbols-outlined text-primary/40 text-xl">
+              <span className="material-symbols-rounded text-primary/40 text-xl">
                 favorite
               </span>
-              <span className="material-symbols-outlined text-primary/40 text-xl">
+              <span className="material-symbols-rounded text-primary/40 text-xl">
                 favorite
               </span>
             </div>
@@ -136,7 +136,7 @@ export default function LoginStage({ onSuccess }: LoginStageProps) {
                   </div>
                   <FormControl>
                     <div className="relative">
-                      <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary/50">
+                      <span className="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-primary/50">
                         person_heart
                       </span>
                       <Input
@@ -185,7 +185,7 @@ export default function LoginStage({ onSuccess }: LoginStageProps) {
                             !field.value && 'text-muted-foreground'
                           )}
                         >
-                          <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary/50">
+                          <span className="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-primary/50">
                             calendar_month
                           </span>
                            <span className='pl-8'>
@@ -221,7 +221,7 @@ export default function LoginStage({ onSuccess }: LoginStageProps) {
                 className="w-full h-14 px-4 text-lg font-bold shadow-lg shadow-primary/20"
               >
                 <span className="truncate">Entrar</span>
-                <span className="material-symbols-outlined ml-2">
+                <span className="material-symbols-rounded ml-2">
                   arrow_forward
                 </span>
               </Button>

@@ -13,6 +13,7 @@ export default {
         display: ["'Playfair Display'", "serif"],
         sans: ["'Inter'", "sans-serif"],
         handwritten: ["'Caveat'", "cursive"],
+        calligraphy: ["'Great Vibes'", "cursive"],
         body: ["'Inter'", 'sans-serif'],
         code: ['monospace'],
       },
@@ -57,6 +58,9 @@ export default {
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))',
         },
+        coral: 'hsl(var(--coral))',
+        magenta: 'hsl(var(--magenta))',
+        gold: 'hsl(var(--accent))',
         sidebar: {
           DEFAULT: 'hsl(var(--sidebar-background))',
           foreground: 'hsl(var(--sidebar-foreground))',
@@ -122,6 +126,15 @@ export default {
           '40%': { opacity: '1', transform: 'translateY(0) scale(1)' },
           '100%': { transform: 'translateY(-30px) scale(0.8)', opacity: '0' },
         },
+        float: {
+          '0%, 100%': { transform: 'translateY(0) scale(1)' },
+          '50%': { transform: 'translateY(-20px) scale(1.05)' },
+        },
+        'pulse-glow': {
+          '0%, 100%': { filter: 'drop-shadow(0 0 10px hsla(var(--primary), 0.5))' },
+          '50%': { filter: 'drop-shadow(0 0 25px hsla(var(--primary), 0.8))' },
+        },
+        'spin-slow': 'spin 8s linear infinite',
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -139,6 +152,9 @@ export default {
         'heart-fly-8': 'heart-fly-8 4s ease-out infinite',
         'confetti-fall': 'confetti-fall 2s linear infinite',
         'heart-celebrate': 'heart-celebrate 1.2s ease-out forwards',
+        'float': 'float 6s ease-in-out infinite',
+        'pulse-glow': 'pulse-glow 3s ease-in-out infinite',
+        'spin-slow': 'spin 8s linear infinite',
       },
     },
   },

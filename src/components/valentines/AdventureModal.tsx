@@ -140,7 +140,7 @@ export default function AdventureModal({ isOpen, onConfirm }: AdventureModalProp
         {modalStage === 'confirmation' && (
           <div className="p-6 sm:p-8 text-center animate-fade-in">
              <span
-              className="material-symbols-outlined text-primary text-6xl animate-heart-beat mb-4"
+              className="material-symbols-rounded text-primary text-6xl animate-heart-beat mb-4"
               style={{ fontVariationSettings: "'FILL' 1" }}
             >
               favorite

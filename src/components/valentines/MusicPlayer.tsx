@@ -56,7 +56,7 @@ export default function MusicPlayer() {
         )}
         aria-label={isPlaying ? 'Pause music' : 'Play music'}
       >
-        <span className="material-symbols-outlined text-3xl">
+        <span className="material-symbols-rounded text-3xl">
           {isPlaying ? 'pause' : 'play_arrow'}
         </span>
       </button>

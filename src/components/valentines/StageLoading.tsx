@@ -7,7 +7,7 @@ export default function StageLoading() {
     )}>
       <div className="flex flex-col items-center gap-4">
         <span
-          className="material-symbols-outlined text-primary text-7xl animate-heart-beat"
+          className="material-symbols-rounded text-primary text-7xl animate-heart-beat"
           style={{ fontVariationSettings: "'FILL' 1" }}
         >
           favorite

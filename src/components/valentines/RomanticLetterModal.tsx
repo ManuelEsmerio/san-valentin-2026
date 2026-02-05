@@ -82,7 +82,7 @@ export default function RomanticLetterModal({ isOpen, letter, onClose }: Romanti
           )}
 
           <span
-            className="material-symbols-outlined text-primary text-5xl mb-4"
+            className="material-symbols-rounded text-primary text-5xl mb-4"
             style={{ fontVariationSettings: "'FILL' 1" }}
           >
             local_florist

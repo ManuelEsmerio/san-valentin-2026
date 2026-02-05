@@ -188,7 +188,7 @@ const shuffleArray = (array: any[]) => {
 const IntroScreen = memo(({ onStart, onSkip, user }: { onStart: () => void; onSkip: () => void; user: string | null; }) => (
   <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5 animate-fade-in">
     <div className="p-6 sm:p-10 text-center flex flex-col items-center gap-4">
-      <span className="material-symbols-outlined text-primary text-6xl" style={{ fontVariationSettings: "'FILL' 1" }}>quiz</span>
+      <span className="material-symbols-rounded text-primary text-6xl" style={{ fontVariationSettings: "'FILL' 1" }}>quiz</span>
       <h2 className="text-foreground text-3xl font-bold leading-tight tracking-[-0.015em]">¡Vas muy bien! Has superado los dos primeros desafíos.</h2>
       <p className="text-muted-foreground max-w-md">
         Ahora, una trivia para ver qué tanto nos conocemos. ¿Lista?
@@ -231,7 +231,7 @@ const FailedScreen = memo(({ score, onRetry }: { score: number, onRetry: () => v
     <div className="w-full bg-card rounded-xl shadow-xl overflow-hidden border border-primary/5">
         <div className="px-4 sm:px-8 pb-10 pt-6 text-center">
             <Alert className="animate-fade-in text-center border-destructive/50 text-destructive">
-                <span className="material-symbols-outlined text-5xl">sentiment_dissatisfied</span>
+                <span className="material-symbols-rounded text-5xl">sentiment_dissatisfied</span>
                 <AlertTitle className="font-headline mt-2 text-xl">¡Oh no! No pasaste la prueba.</AlertTitle>
                 <AlertDescription className="font-body space-y-4 mt-4 text-foreground/80">
                     <p>Obtuviste {score} de {multipleChoiceQuestions.length}. Pero no te preocupes, el amor es también dar segundas oportunidades. ¡Inténtalo de nuevo!</p>
@@ -246,7 +246,7 @@ FailedScreen.displayName = 'FailedScreen';
 const FinishedContent = ({ onShowHint }: { onShowHint: () => void }) => (
   <div className="flex flex-col items-center gap-4 text-center p-8 animate-fade-in">
     <div className="relative bg-background w-20 h-20 rounded-2xl flex items-center justify-center shadow-lg border border-green-500/20">
-      <span className="material-symbols-outlined text-green-500 text-5xl">check_circle</span>
+      <span className="material-symbols-rounded text-green-500 text-5xl">check_circle</span>
     </div>
     <h2 className="text-green-600 dark:text-green-400 text-3xl font-bold">¡Desafío completado!</h2>
     <p className="text-muted-foreground max-w-md">

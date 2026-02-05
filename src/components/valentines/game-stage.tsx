@@ -24,13 +24,13 @@ type GameStageProps = {
 
 const VictoryHearts = () => (
   <div className="relative mt-2 h-16 w-full pointer-events-none">
-      <span style={{ animationDelay: '0.2s', fontVariationSettings: "'FILL' 1" }} className="material-symbols-outlined text-primary/60 absolute left-1/2 -translate-x-[2.5rem] top-2 text-xl animate-heart-celebrate">favorite</span>
-      <span style={{ animationDelay: '0s', fontVariationSettings: "'FILL' 1" }} className="material-symbols-outlined text-primary/70 absolute left-1/2 -translate-x-1/2 text-2xl animate-heart-celebrate">favorite</span>
-      <span style={{ animationDelay: '0.2s', fontVariationSettings: "'FILL' 1" }} className="material-symbols-outlined text-primary/60 absolute left-1/2 translate-x-[1.5rem] top-2 text-xl animate-heart-celebrate">favorite</span>
+      <span style={{ animationDelay: '0.2s', fontVariationSettings: "'FILL' 1" }} className="material-symbols-rounded text-primary/60 absolute left-1/2 -translate-x-[2.5rem] top-2 text-xl animate-heart-celebrate">favorite</span>
+      <span style={{ animationDelay: '0s', fontVariationSettings: "'FILL' 1" }} className="material-symbols-rounded text-primary/70 absolute left-1/2 -translate-x-1/2 text-2xl animate-heart-celebrate">favorite</span>
+      <span style={{ animationDelay: '0.2s', fontVariationSettings: "'FILL' 1" }} className="material-symbols-rounded text-primary/60 absolute left-1/2 translate-x-[1.5rem] top-2 text-xl animate-heart-celebrate">favorite</span>
       
-      <span style={{ animationDelay: '0.4s', fontVariationSettings: "'FILL' 1" }} className="material-symbols-outlined text-primary/50 absolute left-1/2 -translate-x-[1.5rem] top-8 text-lg animate-heart-celebrate">favorite</span>
-      <span style={{ animationDelay: '0.4s', fontVariationSettings: "'FILL' 1" }} className="material-symbols-outlined text-primary/50 absolute left-1/2 translate-x-[0.5rem] top-8 text-lg animate-heart-celebrate">favorite</span>
-      <span style={{ animationDelay: '0.5s', fontVariationSettings: "'FILL' 1" }} className="material-symbols-outlined text-primary/40 absolute left-1/2 translate-x-[2.5rem] top-9 text-base animate-heart-celebrate">favorite</span>
+      <span style={{ animationDelay: '0.4s', fontVariationSettings: "'FILL' 1" }} className="material-symbols-rounded text-primary/50 absolute left-1/2 -translate-x-[1.5rem] top-8 text-lg animate-heart-celebrate">favorite</span>
+      <span style={{ animationDelay: '0.4s', fontVariationSettings: "'FILL' 1" }} className="material-symbols-rounded text-primary/50 absolute left-1/2 translate-x-[0.5rem] top-8 text-lg animate-heart-celebrate">favorite</span>
+      <span style={{ animationDelay: '0.5s', fontVariationSettings: "'FILL' 1" }} className="material-symbols-rounded text-primary/40 absolute left-1/2 translate-x-[2.5rem] top-9 text-base animate-heart-celebrate">favorite</span>
   </div>
 );
 
@@ -46,7 +46,7 @@ export default function GameStage({ onGameWon, onAdvance, user, initialGameState
   const [isInstructionsModalOpen, setInstructionsModalOpen] = useState(false);
 
   const isDevMode = user === 'manuel';
-  const initialTargetScore = useMemo(() => isDevMode ? 5 : 15, [isDevMode]);
+  const initialTargetScore = useMemo(() => 15, []);
   const [targetScore, setTargetScore] = useState(initialTargetScore);
 
   const snakeRef = useRef([{ x: 10, y: 10 }]);
@@ -388,7 +388,7 @@ export default function GameStage({ onGameWon, onAdvance, user, initialGameState
               </div>
               <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-2xl flex flex-col items-center justify-center text-center">
                 <SimpleCircularProgress progress={100} size={80} strokeWidth={6}>
-                  <span className="material-symbols-outlined text-primary text-3xl">flag</span>
+                  <span className="material-symbols-rounded text-primary text-3xl">flag</span>
                 </SimpleCircularProgress>
                 <span className="mt-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Meta</span>
                 <span className="text-2xl font-bold text-foreground">{targetScore}</span>

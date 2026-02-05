@@ -22,7 +22,7 @@ const HeartFloat = () => {
         <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
             {hearts.map((heart, i) => (
                 <div key={i} className={cn('heart-float', heart.opacity)} style={{ left: heart.left, animationDelay: heart.delay }}>
-                    <span className={cn('material-symbols-outlined', heart.size)} style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
+                    <span className={cn('material-symbols-rounded', heart.size)} style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
                 </div>
             ))}
         </div>
@@ -45,7 +45,7 @@ export default function RevelationStage() {
       <main className="relative z-10 w-full max-w-2xl bg-white dark:bg-gray-900 rounded-[2.5rem] shadow-2xl p-8 md:p-12 border border-rose-100 dark:border-rose-900/30">
         <header className="text-center mb-10">
             <div className="inline-block p-3 rounded-full bg-rose-50 dark:bg-rose-900/20 mb-4">
-                <span className="material-symbols-outlined text-primary text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
+                <span className="material-symbols-rounded text-primary text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
             </div>
             <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-2">
                 <span className="text-gray-900 dark:text-white">¡Felicidades, </span>
@@ -95,7 +95,7 @@ export default function RevelationStage() {
 
         <article className="bg-[#fdfbf7] dark:bg-gray-800/50 border border-rose-200 dark:border-rose-900/50 rounded-3xl p-8 mb-10 relative">
             <div className="absolute -top-4 -left-4 text-rose-300 dark:text-rose-700 opacity-50">
-                <span className="material-symbols-outlined text-6xl">format_quote</span>
+                <span className="material-symbols-rounded text-6xl">format_quote</span>
             </div>
             <div className="space-y-6 text-gray-700 dark:text-gray-200 leading-relaxed text-lg">
                 <p>
@@ -121,7 +121,7 @@ export default function RevelationStage() {
                 variant="outline"
                 className="group flex items-center gap-2 px-8 py-3 rounded-full border-2 border-primary text-primary font-semibold hover:bg-primary hover:text-white transition-all duration-300 shadow-md hover:shadow-xl active:scale-95 h-auto text-base"
             >
-                <span className="material-symbols-outlined group-hover:rotate-180 transition-transform duration-500">restart_alt</span>
+                <span className="material-symbols-rounded group-hover:rotate-180 transition-transform duration-500">restart_alt</span>
                 Volver a vivir la experiencia
             </Button>
         </div>

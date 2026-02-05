@@ -25,18 +25,18 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Inter:wght@300;400;600&family=Caveat:wght@700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;1,700&family=Caveat:wght@700&display=swap"
           rel="stylesheet"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
           rel="stylesheet"
         />
       </head>
       <body className="font-sans antialiased bg-background text-foreground">
         <header className="flex items-center justify-between px-4 sm:px-10 py-6 w-full">
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-primary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>
+            <span className="material-symbols-rounded text-primary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>
                 favorite
             </span>
             <h2 className="text-primary text-xl font-bold">
