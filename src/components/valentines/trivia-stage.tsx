@@ -113,13 +113,11 @@ const openEndedQuestions: OpenEndedQuestion[] = [
       id: 27,
       type: 'open-ended',
       question: '¿Qué sientes que nos ha costado más últimamente?',
-      creatorAnswer: `
-        Siento que hemos caído en la monotonía de hacer siempre lo mismo, y sé que a ti te afecta más que a mí. Especialmente el no tener todavía tu espacio seguro, tus cosas, estar lejos de tu familia, lidiar con un trabajo difícil, con personas complicadas… y además un novio terco al que a veces le cuesta entender muchas cosas.
-        
-        Todo eso ha tenido un impacto muy fuerte en ti, y poco a poco ha ido apagando a la hermosa persona que eres. Eso me duele, porque te amo y me importa lo que sientes.
-        
-        Pero también sé que, con el apoyo adecuado y con los cambios correctos, vas a volver a sentirte mejor. Y yo quiero estar a tu lado para acompañarte en ese proceso y verlo contigo. 💙
-      `,
+      creatorAnswer: `Siento que hemos caído en la monotonía de hacer siempre lo mismo, y sé que a ti te afecta más que a mí. Especialmente el no tener todavía tu espacio seguro, tus cosas, estar lejos de tu familia, lidiar con un trabajo difícil, con personas complicadas… y además un novio terco al que a veces le cuesta entender muchas cosas.
+
+Todo eso ha tenido un impacto muy fuerte en ti, y poco a poco ha ido apagando a la hermosa persona que eres. Eso me duele, porque te amo y me importa lo que sientes.
+
+Pero también sé que, con el apoyo adecuado y con los cambios correctos, vas a volver a sentirte mejor. Y yo quiero estar a tu lado para acompañarte en ese proceso y verlo contigo. 💙`,
       image: 'open-ended-2',
       hint: 'Una reflexión sobre nuestra comunicación.'
     },    
@@ -515,10 +513,10 @@ export default function TriviaStage({ onGameWon, onAdvance, user, initialGameSta
                               </div>
 
                               {/* Back face with creator's answer */}
-                              <div className="absolute w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] bg-primary/10 p-6 rounded-lg flex flex-col justify-center items-center text-center">
-                                  <p className="text-foreground/80 italic text-lg">
-                                      &ldquo;{currentQuestion.creatorAnswer}&rdquo;
-                                  </p>
+                              <div className="absolute w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] bg-primary/10 p-4 sm:p-6 rounded-lg flex flex-col text-center overflow-y-auto">
+                                <p className="text-foreground/80 italic text-base sm:text-lg whitespace-pre-wrap my-auto">
+                                  &ldquo;{currentQuestion.creatorAnswer}&rdquo;
+                                </p>
                               </div>
                           </div>
                         </div>
@@ -636,4 +634,5 @@ export default function TriviaStage({ onGameWon, onAdvance, user, initialGameSta
     
 
     
+
 
