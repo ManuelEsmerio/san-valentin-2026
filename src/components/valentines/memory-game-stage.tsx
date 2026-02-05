@@ -67,8 +67,8 @@ type GameState = 'idle' | 'playing' | 'won' | 'lost';
 
 // --- Main Component ---
 type Props = {
-  onGameWon: () => void;
-  onAdvance: () => void;
+  onGameWon?: () => void;
+  onAdvance?: () => void;
   user: string | null;
   initialGameState?: GameState;
 };
@@ -210,11 +210,14 @@ export default function MemoryGameStage({ onGameWon, onAdvance, user, initialGam
       }
       setLosses(0);
       setNumPairs(TOTAL_PAIRS);
-      if (initialGameState !== 'won') {
-        onGameWon();
-      }
     }
-  }, [matchedPairs, timeLeft, bestTime, gameState, numPairs, onGameWon, initialGameState]);
+  }, [matchedPairs, gameState, numPairs, timeLeft, bestTime]);
+
+  useEffect(() => {
+    if (gameState === 'won' && initialGameState !== 'won') {
+      onGameWon?.();
+    }
+  }, [gameState, initialGameState, onGameWon]);
 
   const handleWin = useCallback(() => {
     setMapModalOpen(true);
@@ -227,7 +230,7 @@ export default function MemoryGameStage({ onGameWon, onAdvance, user, initialGam
 
   const handleKeywordSuccess = useCallback(() => {
     setKeywordModalOpen(false);
-    onAdvance();
+    onAdvance?.();
   }, [onAdvance]);
 
   const handleReturnToMap = useCallback(() => {
@@ -283,7 +286,7 @@ export default function MemoryGameStage({ onGameWon, onAdvance, user, initialGam
                       Empezar Desafío
                     </Button>
                     {user === 'manuel' && (
-                        <Button onClick={() => setMapModalOpen(true)} variant="outline" className="h-12">
+                        <Button onClick={onGameWon} variant="outline" className="h-12">
                             Saltar Desafío (Dev)
                         </Button>
                     )}
