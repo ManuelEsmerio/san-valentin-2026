@@ -122,8 +122,8 @@ const MusicWidget = () => {
                     <div className="absolute -right-1 top-0 w-6 h-1 bg-slate-400 origin-right rotate-[20deg] rounded-full"></div>
                 </div>
                 <div className="flex flex-col items-start overflow-hidden w-0 group-hover:w-32 transition-all duration-500">
-                    <span className="text-xs font-bold whitespace-nowrap">Perfect - Ed Sheeran</span>
-                    <span className="text-[10px] opacity-60 whitespace-nowrap">{isPlaying ? 'Now Playing...' : 'Paused'}</span>
+                    <span className="text-xs font-bold whitespace-nowrap">Fix You - Coldplay</span>
+                    <span className="text-[10px] opacity-60 whitespace-nowrap">{isPlaying ? 'Reproduciendo...' : 'Pausado'}</span>
                 </div>
             </div>
         </button>
