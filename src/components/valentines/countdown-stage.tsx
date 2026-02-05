@@ -66,71 +66,6 @@ const ThemeToggle = () => {
     );
 };
 
-const MusicWidget = () => {
-    const audioRef = useRef<HTMLAudioElement | null>(null);
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [isMounted, setIsMounted] = useState(false);
-    const { toast } = useToast();
-
-    useEffect(() => {
-        setIsMounted(true);
-        const globalAudio = document.querySelector('audio');
-        if (globalAudio) {
-            audioRef.current = globalAudio;
-            setIsPlaying(!globalAudio.paused);
-
-            const handlePlay = () => setIsPlaying(true);
-            const handlePause = () => setIsPlaying(false);
-
-            globalAudio.addEventListener('play', handlePlay);
-            globalAudio.addEventListener('pause', handlePause);
-
-            return () => {
-                globalAudio.removeEventListener('play', handlePlay);
-                globalAudio.removeEventListener('pause', handlePause);
-            };
-        }
-    }, []);
-    
-    const togglePlay = () => {
-        if (audioRef.current) {
-            if (isPlaying) {
-                audioRef.current.pause();
-            } else {
-                audioRef.current.play().catch(() => {
-                    toast({
-                        variant: 'destructive',
-                        title: 'No se encontró la música',
-                        description: "Para activar la música, añade un archivo 'music.mp3' en la carpeta 'public/audio'.",
-                    });
-                });
-            }
-        }
-    };
-    
-    if (!isMounted) return <div className="w-24 h-20" />;
-
-    return (
-        <button className="relative group" onClick={togglePlay}>
-            <div className="glass p-4 rounded-xl flex items-center gap-3 shadow-xl transition-all hover:pr-8">
-                <div className="relative w-12 h-12">
-                    <div className={cn("absolute inset-0 bg-slate-800 rounded-full border-4 border-slate-700 flex items-center justify-center", isPlaying && 'animate-spin-slow')}>
-                        <div className="w-4 h-4 bg-primary rounded-full flex items-center justify-center">
-                            <span className="material-symbols-rounded text-[10px] text-white" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
-                        </div>
-                    </div>
-                    <div className="absolute -right-1 top-0 w-6 h-1 bg-slate-400 origin-right rotate-[20deg] rounded-full"></div>
-                </div>
-                <div className="flex flex-col items-start overflow-hidden w-0 group-hover:w-32 transition-all duration-500">
-                    <span className="text-xs font-bold whitespace-nowrap">Fix You - Coldplay</span>
-                    <span className="text-[10px] opacity-60 whitespace-nowrap">{isPlaying ? 'Reproduciendo...' : 'Pausado'}</span>
-                </div>
-            </div>
-        </button>
-    );
-};
-
-
 export default function CountdownStage({ onComplete }: { onComplete: () => void; }) {
   const { toast } = useToast();
   const longPressTimer = useRef<NodeJS.Timeout>();
@@ -279,9 +214,6 @@ export default function CountdownStage({ onComplete }: { onComplete: () => void;
       </footer>
       <div className="absolute bottom-6 left-6 flex gap-2">
           <ThemeToggle />
-      </div>
-      <div className="absolute bottom-6 right-6">
-          <MusicWidget />
       </div>
     </div>
   );
