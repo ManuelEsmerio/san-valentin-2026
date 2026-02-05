@@ -10,8 +10,10 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['"Spline Sans"', 'sans-serif'],
-        headline: ['"Spline Sans"', 'sans-serif'],
+        display: ["'Playfair Display'", "serif"],
+        sans: ["'Inter'", "sans-serif"],
+        handwritten: ["'Caveat'", "cursive"],
+        body: ["'Inter'", 'sans-serif'],
         code: ['monospace'],
       },
       colors: {

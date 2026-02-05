@@ -4,77 +4,35 @@ import Image from "next/image";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { cn } from "@/lib/utils";
 import { useEffect, useState, useCallback } from "react";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
 import { Button } from "@/components/ui/button";
-import { RotateCcw } from "lucide-react";
-import AdventureModal from "./AdventureModal";
 
-// The firework particle effect component
-const HeartFirework = ({ baseDelay = 0 }: { baseDelay?: number }) => {
-  const animations = [
-    'animate-heart-fly-1', 'animate-heart-fly-2', 'animate-heart-fly-3', 'animate-heart-fly-4',
-    'animate-heart-fly-5', 'animate-heart-fly-6', 'animate-heart-fly-7', 'animate-heart-fly-8'
-  ];
+const HeartFloat = () => {
+    const [hearts, setHearts] = useState<any[]>([]);
+    useEffect(() => {
+        setHearts([
+            { left: '10%', delay: '0s', size: 'text-4xl', opacity: 'text-primary/20' },
+            { left: '25%', delay: '2s', size: 'text-2xl', opacity: 'text-primary/10' },
+            { left: '45%', delay: '4s', size: 'text-5xl', opacity: 'text-primary/20' },
+            { left: '65%', delay: '1s', size: 'text-3xl', opacity: 'text-primary/15' },
+            { left: '85%', delay: '3s', size: 'text-4xl', opacity: 'text-primary/25' },
+        ]);
+    }, []);
 
-  return (
-    <>
-      {animations.map((anim, index) => (
-        <span
-          key={index}
-          className={cn(
-            'material-symbols-outlined text-primary absolute opacity-0 text-2xl',
-            anim
-          )}
-          style={{ 
-            animationDelay: `${baseDelay + index * 75}ms`,
-            fontVariationSettings: "'FILL' 1"
-          }}
-        >
-          favorite
-        </span>
-      ))}
-    </>
-  );
+    return (
+        <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+            {hearts.map((heart, i) => (
+                <div key={i} className={cn('heart-float', heart.opacity)} style={{ left: heart.left, animationDelay: heart.delay }}>
+                    <span className={cn('material-symbols-outlined', heart.size)} style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
+                </div>
+            ))}
+        </div>
+    );
 };
 
 export default function RevelationStage() {
-  const collage1_img1 = PlaceHolderImages.find((img) => img.id === "letter-1-img-1");
-  const collage1_img2 = PlaceHolderImages.find((img) => img.id === "letter-1-img-2");
-  const collage1_img3 = PlaceHolderImages.find((img) => img.id === "letter-1-img-3");
-
-  const collage2_img1 = PlaceHolderImages.find((img) => img.id === "letter-2-img-1");
-  const collage2_img2 = PlaceHolderImages.find((img) => img.id === "letter-2-img-2");
-  const collage2_img3 = PlaceHolderImages.find((img) => img.id === "letter-2-img-3");
-
-  const collage3_img1 = PlaceHolderImages.find((img) => img.id === "letter-3-img-1");
-  const collage3_img2 = PlaceHolderImages.find((img) => img.id === "letter-3-img-2");
-  const collage3_img3 = PlaceHolderImages.find((img) => img.id === "letter-3-img-3");
-
-  const collage4_img1 = PlaceHolderImages.find((img) => img.id === "letter-4-img-1");
-  const collage4_img2 = PlaceHolderImages.find((img) => img.id === "letter-4-img-2");
-  const collage4_img3 = PlaceHolderImages.find((img) => img.id === "letter-4-img-3");
-
-  const [fireworks, setFireworks] = useState<any[]>([]);
-  const [isAdventureModalOpen, setAdventureModalOpen] = useState(false);
-
-  useEffect(() => {
-    // This avoids hydration errors by running only on the client
-    const generatedFireworks: any[] = Array.from({ length: 15 }).map((_, i) => ({
-      id: i,
-      style: {
-        top: `${Math.random() * 100}%`,
-        left: `${Math.random() * 100}%`,
-      },
-      delay: Math.random() * 4000, // Random delay up to 4 seconds for each burst
-    }));
-    setFireworks(generatedFireworks);
-  }, []);
+  const collage_img1 = PlaceHolderImages.find((img) => img.id === "letter-1-img-1");
+  const collage_img2 = PlaceHolderImages.find((img) => img.id === "letter-2-img-1");
+  const collage_img3 = PlaceHolderImages.find((img) => img.id === "letter-4-img-1");
 
   const handleReplay = useCallback(() => {
     localStorage.removeItem('valentines-app-stage');
@@ -83,248 +41,91 @@ export default function RevelationStage() {
 
   return (
     <>
-      <div className="w-full bg-card dark:bg-stone-900 rounded-xl shadow-xl overflow-hidden border border-primary/5 relative">
-        
-        {/* Container for fireworks to sit on top */}
-        <div className="absolute inset-0 w-full h-full pointer-events-none z-20 overflow-hidden rounded-xl">
-          {fireworks.map(fw => (
-              <div key={fw.id} className="absolute" style={fw.style}>
-                  <HeartFirework baseDelay={fw.delay} />
-              </div>
-          ))}
-        </div>
+      <HeartFloat />
+      <main className="relative z-10 w-full max-w-2xl bg-white dark:bg-gray-900 rounded-[2.5rem] shadow-2xl p-8 md:p-12 border border-rose-100 dark:border-rose-900/30">
+        <header className="text-center mb-10">
+            <div className="inline-block p-3 rounded-full bg-rose-50 dark:bg-rose-900/20 mb-4">
+                <span className="material-symbols-outlined text-primary text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
+            </div>
+            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-2">
+                <span className="text-gray-900 dark:text-white">¡Felicidades, </span>
+                <span className="bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent italic">mi chula!</span>
+            </h1>
+            <p className="text-gray-500 dark:text-gray-400 font-medium tracking-wide uppercase text-sm">Has llegado al final del desafío</p>
+        </header>
 
-        {/* Main content, with a lower z-index */}
-        <div className="px-4 sm:px-8 pb-10 pt-6 flex flex-col items-center text-center gap-6 z-10 relative">
-          <span 
-            className="material-symbols-outlined text-primary text-6xl animate-heart-beat"
-            style={{ fontVariationSettings: "'FILL' 1" }}
-          >
-            favorite
-          </span>
-          <h2 className="text-foreground text-3xl font-bold leading-tight tracking-[-0.015em]">
-            ¡Felicidades, mi chula!
-          </h2>
-          <p className="text-muted-foreground -mt-4">
-            Has llegado al final del desafío.
-          </p>
-          
-          <Carousel
-            opts={{ loop: true }}
-            className="w-full max-w-md"
-          >
-            <CarouselContent>
-              {/* Slide 1 */}
-              <CarouselItem>
-                <div className="p-1">
-                  <div className="w-full aspect-[4/3] grid grid-cols-3 grid-rows-2 gap-2">
-                    {collage1_img1 && (
-                      <div className="col-span-2 row-span-2 relative rounded-lg overflow-hidden shadow-md bg-black/20">
-                        <Image
-                          src={`${collage1_img1.imageUrl}?v=2`}
-                          alt={collage1_img1.description}
-                          data-ai-hint={collage1_img1.imageHint}
-                          fill
-                          className="object-contain"
-                        />
-                      </div>
-                    )}
-                    {collage1_img2 && (
-                      <div className="col-span-1 row-span-1 relative rounded-lg overflow-hidden shadow-md bg-black/20">
-                        <Image
-                          src={`${collage1_img2.imageUrl}?v=2`}
-                          alt={collage1_img2.description}
-                          data-ai-hint={collage1_img2.imageHint}
-                          fill
-                          className="object-contain"
-                        />
-                      </div>
-                    )}
-                    {collage1_img3 && (
-                      <div className="col-span-1 row-span-1 relative rounded-lg overflow-hidden shadow-md bg-black/20">
-                        <Image
-                          src={`${collage1_img3.imageUrl}?v=2`}
-                          alt={collage1_img3.description}
-                          data-ai-hint={collage1_img3.imageHint}
-                          fill
-                          className="object-contain"
-                        />
-                      </div>
-                    )}
-                  </div>
+        <section className="grid grid-cols-[2fr_1fr] grid-rows-[repeat(2,200px)] gap-4 mb-12">
+            {collage_img1 && (
+                <div className="row-span-2 overflow-hidden rounded-2xl shadow-lg border-4 border-white dark:border-gray-800 transform -rotate-1 hover:rotate-0 transition-transform duration-500">
+                    <Image
+                        src={collage_img1.imageUrl}
+                        alt={collage_img1.description}
+                        data-ai-hint={collage_img1.imageHint}
+                        width={400}
+                        height={600}
+                        className="w-full h-full object-cover"
+                    />
                 </div>
-              </CarouselItem>
-              
-              {/* Slide 2 */}
-              <CarouselItem>
-                <div className="p-1">
-                  <div className="w-full aspect-[4/3] grid grid-cols-3 grid-rows-2 gap-2">
-                    {collage2_img1 && (
-                      <div className="col-span-1 row-span-2 relative rounded-lg overflow-hidden shadow-md bg-black/20">
-                        <Image
-                          src={`${collage2_img1.imageUrl}?v=2`}
-                          alt={collage2_img1.description}
-                          data-ai-hint={collage2_img1.imageHint}
-                          fill
-                          className="object-contain"
-                        />
-                      </div>
-                    )}
-                    {collage2_img2 && (
-                      <div className="col-span-2 row-span-1 relative rounded-lg overflow-hidden shadow-md bg-black/20">
-                        <Image
-                          src={`${collage2_img2.imageUrl}?v=2`}
-                          alt={collage2_img2.description}
-                          data-ai-hint={collage2_img2.imageHint}
-                          fill
-                          className="object-contain"
-                        />
-                      </div>
-                    )}
-                    {collage2_img3 && (
-                      <div className="col-span-2 row-span-1 relative rounded-lg overflow-hidden shadow-md bg-black/20">
-                        <Image
-                          src={`${collage2_img3.imageUrl}?v=2`}
-                          alt={collage2_img3.description}
-                          data-ai-hint={collage2_img3.imageHint}
-                          fill
-                          className="object-contain"
-                        />
-                      </div>
-                    )}
-                  </div>
+            )}
+            {collage_img2 && (
+                <div className="overflow-hidden rounded-2xl shadow-lg border-4 border-white dark:border-gray-800 transform rotate-2 hover:rotate-0 transition-transform duration-500">
+                    <Image
+                        src={collage_img2.imageUrl}
+                        alt={collage_img2.description}
+                        data-ai-hint={collage_img2.imageHint}
+                        width={300}
+                        height={300}
+                        className="w-full h-full object-cover"
+                    />
                 </div>
-              </CarouselItem>
-              
-              {/* Slide 3 */}
-              <CarouselItem>
-                <div className="p-1">
-                  <div className="w-full aspect-[4/3] grid grid-cols-2 grid-rows-2 gap-2">
-                    {collage3_img1 && (
-                      <div className="col-span-2 row-span-1 relative rounded-lg overflow-hidden shadow-md bg-black/20">
-                        <Image
-                          src={`${collage3_img1.imageUrl}?v=2`}
-                          alt={collage3_img1.description}
-                          data-ai-hint={collage3_img1.imageHint}
-                          fill
-                          className="object-contain"
-                        />
-                      </div>
-                    )}
-                    {collage3_img2 && (
-                      <div className="col-span-1 row-span-1 relative rounded-lg overflow-hidden shadow-md bg-black/20">
-                        <Image
-                          src={`${collage3_img2.imageUrl}?v=2`}
-                          alt={collage3_img2.description}
-                          data-ai-hint={collage3_img2.imageHint}
-                          fill
-                          className="object-contain"
-                        />
-                      </div>
-                    )}
-                    {collage3_img3 && (
-                      <div className="col-span-1 row-span-1 relative rounded-lg overflow-hidden shadow-md bg-black/20">
-                        <Image
-                          src={`${collage3_img3.imageUrl}?v=2`}
-                          alt={collage3_img3.description}
-                          data-ai-hint={collage3_img3.imageHint}
-                          fill
-                          className="object-contain"
-                        />
-                      </div>
-                    )}
-                  </div>
+            )}
+            {collage_img3 && (
+                <div className="overflow-hidden rounded-2xl shadow-lg border-4 border-white dark:border-gray-800 transform -rotate-2 hover:rotate-0 transition-transform duration-500">
+                    <Image
+                        src={collage_img3.imageUrl}
+                        alt={collage_img3.description}
+                        data-ai-hint={collage_img3.imageHint}
+                        width={300}
+                        height={300}
+                        className="w-full h-full object-cover"
+                    />
                 </div>
-              </CarouselItem>
+            )}
+        </section>
 
-              {/* Slide 4 */}
-              <CarouselItem>
-                <div className="p-1">
-                  <div className="w-full aspect-[4/3] grid grid-cols-2 grid-rows-2 gap-2">
-                    {collage4_img1 && (
-                      <div className="col-span-2 row-span-1 relative rounded-lg overflow-hidden shadow-md bg-black/20">
-                        <Image
-                          src={`${collage4_img1.imageUrl}?v=2`}
-                          alt={collage4_img1.description}
-                          data-ai-hint={collage4_img1.imageHint}
-                          fill
-                          className="object-contain"
-                        />
-                      </div>
-                    )}
-                    {collage4_img2 && (
-                      <div className="col-span-1 row-span-1 relative rounded-lg overflow-hidden shadow-md bg-black/20">
-                        <Image
-                          src={`${collage4_img2.imageUrl}?v=2`}
-                          alt={collage4_img2.description}
-                          data-ai-hint={collage4_img2.imageHint}
-                          fill
-                          className="object-contain"
-                        />
-                      </div>
-                    )}
-                    {collage4_img3 && (
-                      <div className="col-span-1 row-span-1 relative rounded-lg overflow-hidden shadow-md bg-black/20">
-                        <Image
-                          src={`${collage4_img3.imageUrl}?v=2`}
-                          alt={collage4_img3.description}
-                          data-ai-hint={collage4_img3.imageHint}
-                          fill
-                          className="object-contain"
-                        />
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </CarouselItem>
-            </CarouselContent>
-            <CarouselPrevious className="hidden sm:flex left-2" />
-            <CarouselNext className="hidden sm:flex right-2" />
-          </Carousel>
-          
-          <div className="text-left bg-accent/50 p-6 rounded-lg w-full max-w-2xl space-y-4">
-              <p className="text-lg md:text-xl">
-                  Este es solo un pequeño recordatorio de lo importante que eres para mí y de lo increíble que es compartir cada momento contigo. Gracias por ser parte de mi vida, por tu cariño, tu paciencia y por todo lo que construimos juntos. ❤️
-              </p>
-              <p className="text-lg md:text-xl">
-                  Sé que estos días han sido de mucho trabajo, pero para nada me olvido de ti. Espero que al menos este detalle te haya sacado una buena sonrisa y te haya ayudado a relajarte un poquito.
-              </p>
-              <p className="text-lg md:text-xl">
-                  Ojalá los desafíos no hayan sido estresantes 😥, porque quise hacer algo con lo que hago todos los días para darte algo único y especial, algo que solo tú vas a tener. :3
-              </p>
-              <p className="font-headline text-2xl mt-4 text-primary text-center">
-                💕 ¡Feliz 14 de Febrero! 💕
-              </p>
-          </div>
+        <article className="bg-[#fdfbf7] dark:bg-gray-800/50 border border-rose-200 dark:border-rose-900/50 rounded-3xl p-8 mb-10 relative">
+            <div className="absolute -top-4 -left-4 text-rose-300 dark:text-rose-700 opacity-50">
+                <span className="material-symbols-outlined text-6xl">format_quote</span>
+            </div>
+            <div className="space-y-6 text-gray-700 dark:text-gray-200 leading-relaxed text-lg">
+                <p>
+                    Este es solo un pequeño recordatorio de lo importante que eres para mí y de lo increíble que es compartir cada momento contigo. Gracias por ser parte de mi vida, por tu cariño, tu paciencia y por todo lo que construimos juntos. ❤️
+                </p>
+                <p>
+                    Sé que estos días han sido de mucho trabajo, pero para nada me olvido de ti. Espero que al menos este detalle te haya sacado una buena sonrisa y te haya ayudado a relajarte un poquito.
+                </p>
+                <p>
+                    Ojalá los desafíos no hayan sido estresantes 🥳, porque quise hacer algo con lo que hago todos los días para darte algo único y especial, algo que solo tú vas a tener. :3
+                </p>
+            </div>
+            <div className="mt-8 text-center">
+                <p className="font-handwritten text-4xl text-primary transform -rotate-2">
+                    ¡Feliz 14 de Febrero! ❤️
+                </p>
+            </div>
+        </article>
 
-          <div className="mt-6 flex flex-col items-center gap-4 w-full max-w-sm">
+        <div className="flex justify-center">
             <Button
-              variant="outline"
-              onClick={handleReplay}
-              className="w-full h-12 text-base font-bold"
+                onClick={handleReplay}
+                variant="outline"
+                className="group flex items-center gap-2 px-8 py-3 rounded-full border-2 border-primary text-primary font-semibold hover:bg-primary hover:text-white transition-all duration-300 shadow-md hover:shadow-xl active:scale-95 h-auto text-base"
             >
-              <RotateCcw className="mr-2 h-4 w-4" />
-              Volver a vivir la experiencia
+                <span className="material-symbols-outlined group-hover:rotate-180 transition-transform duration-500">restart_alt</span>
+                Volver a vivir la experiencia
             </Button>
-            {/* <Button
-              onClick={() => setAdventureModalOpen(true)}
-              className="w-full h-14 text-lg font-bold bg-gradient-to-r from-primary to-rose-400 text-white shadow-lg shadow-primary/30"
-            >
-              <span 
-                className="material-symbols-outlined mr-2 animate-heart-beat" 
-                style={{ fontVariationSettings: "'FILL' 1" }}
-              >
-                card_giftcard
-              </span>
-              ¡Regalo sorpresa!
-            </Button> */}
-          </div>
         </div>
-      </div>
-      <AdventureModal 
-        isOpen={isAdventureModalOpen}
-        onConfirm={() => setAdventureModalOpen(false)}
-      />
+      </main>
     </>
   );
 }
