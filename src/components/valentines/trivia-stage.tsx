@@ -2,7 +2,6 @@
 "use client";
 
 import { useState, useEffect, useCallback, memo, useRef } from "react";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -36,7 +35,6 @@ type MultipleChoiceQuestion = {
   question: string;
   options: string[];
   correctAnswer: string | string[];
-  image: string;
   hint: string;
   category?: string;
 };
@@ -46,7 +44,6 @@ type OpenEndedQuestion = {
   type: "open-ended";
   question: string;
   creatorAnswer: string;
-  image: string;
   hint: string;
 };
 
@@ -55,60 +52,60 @@ type AnswerStatus = "unanswered" | "correct" | "incorrect";
 
 // Data moved outside component to prevent redeclaration
 const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
-  { id: 1, type: 'multiple-choice', question: '¿Quién es más competitivo en juegos de mesa?', options: ['Yo','Tú','Los dos','Ninguno'], correctAnswer: 'Yo', image: 'trivia-1', hint: 'Siempre hay alguien que no quiere perder 🎲' },
+  { id: 1, type: 'multiple-choice', question: '¿Quién es más competitivo en juegos de mesa?', options: ['Yo','Tú','Los dos','Ninguno'], correctAnswer: 'Yo', hint: 'Siempre hay alguien que no quiere perder 🎲' },
 
-  { id: 2, type: 'multiple-choice', question: '¿Quién se roba más seguido la cobija?', options: ['Yo','Tú','Ambos','Nadie'], correctAnswer: 'Tú', image: 'trivia-2', hint: 'La lucha nocturna por sobrevivir al frío 🛏️' },
+  { id: 2, type: 'multiple-choice', question: '¿Quién se roba más seguido la cobija?', options: ['Yo','Tú','Ambos','Nadie'], correctAnswer: 'Tú', hint: 'La lucha nocturna por sobrevivir al frío 🛏️' },
 
-  { id: 3, type: 'multiple-choice', question: '¿Quién canta peor?', options: ['Yo','Tú','Ambos desafinamos','Nadie, somos estrellas'], correctAnswer: ['Yo','Ambos desafinamos'], image: 'trivia-3', hint: 'El karaoke nunca miente 🎤' },
+  { id: 3, type: 'multiple-choice', question: '¿Quién canta peor?', options: ['Yo','Tú','Ambos desafinamos','Nadie, somos estrellas'], correctAnswer: ['Yo','Ambos desafinamos'], hint: 'El karaoke nunca miente 🎤' },
 
-  { id: 4, type: 'multiple-choice', question: '¿Quién cocina mejor?', options: ['Yo','Tú','Ambos','Nadie, pedimos comida'], correctAnswer: 'Ambos', image: 'trivia-4', hint: 'El sazón nunca falla 🍳' },
+  { id: 4, type: 'multiple-choice', question: '¿Quién cocina mejor?', options: ['Yo','Tú','Ambos','Nadie, pedimos comida'], correctAnswer: 'Ambos', hint: 'El sazón nunca falla 🍳' },
 
   // 5 se omite
 
-  { id: 6, type: 'multiple-choice', question: '¿Quién ronca más fuerte?', options: ['Yo','Tú','Ambos','Nadie'], correctAnswer: 'Tú', image: 'trivia-6', hint: 'El concierto nocturno 🎶😴' },
+  { id: 6, type: 'multiple-choice', question: '¿Quién ronca más fuerte?', options: ['Yo','Tú','Ambos','Nadie'], correctAnswer: 'Tú', hint: 'El concierto nocturno 🎶😴' },
 
-  { id: 7, type: 'multiple-choice', question: '¿Quién es más distraído?', options: ['Yo','Tú','Ambos','Nadie'], correctAnswer: 'Yo', image: 'trivia-7', hint: 'El clásico: ‘¿y mis llaves?’ 🔑' },
+  { id: 7, type: 'multiple-choice', question: '¿Quién es más distraído?', options: ['Yo','Tú','Ambos','Nadie'], correctAnswer: 'Yo', hint: 'El clásico: ‘¿y mis llaves?’ 🔑' },
 
-  { id: 8, type: 'multiple-choice', question: '¿Quién llora al ver videos de animalitos?', options: ['Yo','Tú','Ambos','Nadie'], correctAnswer: 'Tú', image: 'trivia-8', hint: 'Los animalitos siempre ganan 🐶🐱' },
+  { id: 8, type: 'multiple-choice', question: '¿Quién llora al ver videos de animalitos?', options: ['Yo','Tú','Ambos','Nadie'], correctAnswer: 'Tú', hint: 'Los animalitos siempre ganan 🐶🐱' },
 
-  { id: 9, type: 'multiple-choice', question: '¿Qué es lo que más valoro de nuestra relación?', options: ['La confianza','La comunicación','Las acciones','Todo lo anterior'], correctAnswer: 'Todo lo anterior', image: 'trivia-9', hint: 'Es la base de todo 💙' },
+  { id: 9, type: 'multiple-choice', question: '¿Qué es lo que más valoro de nuestra relación?', options: ['La confianza','La comunicación','Las acciones','Todo lo anterior'], correctAnswer: 'Todo lo anterior', hint: 'Es la base de todo 💙' },
 
   // 10 se omite
 
-  { id: 11, type: 'multiple-choice', question: '¿Cómo describirías nuestra relación?', options: ['Divertida','Única','Auténtica','Todas las anteriores'], correctAnswer: ['Divertida','Única','Auténtica','Todas las anteriores'], image: 'trivia-11', hint: 'No hay respuesta incorrecta aquí ✨' },
+  { id: 11, type: 'multiple-choice', question: '¿Cómo describirías nuestra relación?', options: ['Divertida','Única','Auténtica','Todas las anteriores'], correctAnswer: ['Divertida','Única','Auténtica','Todas las anteriores'], hint: 'No hay respuesta incorrecta aquí ✨' },
 
-  { id: 12, type: 'multiple-choice', question: '¿Qué momento simple disfruto más contigo?', options: ['Platicar sin prisa','Reírnos de tonterías','Estar en silencio','Todo lo anterior'], correctAnswer: 'Todo lo anterior', image: 'trivia-12', hint: 'Lo simple también es especial 💫' },
+  { id: 12, type: 'multiple-choice', question: '¿Qué momento simple disfruto más contigo?', options: ['Platicar sin prisa','Reírnos de tonterías','Estar en silencio','Todo lo anterior'], correctAnswer: 'Todo lo anterior', hint: 'Lo simple también es especial 💫' },
 
-  { id: 13, type: 'multiple-choice', question: '¿Qué significa para mí compartir este juego contigo?', options: ['Un recuerdo','Un detalle','Un momento','Un poco de todo'], correctAnswer: ['Un recuerdo','Un detalle','Un momento','Un poco de todo'], image: 'trivia-13', hint: 'Nada aquí es casual 💝' },
+  { id: 13, type: 'multiple-choice', question: '¿Qué significa para mí compartir este juego contigo?', options: ['Un recuerdo','Un detalle','Un momento','Un poco de todo'], correctAnswer: ['Un recuerdo','Un detalle','Un momento','Un poco de todo'], hint: 'Nada aquí es casual 💝' },
 
-  { id: 14, type: 'multiple-choice', question: '¿Qué es lo que más nos gusta hacer juntos?', options: ['Ver películas','Salir a comer','Viajar','Todo lo anterior'], correctAnswer: ['Ver películas','Salir a comer','Viajar','Todo lo anterior'], image: 'trivia-14', hint: 'La mejor compañía para cualquier plan 🍿' },
+  { id: 14, type: 'multiple-choice', question: '¿Qué es lo que más nos gusta hacer juntos?', options: ['Ver películas','Salir a comer','Viajar','Todo lo anterior'], correctAnswer: ['Ver películas','Salir a comer','Viajar','Todo lo anterior'], hint: 'La mejor compañía para cualquier plan 🍿' },
 
   // 15 se omite
 
-  { id: 16, type: 'multiple-choice', question: '¿Quién es más probable que se pierda usando un mapa?', options: ['Yo','Tú','Ambos','El GPS nos odia'], correctAnswer: 'Yo', image: 'trivia-16', hint: 'A veces la orientación falla 🗺️😂' },
+  { id: 16, type: 'multiple-choice', question: '¿Quién es más probable que se pierda usando un mapa?', options: ['Yo','Tú','Ambos','El GPS nos odia'], correctAnswer: 'Yo', hint: 'A veces la orientación falla 🗺️😂' },
 
-  { id: 17, type: 'multiple-choice', question: '¿Quién elige siempre la película?', options: ['Yo','Tú','Lo decidimos juntos','Netflix decide'], correctAnswer: 'Lo decidimos juntos', image: 'trivia-17', hint: 'El control remoto manda 📺' },
+  { id: 17, type: 'multiple-choice', question: '¿Quién elige siempre la película?', options: ['Yo','Tú','Lo decidimos juntos','Netflix decide'], correctAnswer: 'Lo decidimos juntos', hint: 'El control remoto manda 📺' },
 
-  { id: 18, type: 'multiple-choice', question: '¿Quién se come los postres del otro?', options: ['Yo','Tú','Ambos','Nunca pasa'], correctAnswer: 'Yo', image: 'trivia-18', hint: 'El misterio del postre 🍰' },
+  { id: 18, type: 'multiple-choice', question: '¿Quién se come los postres del otro?', options: ['Yo','Tú','Ambos','Nunca pasa'], correctAnswer: 'Yo', hint: 'El misterio del postre 🍰' },
 
-  { id: 19, type: 'multiple-choice', question: '¿Quién es más ahorrador?', options: ['Yo','Tú','Depende','Ambos'], correctAnswer: 'Yo', image: 'trivia-19', hint: 'Cuidando los centavos 💰' },
+  { id: 19, type: 'multiple-choice', question: '¿Quién es más ahorrador?', options: ['Yo','Tú','Depende','Ambos'], correctAnswer: 'Yo', hint: 'Cuidando los centavos 💰' },
 
   // 20 se omite
 
-  { id: 21, type: 'multiple-choice', question: '¿Quién tarda más en decidir qué vamos a comer?', options: ['Yo','Tú','Ambos','Pedimos lo mismo'], correctAnswer: 'Ambos', image: 'trivia-21', hint: 'Elegir comida es un reto 🍕😂' },
+  { id: 21, type: 'multiple-choice', question: '¿Quién tarda más en decidir qué vamos a comer?', options: ['Yo','Tú','Ambos','Pedimos lo mismo'], correctAnswer: 'Ambos', hint: 'Elegir comida es un reto 🍕😂' },
 
-  { id: 22, type: 'multiple-choice', question: '¿Quién da los mejores abrazos?', options: ['Yo','Tú','Ambos','Imposible decidir'], correctAnswer: 'Ambos', image: 'trivia-22', hint: 'Abrazos que curan 💙' },
+  { id: 22, type: 'multiple-choice', question: '¿Quién da los mejores abrazos?', options: ['Yo','Tú','Ambos','Imposible decidir'], correctAnswer: 'Ambos', hint: 'Abrazos que curan 💙' },
 
-  { id: 23, type: 'multiple-choice', question: '¿Quién propone más planes sorpresa?', options: ['Yo','Tú','Ambos','Ninguno'], correctAnswer: 'Ambos', image: 'trivia-23', hint: 'Siempre hay sorpresas 🎁' },
+  { id: 23, type: 'multiple-choice', question: '¿Quién propone más planes sorpresa?', options: ['Yo','Tú','Ambos','Ninguno'], correctAnswer: 'Ambos', hint: 'Siempre hay sorpresas 🎁' },
 
-  { id: 24, type: 'multiple-choice', question: '¿Quién anima al otro cuando está triste?', options: ['Yo','Tú','Ambos','Siempre nos apoyamos'], correctAnswer: 'Siempre nos apoyamos', image: 'trivia-24', hint: 'Equipo para todo 💞' },
+  { id: 24, type: 'multiple-choice', question: '¿Quién anima al otro cuando está triste?', options: ['Yo','Tú','Ambos','Siempre nos apoyamos'], correctAnswer: 'Siempre nos apoyamos', hint: 'Equipo para todo 💞' },
 
-  { id: 25, type: 'multiple-choice', question: '¿Quién se queda dormido primero?', options: ['Yo','Tú','Ambos','Depende del día'], correctAnswer: 'Depende del día', image: 'trivia-25', hint: 'Buenas noches 😴✨' }
+  { id: 25, type: 'multiple-choice', question: '¿Quién se queda dormido primero?', options: ['Yo','Tú','Ambos','Depende del día'], correctAnswer: 'Depende del día', hint: 'Buenas noches 😴✨' }
 ];
 
 
 const openEndedQuestions: OpenEndedQuestion[] = [
-    { id: 26, type: 'open-ended', question: '¿Qué es lo que más valoras cuando te sientes en calma conmigo?', creatorAnswer: 'Valoro que, aun en los momentos complicados, sigamos eligiéndonos. Que nos quedemos, que nos escuchemos y que no huyamos cuando algo duele, porque nuestra paz nace de no rendirnos el uno con el otro. 💕', image: 'open-ended-1', hint: 'Una pregunta sobre el presente y la paz.' },
+    { id: 26, type: 'open-ended', question: '¿Qué es lo que más valoras cuando te sientes en calma conmigo?', creatorAnswer: 'Valoro que, aun en los momentos complicados, sigamos eligiéndonos. Que nos quedemos, que nos escuchemos y que no huyamos cuando algo duele, porque nuestra paz nace de no rendirnos el uno con el otro. 💕', hint: 'Una pregunta sobre el presente y la paz.' },
     {
       id: 27,
       type: 'open-ended',
@@ -118,10 +115,9 @@ const openEndedQuestions: OpenEndedQuestion[] = [
 Todo eso ha tenido un impacto muy fuerte en ti, y poco a poco ha ido apagando a la hermosa persona que eres. Eso me duele, porque te amo y me importa lo que sientes.
 
 Pero también sé que, con el apoyo adecuado y con los cambios correctos, vas a volver a sentirte mejor. Y yo quiero estar a tu lado para acompañarte en ese proceso y verlo contigo. 💙`,
-      image: 'open-ended-2',
       hint: 'Una reflexión sobre nuestra comunicación.'
     },    
-    { id: 28, type: 'open-ended', question: '¿Qué te ayuda hoy a sentirte más tranquila cuando estamos juntos?', creatorAnswer: 'Que estés presente de verdad, que me apoyes en lo que puedas y que respetes mi ritmo. Sin exigencias, sin promesas vacías, solo estando conmigo.', image: 'open-ended-3', hint: 'Una pregunta sobre el presente y la paz.' }
+    { id: 28, type: 'open-ended', question: '¿Qué te ayuda hoy a sentirte más tranquila cuando estamos juntos?', creatorAnswer: 'Que estés presente de verdad, que me apoyes en lo que puedas y que respetes mi ritmo. Sin exigencias, sin promesas vacías, solo estando conmigo.', hint: 'Una pregunta sobre el presente y la paz.' }
 ];
 
 const LETTERS: Record<number, { title: string; content: string[]; imageIds: string[] }> = {
@@ -421,7 +417,6 @@ export default function TriviaStage({ onGameWon, onAdvance, user, initialGameSta
   const iframeUrl = `https://maps.google.com/maps?q=${lat},${long}&hl=es&z=14&output=embed`;
   
   const currentQuestion = questions[currentQuestionIndex];
-  const imagePlaceholder = PlaceHolderImages.find((img) => img.id === currentQuestion?.image);
 
   const renderMainContent = () => {
     switch (stage) {
@@ -444,19 +439,6 @@ export default function TriviaStage({ onGameWon, onAdvance, user, initialGameSta
               <div className="lg:col-span-8">
                 <div className="relative overflow-hidden flex flex-col gap-4 rounded-2xl bg-card p-4 sm:p-6 border-2 border-primary/10 h-full">
                   <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:30px_30px]"></div>
-
-                  <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-black/10 shadow-lg border border-border">
-                    {imagePlaceholder && (
-                      <Image
-                          src={`${imagePlaceholder.imageUrl}?v=2`}
-                          alt={imagePlaceholder.description}
-                          data-ai-hint={imagePlaceholder.imageHint}
-                          fill
-                          className="object-contain"
-                          priority
-                      />
-                    )}
-                  </div>
                   
                   <div className="bg-card/50 dark:bg-zinc-800/30 border border-border p-4 rounded-xl flex-1 flex flex-col">
                     <div className="text-center mb-6">
@@ -630,9 +612,3 @@ export default function TriviaStage({ onGameWon, onAdvance, user, initialGameSta
     </>
   );
 }
-
-    
-
-    
-
-
