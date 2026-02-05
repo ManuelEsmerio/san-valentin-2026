@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Map, MapPin } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 
 type MapModalProps = {
   isOpen: boolean;
@@ -12,9 +12,20 @@ type MapModalProps = {
   coordinates: string;
   googleMapsUrl: string;
   iframeUrl: string;
+  title?: string;
+  description?: ReactNode;
 };
 
-export default function MapModal({ isOpen, onClose, onNextChallenge, coordinates, googleMapsUrl, iframeUrl }: MapModalProps) {
+export default function MapModal({ 
+  isOpen, 
+  onClose, 
+  onNextChallenge, 
+  coordinates, 
+  googleMapsUrl, 
+  iframeUrl,
+  title = "¡Pista de Regalo Desbloqueada!",
+  description 
+}: MapModalProps) {
   const [isShowing, setIsShowing] = useState(false);
 
   useEffect(() => {
@@ -29,6 +40,12 @@ export default function MapModal({ isOpen, onClose, onNextChallenge, coordinates
   if (!isShowing) {
     return null;
   }
+
+  const defaultDescription = (
+    <p>
+      Felicidades, acabas de superar el primer obstáculo. Todavía quedan más, y tu recompensa es ir a este punto y recoger la pista que necesitas para avanzar.
+    </p>
+  );
 
   return (
     <div
@@ -48,12 +65,12 @@ export default function MapModal({ isOpen, onClose, onNextChallenge, coordinates
         <div className="p-6 sm:p-8 text-center">
             <div className="flex justify-center items-center gap-2 mb-4">
                 <MapPin className="text-primary h-8 w-8" />
-                <h2 className="text-2xl font-bold text-foreground">¡Pista de Regalo Desbloqueada!</h2>
+                <h2 className="text-2xl font-bold text-foreground">{title}</h2>
             </div>
             
-            <p className="text-muted-foreground mb-4">
-                Felicidades, acabas de superar el primer obstáculo. Todavía quedan más, y tu recompensa es ir a este punto y recoger la pista que necesitas para avanzar.
-            </p>
+            <div className="text-muted-foreground mb-4 space-y-3">
+              {description || defaultDescription}
+            </div>
 
             <div className="relative w-full aspect-video rounded-lg overflow-hidden shadow-lg bg-black/10 border border-border mb-4">
                 <iframe

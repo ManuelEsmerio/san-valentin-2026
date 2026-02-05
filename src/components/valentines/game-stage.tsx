@@ -474,6 +474,13 @@ export default function GameStage({ onGameWon, onAdvance, user, initialGameState
         coordinates={coordinates}
         googleMapsUrl={googleMapsUrl}
         iframeUrl={iframeUrl}
+        description={
+          <>
+            <p>Este camino apenas comienza, así que ponte ropa cómoda, porque tendrás que caminar para poder encontrar tu regalo.</p>
+            <p>Felicidades, acabas de superar el primer obstáculo. Todavía quedan más, y tu recompensa es ir a este punto y recoger la pista que necesitas para avanzar. 💌</p>
+            <p className="font-bold text-primary mt-2">📍 Primera pista: La encontrarás en la casa de Temo, mi hermano.</p>
+          </>
+        }
       />
 
       <KeywordModal
