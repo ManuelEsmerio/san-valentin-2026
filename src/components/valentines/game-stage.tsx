@@ -54,10 +54,10 @@ export default function GameStage({ onGameWon, onAdvance, user, initialGameState
   const directionRef = useRef({ x: 0, y: -1 });
   const touchStartRef = useRef<{ x: number, y: number } | null>(null);
 
-  const coordinates = "19.4326° N, 99.1332° W";
-  const lat = "19.4326";
-  const long = "-99.1332";
-  const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${long}`;
+  const coordinates = "20.8800463° N, 103.8357498° W";
+  const lat = "20.8800463";
+  const long = "-103.8357498";
+  const googleMapsUrl = `https://maps.app.goo.gl/cbvZes6MUemmbG5C8`;
   const iframeUrl = `https://maps.google.com/maps?q=${lat},${long}&hl=es&z=14&output=embed`;
 
   const drawHeart = (
