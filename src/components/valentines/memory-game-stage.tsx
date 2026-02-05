@@ -92,10 +92,10 @@ export default function MemoryGameStage({ onGameWon, onAdvance, user, initialGam
 
   const timerRef = useRef<NodeJS.Timeout>();
 
-  const coordinates = "19.4130° N, 99.1718° W";
-  const lat = "19.4130";
-  const long = "-99.1718";
-  const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${long}`;
+  const coordinates = "20.88215° N, 103.83882° W";
+  const lat = "20.88215";
+  const long = "-103.83882";
+  const googleMapsUrl = `https://maps.app.goo.gl/1f512oqmcCxUe31z8`;
   const iframeUrl = `https://maps.google.com/maps?q=${lat},${long}&hl=es&z=14&output=embed`;
   const CORRECT_KEYWORD = "en";
 
@@ -406,6 +406,14 @@ export default function MemoryGameStage({ onGameWon, onAdvance, user, initialGam
         coordinates={coordinates}
         googleMapsUrl={googleMapsUrl}
         iframeUrl={iframeUrl}
+        title="¡Cuarta Pista Desbloqueada!"
+        description={
+          <>
+            <p>¡Ya casi terminas! Así que es tiempo de un merecido descanso y desayuno.</p>
+            <p>Mmm... ¿qué sería bueno? ¡Ya sé! ¿Qué te parece un desayuno especial? Ve al <strong>Hotel Manadia</strong> donde tienen un pedido a tu nombre. Así que a descansar y a desayunar.</p>
+            <p className="font-bold text-primary mt-2">¡Provechito! 🍽️</p>
+          </>
+        }
       />
 
       <KeywordModal
