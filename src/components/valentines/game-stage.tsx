@@ -487,7 +487,7 @@ export default function GameStage({ onGameWon, onAdvance, user, initialGameState
         isOpen={isKeywordModalOpen}
         onSuccess={handleKeywordSuccess}
         onBack={handleReturnToMap}
-        correctKeyword="tu"
+        correctKeyword="Sola"
         title="Primera Palabra Clave"
         description="Ingresa la palabra clave que encontraste en la ubicación de la pista para continuar."
       />

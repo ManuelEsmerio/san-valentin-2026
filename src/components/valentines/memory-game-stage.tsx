@@ -99,7 +99,7 @@ export default function MemoryGameStage({ onGameWon, onAdvance, user, initialGam
   const long = "-103.83882";
   const googleMapsUrl = `https://maps.app.goo.gl/1f512oqmcCxUe31z8`;
   const iframeUrl = `https://maps.google.com/maps?q=${lat},${long}&hl=es&z=14&output=embed`;
-  const CORRECT_KEYWORD = "en";
+  const CORRECT_KEYWORD = "Lado";
 
   const generateCards = useCallback((pairs: number) => {
     const iconsToUse = cardIcons.slice(0, pairs);

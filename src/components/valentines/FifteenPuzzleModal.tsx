@@ -301,7 +301,7 @@ export default function FifteenPuzzleModal({ isOpen, onAdvance, onGameWon, user,
           setKeywordModalOpen(false);
           setMapModalOpen(true);
         }}
-        correctKeyword="tu habitación"
+        correctKeyword="Caminarás"
         title="Última Palabra Clave"
         description="Estás a un paso de la frase secreta final. Ingresa la última parte."
       />

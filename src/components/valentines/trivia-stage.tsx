@@ -625,7 +625,7 @@ export default function TriviaStage({ onGameWon, onAdvance, user, initialGameSta
         isOpen={isKeywordModalOpen}
         onSuccess={handleKeywordSuccess}
         onBack={handleReturnToMap}
-        correctKeyword="está"
+        correctKeyword="Nunca"
         title="Tercera Palabra Clave"
         description="Has encontrado la tercera pista. Ingresa la palabra clave para desbloquear el siguiente desafío."
       />
@@ -636,3 +636,4 @@ export default function TriviaStage({ onGameWon, onAdvance, user, initialGameSta
     
 
     
+

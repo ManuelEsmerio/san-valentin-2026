@@ -462,7 +462,7 @@ export default function CatchHeartsStage({ onGameWon, onAdvance, user, initialGa
         isOpen={isKeywordModalOpen}
         onSuccess={handleKeywordSuccess}
         onBack={handleReturnToMap}
-        correctKeyword="sorpresa"
+        correctKeyword="A mi"
         title="Segunda Palabra Clave"
         description="Has encontrado la segunda pista. Ingresa la palabra clave para desbloquear el siguiente desafío."
       />
