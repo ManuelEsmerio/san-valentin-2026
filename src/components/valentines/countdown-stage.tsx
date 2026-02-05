@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import FloatingHearts from './FloatingHearts';
 
 type TimeLeft = {
   days: number;
@@ -143,6 +144,7 @@ export default function CountdownStage({ onComplete }: { onComplete: () => void;
       onTouchEnd={handleTouchEnd}
       onContextMenu={(e) => e.preventDefault()}
     >
+      <FloatingHearts />
       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/heart-pattern.png')] pointer-events-none opacity-[0.03] dark:opacity-[0.02]"></div>
       
       <main className="relative z-10 w-full max-w-4xl px-4 flex flex-col items-center justify-center">

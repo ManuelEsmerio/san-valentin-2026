@@ -22,7 +22,7 @@ export default function FloatingHearts() {
   }, []);
 
   return (
-    <div className="fixed inset-0 w-full h-full pointer-events-none overflow-hidden z-0">
+    <div className="fixed inset-0 w-full h-full pointer-events-none overflow-hidden">
       {hearts.map((heart, i) => (
         <div
           key={i}
