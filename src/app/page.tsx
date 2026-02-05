@@ -164,7 +164,7 @@ export default function Home() {
       case 'puzzle_before':
           return <PuzzleStage key="puzzle_before" onGameWon={() => setStageAndSave('puzzle_after')} user={loggedInUser} />;
       case 'puzzle_after':
-          return <PuzzleStage key="puzzle_after" initialGameState="solved" onAdvance={() => setStageAndSave('revelation')} user={loggedInUser} />;
+          return <PuzzleStage key="puzzle_after" initialGameState="solved" onGameWon={() => {}} onAdvance={() => setStageAndSave('revelation')} user={loggedInUser} />;
 
       case 'revelation':
         return <RevelationStage key="revelation" />;

@@ -114,6 +114,16 @@ export default function FifteenPuzzleModal({ isOpen, onAdvance, onGameWon, user,
     return currentTiles.every((tile, index) => tile === index);
   }, []);
 
+  useEffect(() => {
+    if (gameStatus === 'solved' && initialGameState !== 'solved') {
+      toast({
+        title: "¡Rompecabezas Resuelto!",
+        description: "Has revelado la última pista. ¡Felicidades!",
+      });
+      onGameWon();
+    }
+  }, [gameStatus, initialGameState, onGameWon, toast]);
+
   const handleTileClick = useCallback((clickedIndex: number) => {
     if (gameStatus !== 'playing') return;
 
@@ -137,15 +147,7 @@ export default function FifteenPuzzleModal({ isOpen, onAdvance, onGameWon, user,
       setMoves(newMoves);
 
       if (checkIfSolved(newTiles)) {
-        setTimeout(() => {
-            toast({
-                title: "¡Rompecabezas Resuelto!",
-                description: "Has revelado la última pista. ¡Felicidades!",
-            });
-            if(initialGameState !== 'solved') {
-                onGameWon();
-            }
-        }, 300);
+        setGameStatus('solved');
       } else if (newMoves >= MOVE_LIMIT) {
           const newLosses = losses + 1;
           setLosses(newLosses);
@@ -154,7 +156,7 @@ export default function FifteenPuzzleModal({ isOpen, onAdvance, onGameWon, user,
           setGameStatus('lost');
       }
     }
-  }, [gameStatus, tiles, moves, checkIfSolved, losses, toast, onGameWon, initialGameState]);
+  }, [gameStatus, tiles, moves, checkIfSolved, losses]);
 
   const handleRestart = useCallback(() => {
     initializeGame(difficulty);
