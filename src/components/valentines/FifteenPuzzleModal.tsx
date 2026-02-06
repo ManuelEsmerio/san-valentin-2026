@@ -236,7 +236,7 @@ export default function FifteenPuzzleModal({ isOpen, onAdvance, onGameWon, user,
                         <div
                             key={index}
                             onClick={() => handleTileClick(index)}
-                            className={cn("flex items-center justify-center rounded-lg md:rounded-xl text-xl font-bold transition-all duration-200 ease-in-out select-none", !isEmpty ? "bg-primary text-white shadow-md cursor-pointer md:hover:brightness-110 md:hover:scale-[.98]" : "empty bg-white/50 dark:bg-zinc-700/50 border-2 border-dashed border-primary/20 cursor-default")}>
+                            className={cn("flex items-center justify-center rounded-lg md:rounded-xl text-xl font-bold transition-colors duration-200 ease-in-out select-none touch-manipulation", !isEmpty ? "bg-primary text-white shadow-md cursor-pointer" : "empty bg-white/50 dark:bg-zinc-700/50 border-2 border-dashed border-primary/20 cursor-default")}>
                             {!isEmpty ? tileValue + 1 : ''}
                         </div>
                     );
