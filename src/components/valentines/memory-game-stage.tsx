@@ -381,7 +381,7 @@ export default function MemoryGameStage({ onGameWon, onAdvance, user, initialGam
                   </h3>
                 </div>
                 <p className="text-sm text-muted-foreground italic pl-11 mb-4">
-                  "Los recuerdos correctos ordenan la mente y abren el camino."
+                  "Algunos recuerdos están ocultos, pero siempre encuentran su par. Conecta los momentos."
                 </p>
                 <div className="pl-11">
                     <div className="flex justify-between items-center text-xs font-medium text-muted-foreground mb-1">

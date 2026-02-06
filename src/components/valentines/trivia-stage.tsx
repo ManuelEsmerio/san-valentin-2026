@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
-import { CheckCircle2, RotateCcw, XCircle, Info, Gamepad2 } from "lucide-react";
+import { CheckCircle2, RotateCcw, XCircle, Info, Gamepad2, Lock, LockOpen } from "lucide-react";
 import RomanticLetterModal from "./RomanticLetterModal";
 import {
   PlaceHolderImages,
@@ -417,6 +417,8 @@ export default function TriviaStage({ onGameWon, onAdvance, user, initialGameSta
   const iframeUrl = `https://maps.google.com/maps?q=${lat},${long}&hl=es&z=14&output=embed`;
   
   const currentQuestion = questions[currentQuestionIndex];
+  const hintProgress = multipleChoiceQuestions.length > 0 ? (score / multipleChoiceQuestions.length) * 100 : 0;
+  const isGameWon = stage === 'finished';
 
   const renderMainContent = () => {
     switch (stage) {
@@ -523,6 +525,38 @@ export default function TriviaStage({ onGameWon, onAdvance, user, initialGameSta
                       <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground block">Correctas</span>
                       <span className="text-lg font-bold text-foreground">{score}</span>
                     </div>
+                  </div>
+                </div>
+
+                <div className={cn(
+                  "bg-card/50 dark:bg-zinc-800/30 p-4 rounded-2xl border border-dashed transition-colors",
+                  isGameWon ? "border-green-500/50" : "border-primary/20"
+                )}>
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className={cn(
+                      "w-8 h-8 rounded-full flex items-center justify-center transition-colors",
+                      isGameWon ? "bg-green-500/10 text-green-500" : "bg-muted text-muted-foreground"
+                    )}>
+                      {isGameWon ? <LockOpen className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
+                    </div>
+                    <h3 className={cn(
+                      "font-bold transition-colors",
+                      isGameWon ? "text-green-600 dark:text-green-400" : "text-foreground"
+                    )}>
+                      {isGameWon ? 'Pista 3: Desbloqueada' : 'Pista 3: Bloqueada'}
+                    </h3>
+                  </div>
+                  <p className="text-sm text-muted-foreground italic pl-11 mb-4">
+                    "Las respuestas sinceras iluminan el camino. ¿Recuerdas bien nuestros momentos?"
+                  </p>
+                  <div className="pl-11">
+                      <div className="flex justify-between items-center text-xs font-medium text-muted-foreground mb-1">
+                          <p>{isGameWon ? 'DESBLOQUEADO' : 'PROGRESO'}</p>
+                          <p>{Math.min(100, Math.round(hintProgress))}%</p>
+                      </div>
+                      <div className="h-1.5 w-full bg-muted rounded-full">
+                          <div className={cn("h-full rounded-full", isGameWon ? "bg-green-500" : "bg-primary")} style={{ width: `${Math.min(100, hintProgress)}%` }} />
+                      </div>
                   </div>
                 </div>
                 

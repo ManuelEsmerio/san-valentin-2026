@@ -408,7 +408,7 @@ export default function CatchHeartsStage({ onGameWon, onAdvance, user, initialGa
                   </h3>
                 </div>
                 <p className="text-sm text-muted-foreground italic pl-11 mb-4">
-                  "Donde la confianza se encuentra, la siguiente puerta se abre."
+                  "En esta lluvia de detalles, solo lo valioso merece ser atrapado. Elige con el corazón."
                 </p>
                 <div className="pl-11">
                     <div className="flex justify-between items-center text-xs font-medium text-muted-foreground mb-1">

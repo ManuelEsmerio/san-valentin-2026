@@ -473,7 +473,7 @@ export default function GameStage({ onGameWon, onAdvance, user, initialGameState
                 </h3>
               </div>
               <p className="text-sm text-muted-foreground italic pl-11 mb-4">
-                "En el centro de lo que parece vacío, encontrarás lo que buscas..."
+                "Sigue el camino del corazón, pero ten cuidado de no enredarte en tus propios pasos."
               </p>
               <div className="pl-11">
                   <div className="flex justify-between items-center text-xs font-medium text-muted-foreground mb-1">
