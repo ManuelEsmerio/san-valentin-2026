@@ -155,7 +155,7 @@ export default function CountdownStage({ onComplete }: { onComplete: () => void;
       onContextMenu={(e) => e.preventDefault()}
     >
       <div
-        className="absolute top-0 left-0 h-24 w-24 z-50 border-2 border-red-500"
+        className="absolute top-0 left-0 h-24 w-24 z-50"
         onClick={handleSecretTap}
         aria-hidden="true"
       />
