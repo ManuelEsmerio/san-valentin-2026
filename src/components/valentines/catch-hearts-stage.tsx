@@ -14,6 +14,7 @@ const GAME_DURATION = 30;
 const CATCHER_WIDTH = 100;
 const CATCHER_HEIGHT = 20;
 const HIGH_SCORE_KEY = 'valentines-catch-highscore';
+const GAME_STATS_KEY = 'valentines-catch-stats';
 
 type ItemType = 'heart' | 'flower' | 'chocolate' | 'letter' | 'gift' | 'broken_heart' | 'trash';
 type GameState = 'idle' | 'playing' | 'won' | 'lost';
@@ -92,6 +93,7 @@ export default function CatchHeartsStage({ onGameWon, onAdvance, user, initialGa
   const [isInstructionsModalOpen, setInstructionsModalOpen] = useState(false);
   const [isMapModalOpen, setMapModalOpen] = useState(false);
   const [isKeywordModalOpen, setKeywordModalOpen] = useState(false);
+  const [isClient, setIsClient] = useState(false);
   
   const isDevMode = user === 'manuel';
   const TARGET_SCORE = useMemo(() => isDevMode ? 100 : 300, [isDevMode]);
@@ -114,15 +116,22 @@ export default function CatchHeartsStage({ onGameWon, onAdvance, user, initialGa
   }, [score]);
   
   useEffect(() => {
+    setIsClient(true);
     try {
       const storedHighScore = localStorage.getItem(HIGH_SCORE_KEY);
       if (storedHighScore) {
         setHighScore(parseInt(storedHighScore, 10));
       }
+      if (initialGameState === 'won') {
+        const stats = localStorage.getItem(GAME_STATS_KEY);
+        if (stats) {
+          setFinalScore(JSON.parse(stats).score);
+        }
+      }
     } catch (error) {
       console.error("Could not access localStorage for high score.");
     }
-  }, []);
+  }, [initialGameState]);
 
   const updateHighScore = useCallback((newScore: number) => {
     if (newScore > highScore) {
@@ -137,7 +146,6 @@ export default function CatchHeartsStage({ onGameWon, onAdvance, user, initialGa
 
   const resetGame = useCallback(() => {
     setScore(0);
-    setFinalScore(0);
     setTimeLeft(GAME_DURATION);
     itemsRef.current = [];
     nextItemIdRef.current = 0;
@@ -165,9 +173,14 @@ export default function CatchHeartsStage({ onGameWon, onAdvance, user, initialGa
   
   useEffect(() => {
     if (gameState === 'won' && initialGameState !== 'won') {
+      if (isClient) {
+        try {
+          localStorage.setItem(GAME_STATS_KEY, JSON.stringify({ score: finalScore }));
+        } catch (e) {}
+      }
       onGameWon?.();
     }
-  }, [gameState, initialGameState, onGameWon]);
+  }, [gameState, initialGameState, onGameWon, isClient, finalScore]);
 
   const handleWin = useCallback(() => {
     setMapModalOpen(true);

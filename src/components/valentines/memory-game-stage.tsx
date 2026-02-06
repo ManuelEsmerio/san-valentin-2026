@@ -33,6 +33,7 @@ const TOTAL_PAIRS = 12;
 const PAIRS_ON_EASY_MODE = 8;
 const GAME_DURATION = 75; // Increased from 60
 const BEST_TIME_KEY = 'valentines-memory-besttime';
+const GAME_STATS_KEY = 'valentines-memory-stats';
 
 
 type CardType = {
@@ -87,6 +88,7 @@ export default function MemoryGameStage({ onGameWon, onAdvance, user, initialGam
   const [isInstructionsOpen, setInstructionsOpen] = useState(false);
   const [isMapModalOpen, setMapModalOpen] = useState(false);
   const [isKeywordModalOpen, setKeywordModalOpen] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
   const [losses, setLosses] = useState(0);
   const [numPairs, setNumPairs] = useState(TOTAL_PAIRS);
@@ -115,19 +117,28 @@ export default function MemoryGameStage({ onGameWon, onAdvance, user, initialGam
   }, []);
 
   useEffect(() => {
+    setIsClient(true);
     const storedBestTime = localStorage.getItem(BEST_TIME_KEY);
     if (storedBestTime) {
       setBestTime(parseInt(storedBestTime, 10));
     }
     setCards(generateCards(numPairs));
-  }, [generateCards, numPairs]);
+
+    if (initialGameState === 'won') {
+      try {
+        const stats = localStorage.getItem(GAME_STATS_KEY);
+        if (stats) {
+          setFinalStats(JSON.parse(stats));
+        }
+      } catch (e) {}
+    }
+  }, [generateCards, numPairs, initialGameState]);
 
   const resetGame = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
     setCards(generateCards(numPairs));
     setFlippedCards([]);
     setMoves(0);
-    setFinalStats({ time: 0, moves: 0 });
     setMatchedPairs(0);
     setTimeLeft(GAME_DURATION);
     setIsChecking(false);
@@ -219,9 +230,14 @@ export default function MemoryGameStage({ onGameWon, onAdvance, user, initialGam
 
   useEffect(() => {
     if (gameState === 'won' && initialGameState !== 'won') {
+      if (isClient) {
+        try {
+          localStorage.setItem(GAME_STATS_KEY, JSON.stringify(finalStats));
+        } catch(e) {}
+      }
       onGameWon?.();
     }
-  }, [gameState, initialGameState, onGameWon]);
+  }, [gameState, initialGameState, onGameWon, isClient, finalStats]);
 
   const handleWin = useCallback(() => {
     setMapModalOpen(true);

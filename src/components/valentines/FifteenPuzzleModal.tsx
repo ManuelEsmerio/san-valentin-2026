@@ -13,6 +13,7 @@ const GRID_SIZE = 4;
 const TILE_COUNT = GRID_SIZE * GRID_SIZE;
 const EMPTY_TILE = TILE_COUNT - 1; // The last tile (15) is our empty space
 const MOVE_LIMIT = 250;
+const GAME_STATS_KEY = 'valentines-fifteen-stats';
 
 type Difficulty = 'normal' | 'easy' | 'very-easy';
 
@@ -87,6 +88,7 @@ export default function FifteenPuzzleModal({ isOpen, onAdvance, onGameWon, user,
   const [isMapModalOpen, setMapModalOpen] = useState(false);
   const { toast } = useToast();
   const timerRef = useRef<NodeJS.Timeout>();
+  const [isClient, setIsClient] = useState(false);
   
   const initializeGame = useCallback((currentDifficulty: Difficulty) => {
     setTiles(shuffleTiles(currentDifficulty));
@@ -94,6 +96,21 @@ export default function FifteenPuzzleModal({ isOpen, onAdvance, onGameWon, user,
     setTime(0);
     setGameStatus('playing');
   }, []);
+
+  useEffect(() => {
+    setIsClient(true);
+    if (initialGameState === 'solved') {
+        setGameStatus('solved');
+        try {
+            const stats = localStorage.getItem(GAME_STATS_KEY);
+            if (stats) {
+                const { moves, time } = JSON.parse(stats);
+                setMoves(moves);
+                setTime(time);
+            }
+        } catch (e) {}
+    }
+  }, [initialGameState]);
 
   useEffect(() => {
     if (gameStatus === 'playing') {
@@ -115,10 +132,6 @@ export default function FifteenPuzzleModal({ isOpen, onAdvance, onGameWon, user,
         setLosses(0);
         setDifficulty('normal');
         initializeGame('normal');
-      } else {
-        setGameStatus('solved');
-        setMoves(0); // You might want to pass final moves/time if you have them
-        setTime(0);
       }
     } else {
       const timer = setTimeout(() => {
@@ -135,9 +148,14 @@ export default function FifteenPuzzleModal({ isOpen, onAdvance, onGameWon, user,
   }, []);
 
   const handleSuccess = useCallback(() => {
+    if (isClient) {
+      try {
+        localStorage.setItem(GAME_STATS_KEY, JSON.stringify({ moves, time }));
+      } catch (e) {}
+    }
     onGameWon();
     setGameStatus('solved');
-  }, [onGameWon]);
+  }, [onGameWon, moves, time, isClient]);
 
   const handleTileClick = useCallback((clickedIndex: number) => {
     if (gameStatus !== 'playing') return;
@@ -250,8 +268,8 @@ export default function FifteenPuzzleModal({ isOpen, onAdvance, onGameWon, user,
                   Ordena los números para revelar la pista final de tu sorpresa.
               </p>
           </div>
-          <div className="bg-pink-50 dark:bg-zinc-800/50 p-3 rounded-2xl max-w-sm mx-auto shadow-inner">
-            <div className="grid grid-cols-4 gap-2 aspect-square touch-none">
+          <div className="bg-pink-50 dark:bg-zinc-800/50 p-3 rounded-2xl max-w-sm mx-auto shadow-inner touch-none">
+            <div className="grid grid-cols-4 gap-2 aspect-square">
                 {tiles.map((tileValue, index) => {
                     const isEmpty = tileValue === EMPTY_TILE;
                     return (

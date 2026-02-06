@@ -12,6 +12,7 @@ import SimpleCircularProgress from "./SimpleCircularProgress";
 const GRID_SIZE = 20;
 const CANVAS_SIZE = 800;
 const TILE_SIZE = CANVAS_SIZE / GRID_SIZE;
+const GAME_STATS_KEY = 'valentines-snake-stats';
 
 type GameState = "idle" | "playing" | "won" | "lost";
 
@@ -44,9 +45,11 @@ export default function GameStage({ onGameWon, onAdvance, user, initialGameState
   const [isMapModalOpen, setMapModalOpen] = useState(false);
   const [isKeywordModalOpen, setKeywordModalOpen] = useState(false);
   const [isInstructionsModalOpen, setInstructionsModalOpen] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
   const [time, setTime] = useState(0);
   const [finalTime, setFinalTime] = useState(0);
+  const [finalScore, setFinalScore] = useState(0);
   const timerIdRef = useRef<NodeJS.Timeout>();
 
   const isDevMode = user === 'manuel';
@@ -63,6 +66,20 @@ export default function GameStage({ onGameWon, onAdvance, user, initialGameState
   const long = "-103.8357498";
   const googleMapsUrl = `https://maps.app.goo.gl/cbvZes6MUemmbG5C8`;
   const iframeUrl = `https://maps.google.com/maps?q=${lat},${long}&hl=es&z=14&output=embed`;
+
+  useEffect(() => {
+    setIsClient(true);
+    if (initialGameState === 'won') {
+        try {
+            const stats = localStorage.getItem(GAME_STATS_KEY);
+            if (stats) {
+                const { score, time } = JSON.parse(stats);
+                setFinalScore(score);
+                setFinalTime(time);
+            }
+        } catch(e) {}
+    }
+  }, [initialGameState]);
 
   const drawHeart = (
     ctx: CanvasRenderingContext2D,
@@ -134,15 +151,18 @@ export default function GameStage({ onGameWon, onAdvance, user, initialGameState
         if (timerIdRef.current) clearInterval(timerIdRef.current);
     };
   }, [gameState]);
-
+  
   useEffect(() => {
-    if (gameState === 'won') {
-        setFinalTime(time);
-        if (initialGameState !== 'won') {
-            onGameWon();
-        }
+    if (gameState === 'won' && initialGameState !== 'won') {
+      if (isClient) {
+        try {
+          localStorage.setItem(GAME_STATS_KEY, JSON.stringify({ score: finalScore, time: finalTime }));
+        } catch(e) {}
+      }
+      onGameWon();
     }
-  }, [gameState, time, onGameWon, initialGameState]);
+  }, [gameState, initialGameState, onGameWon, isClient, finalScore, finalTime]);
+
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -180,6 +200,8 @@ export default function GameStage({ onGameWon, onAdvance, user, initialGameState
         setScore(newScore);
 
         if (newScore >= targetScore) {
+          setFinalTime(time);
+          setFinalScore(newScore);
           setGameState("won");
           if (newScore > highScore) setHighScore(newScore);
           return;
@@ -300,7 +322,7 @@ export default function GameStage({ onGameWon, onAdvance, user, initialGameState
       }
       window.clearTimeout(gameLoopRef.current);
     };
-  }, [gameState, score, highScore, targetScore, isDevMode]);
+  }, [gameState, score, highScore, targetScore, isDevMode, time]);
 
   const handleOpenKeywordModal = useCallback(() => {
     setMapModalOpen(false);
