@@ -10,11 +10,11 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        display: ["'Playfair Display'", "serif"],
-        sans: ["'Inter'", "sans-serif"],
-        handwritten: ["'Caveat'", "cursive"],
-        calligraphy: ["'Great Vibes'", "cursive"],
-        body: ["'Inter'", 'sans-serif'],
+        display: ['var(--font-playfair-display)', 'serif'],
+        sans: ['var(--font-inter)', 'sans-serif'],
+        handwritten: ['var(--font-caveat)', 'cursive'],
+        calligraphy: ['var(--font-great-vibes)', 'cursive'],
+        body: ['var(--font-inter)', 'sans-serif'],
         code: ['monospace'],
       },
       colors: {

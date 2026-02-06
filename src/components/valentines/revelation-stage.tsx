@@ -40,6 +40,7 @@ export default function RevelationStage() {
                         width={400}
                         height={600}
                         className="w-full h-full object-cover"
+                        priority
                     />
                 </div>
             )}
