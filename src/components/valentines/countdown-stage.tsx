@@ -28,7 +28,7 @@ const ThemeToggle = () => {
 
     useEffect(() => {
         setIsMounted(true);
-        const storedTheme = localStorage.getItem('theme') || 'light';
+        const storedTheme = typeof window !== 'undefined' ? localStorage.getItem('theme') || 'light' : 'light';
         setTheme(storedTheme);
     }, []);
 
@@ -178,7 +178,7 @@ export default function CountdownStage({ onComplete }: { onComplete: () => void;
                         Mi Chula
                     </p>
                     <p className="text-sm md:text-base opacity-70 max-w-sm mx-auto dark:text-slate-300">
-                        Cada melodía me recuerda los hermosos momentos que hemos compartido juntos.
+                        Al llegar a cero, descubrirás el desafío que preparé para ti.
                     </p>
                 </div>
                 {timeLeft && (
