@@ -183,50 +183,57 @@ export default function MemoryGameStage({ onGameWon, onAdvance, user, initialGam
   };
 
   useEffect(() => {
-    if (flippedCards.length === 2) {
-      setIsChecking(true);
-      const newMoves = moves + 1;
-      setMoves(newMoves);
-      const [firstIndex, secondIndex] = flippedCards;
-      const firstCard = cards[firstIndex];
-      const secondCard = cards[secondIndex];
-
-      if (firstCard.name === secondCard.name) {
-        const newMatchedPairs = matchedPairs + 1;
-        setMatchedPairs(newMatchedPairs);
-        const newCards = cards.map(card => 
-          card.name === firstCard.name ? { ...card, isMatched: true, isFlipped: true } : card
-        );
-        setTimeout(() => {
-          setCards(newCards);
-          setFlippedCards([]);
-          setIsChecking(false);
-          if (newMatchedPairs === numPairs) {
-            const timeTaken = GAME_DURATION - timeLeft;
-            setFinalStats({ time: timeTaken, moves: newMoves });
-            setGameState('won');
-            if (timerRef.current) clearInterval(timerRef.current);
-      
-            if (bestTime === null || timeTaken < bestTime) {
-              setBestTime(timeTaken);
-              localStorage.setItem(BEST_TIME_KEY, timeTaken.toString());
-            }
-            setLosses(0);
-            setNumPairs(TOTAL_PAIRS);
-          }
-        }, 500);
-      } else {
-        setTimeout(() => {
-          const newCards = cards.map(card => ({...card}));
-          newCards[firstIndex].isFlipped = false;
-          newCards[secondIndex].isFlipped = false;
-          setCards(newCards);
-          setFlippedCards([]);
-          setIsChecking(false);
-        }, 1200);
-      }
+    if (flippedCards.length !== 2 || isChecking) {
+      return;
     }
-  }, [flippedCards, cards, moves, matchedPairs, numPairs, timeLeft, bestTime]);
+
+    setIsChecking(true);
+    const newMoves = moves + 1;
+    setMoves(newMoves);
+    const [firstIndex, secondIndex] = flippedCards;
+    const firstCard = cards[firstIndex];
+    const secondCard = cards[secondIndex];
+
+    if (firstCard.name === secondCard.name) {
+      const newMatchedPairs = matchedPairs + 1;
+      setMatchedPairs(newMatchedPairs);
+      setTimeout(() => {
+        setCards(prevCards =>
+          prevCards.map(card =>
+            card.name === firstCard.name
+              ? { ...card, isMatched: true, isFlipped: true }
+              : card
+          )
+        );
+        setFlippedCards([]);
+        setIsChecking(false);
+        if (newMatchedPairs === numPairs) {
+          const timeTaken = GAME_DURATION - timeLeft;
+          setFinalStats({ time: timeTaken, moves: newMoves });
+          setGameState('won');
+          if (timerRef.current) clearInterval(timerRef.current);
+          if (bestTime === null || timeTaken < bestTime) {
+            setBestTime(timeTaken);
+            localStorage.setItem(BEST_TIME_KEY, timeTaken.toString());
+          }
+          setLosses(0);
+          setNumPairs(TOTAL_PAIRS);
+        }
+      }, 500);
+    } else {
+      setTimeout(() => {
+        setCards(prevCards =>
+          prevCards.map((card, index) =>
+            index === firstIndex || index === secondIndex
+              ? { ...card, isFlipped: false }
+              : card
+          )
+        );
+        setFlippedCards([]);
+        setIsChecking(false);
+      }, 1200);
+    }
+  }, [flippedCards, cards, moves, matchedPairs, numPairs, timeLeft, bestTime, isChecking]);
 
   useEffect(() => {
     if (gameState === 'won' && initialGameState !== 'won') {
