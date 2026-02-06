@@ -46,6 +46,7 @@ const LoginStage = dynamic(() => import('@/components/valentines/login-stage'), 
 });
 const WelcomeStage = dynamic(() => import('@/components/valentines/welcome-stage'), {
   loading: () => <StageLoading />,
+  ssr: false,
 });
 const GameStage = dynamic(() => import('@/components/valentines/game-stage'), {
   loading: () => <StageLoading />,
