@@ -67,6 +67,26 @@ export default function CountdownStage({ onComplete }: { onComplete: () => void;
   const [timeLeft, setTimeLeft] = useState<TimeLeft | null>(null);
   const [isTimeUp, setIsTimeUp] = useState(false);
 
+  const tapCountRef = useRef(0);
+  const tapTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleSecretTap = useCallback(() => {
+    if (tapCountRef.current === 0) {
+      tapTimeoutRef.current = setTimeout(() => {
+        tapCountRef.current = 0;
+      }, 1500);
+    }
+
+    tapCountRef.current += 1;
+
+    if (tapCountRef.current >= 6) {
+      if (tapTimeoutRef.current) {
+        clearTimeout(tapTimeoutRef.current);
+      }
+      onComplete();
+    }
+  }, [onComplete]);
+
   useEffect(() => {
     const now = new Date();
     let targetYear = now.getFullYear();
@@ -134,6 +154,11 @@ export default function CountdownStage({ onComplete }: { onComplete: () => void;
       className="fixed inset-0 z-50 flex items-center justify-center bg-background text-slate-800 dark:text-slate-100 font-sans p-4 text-center"
       onContextMenu={(e) => e.preventDefault()}
     >
+      <div
+        className="absolute top-0 left-0 h-24 w-24 z-50"
+        onClick={handleSecretTap}
+        aria-hidden="true"
+      />
       <FloatingHearts />
       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/heart-pattern.png')] pointer-events-none opacity-[0.03] dark:opacity-[0.02]"></div>
       
@@ -189,7 +214,7 @@ export default function CountdownStage({ onComplete }: { onComplete: () => void;
 
       <footer className="absolute bottom-6 left-0 right-0 text-center px-4">
           <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium">
-              Tip: Presiona Alt + E para una sorpresa.
+            Tip: Toca rápidamente una esquina (x6) o presiona Alt + E para una sorpresa.
           </p>
       </footer>
       <div className="absolute bottom-6 left-6 flex gap-2">
