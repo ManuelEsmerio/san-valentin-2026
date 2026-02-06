@@ -81,8 +81,6 @@ export default function MemoryGameStage({ onGameWon, onAdvance, user, initialGam
   const [timeLeft, setTimeLeft] = useState(GAME_DURATION);
   const [matchedPairs, setMatchedPairs] = useState(0);
   const [bestTime, setBestTime] = useState<number | null>(null);
-  const [finalTime, setFinalTime] = useState(0);
-  const [finalMoves, setFinalMoves] = useState(0);
 
   const [isChecking, setIsChecking] = useState(false);
   const [isInstructionsOpen, setInstructionsOpen] = useState(false);
@@ -206,9 +204,6 @@ export default function MemoryGameStage({ onGameWon, onAdvance, user, initialGam
       setGameState('won');
       if (timerRef.current) clearInterval(timerRef.current);
       const timeTaken = GAME_DURATION - timeLeft;
-      
-      setFinalTime(timeTaken);
-      setFinalMoves(moves);
 
       if (bestTime === null || timeTaken < bestTime) {
         setBestTime(timeTaken);
@@ -246,9 +241,10 @@ export default function MemoryGameStage({ onGameWon, onAdvance, user, initialGam
 
   const GameOverlay = ({ status }: { status: 'won' | 'lost' }) => {
     const isWon = status === 'won';
+    const timeTaken = GAME_DURATION - timeLeft;
     const title = isWon ? "¡Victoria!" : "¡Se acabó el tiempo!";
     const description = isWon 
-        ? `Completado en ${finalTime}s con ${finalMoves} movimientos.` 
+        ? `Completado en ${timeTaken}s con ${moves} movimientos.` 
         : losses >= 1 ? "No te preocupes, ahora será más fácil. ¡Inténtalo de nuevo!" : "No te preocupes, ¡inténtalo de nuevo!";
     const icon = isWon ? 'auto_awesome' : 'replay';
 
