@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { BarChart2, RotateCcw } from 'lucide-react';
@@ -80,17 +80,33 @@ export default function FifteenPuzzleModal({ isOpen, onAdvance, onGameWon, user,
   const [gameStatus, setGameStatus] = useState<GameStatus>(initialGameState);
   const [tiles, setTiles] = useState<number[]>([]);
   const [moves, setMoves] = useState(0);
+  const [time, setTime] = useState(0);
   const [losses, setLosses] = useState(0);
   const [difficulty, setDifficulty] = useState<Difficulty>('normal');
   const [isKeywordModalOpen, setKeywordModalOpen] = useState(false);
   const [isMapModalOpen, setMapModalOpen] = useState(false);
   const { toast } = useToast();
+  const timerRef = useRef<NodeJS.Timeout>();
   
   const initializeGame = useCallback((currentDifficulty: Difficulty) => {
     setTiles(shuffleTiles(currentDifficulty));
     setMoves(0);
+    setTime(0);
     setGameStatus('playing');
   }, []);
+
+  useEffect(() => {
+    if (gameStatus === 'playing') {
+        timerRef.current = setInterval(() => {
+            setTime(t => t + 1);
+        }, 1000);
+    } else {
+        if (timerRef.current) clearInterval(timerRef.current);
+    }
+    return () => {
+        if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [gameStatus]);
   
   useEffect(() => {
     if (isOpen) {
@@ -101,6 +117,8 @@ export default function FifteenPuzzleModal({ isOpen, onAdvance, onGameWon, user,
         initializeGame('normal');
       } else {
         setGameStatus('solved');
+        setMoves(0); // You might want to pass final moves/time if you have them
+        setTime(0);
       }
     } else {
       const timer = setTimeout(() => {
@@ -120,12 +138,6 @@ export default function FifteenPuzzleModal({ isOpen, onAdvance, onGameWon, user,
     onGameWon();
     setGameStatus('solved');
   }, [onGameWon]);
-
-  useEffect(() => {
-    if (gameStatus === 'solved' && initialGameState !== 'solved') {
-      // This logic was changed to handle success more directly
-    }
-  }, [gameStatus, initialGameState, handleSuccess]);
 
   const handleTileClick = useCallback((clickedIndex: number) => {
     if (gameStatus !== 'playing') return;
@@ -206,9 +218,19 @@ export default function FifteenPuzzleModal({ isOpen, onAdvance, onGameWon, user,
           <div className="p-6 sm:p-8 text-center animate-fade-in">
             <span className="material-symbols-rounded text-green-500 text-5xl mb-4">auto_awesome</span>
             <h2 className="text-2xl font-bold text-foreground mb-2">¡Rompecabezas Resuelto!</h2>
-            <p className="text-muted-foreground mb-6">
+            <p className="text-muted-foreground mb-4">
                 Has revelado la última pista. ¡Felicidades!
             </p>
+            <div className="flex justify-center gap-8 text-center mb-6">
+              <div>
+                  <span className="text-xs text-muted-foreground font-bold uppercase">Movimientos</span>
+                  <p className="text-2xl font-bold text-foreground">{moves}</p>
+              </div>
+              <div>
+                  <span className="text-xs text-muted-foreground font-bold uppercase">Tiempo</span>
+                  <p className="text-2xl font-bold text-foreground">{time}s</p>
+              </div>
+            </div>
             <VictoryHearts />
             <Button onClick={() => setMapModalOpen(true)} className="w-full h-12 text-lg font-bold mt-4">
                 Ver Pista Final
@@ -241,7 +263,7 @@ export default function FifteenPuzzleModal({ isOpen, onAdvance, onGameWon, user,
                                 WebkitTouchCallout: 'none',
                                 userSelect: 'none',
                             }}
-                            className={cn("flex items-center justify-center rounded-lg md:rounded-xl text-xl font-bold transition-colors duration-200 ease-in-out", !isEmpty ? "bg-primary text-white shadow-md cursor-pointer" : "empty bg-white/50 dark:bg-zinc-700/50 border-2 border-dashed border-primary/20 cursor-default")}>
+                            className={cn("flex items-center justify-center rounded-lg md:rounded-xl text-xl font-bold transition-colors duration-200 ease-in-out", !isEmpty ? "bg-primary text-white shadow-md" : "empty bg-white/50 dark:bg-zinc-700/50 border-2 border-dashed border-primary/20 cursor-default")}>
                             {!isEmpty ? tileValue + 1 : ''}
                         </div>
                     );

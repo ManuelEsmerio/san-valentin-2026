@@ -81,6 +81,7 @@ export default function MemoryGameStage({ onGameWon, onAdvance, user, initialGam
   const [timeLeft, setTimeLeft] = useState(GAME_DURATION);
   const [matchedPairs, setMatchedPairs] = useState(0);
   const [bestTime, setBestTime] = useState<number | null>(null);
+  const [finalStats, setFinalStats] = useState({ time: 0, moves: 0 });
 
   const [isChecking, setIsChecking] = useState(false);
   const [isInstructionsOpen, setInstructionsOpen] = useState(false);
@@ -126,6 +127,7 @@ export default function MemoryGameStage({ onGameWon, onAdvance, user, initialGam
     setCards(generateCards(numPairs));
     setFlippedCards([]);
     setMoves(0);
+    setFinalStats({ time: 0, moves: 0 });
     setMatchedPairs(0);
     setTimeLeft(GAME_DURATION);
     setIsChecking(false);
@@ -149,12 +151,13 @@ export default function MemoryGameStage({ onGameWon, onAdvance, user, initialGam
         if (newLosses >= 2) {
             setNumPairs(PAIRS_ON_EASY_MODE);
         }
+        setFinalStats({ time: GAME_DURATION, moves });
         setGameState('lost');
     }
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [gameState, timeLeft, losses]);
+  }, [gameState, timeLeft, losses, moves]);
 
 
   const handleCardClick = (index: number) => {
@@ -171,13 +174,15 @@ export default function MemoryGameStage({ onGameWon, onAdvance, user, initialGam
   useEffect(() => {
     if (flippedCards.length === 2) {
       setIsChecking(true);
-      setMoves(prev => prev + 1);
+      const newMoves = moves + 1;
+      setMoves(newMoves);
       const [firstIndex, secondIndex] = flippedCards;
       const firstCard = cards[firstIndex];
       const secondCard = cards[secondIndex];
 
       if (firstCard.name === secondCard.name) {
-        setMatchedPairs(prev => prev + 1);
+        const newMatchedPairs = matchedPairs + 1;
+        setMatchedPairs(newMatchedPairs);
         const newCards = cards.map(card => 
           card.name === firstCard.name ? { ...card, isMatched: true, isFlipped: true } : card
         );
@@ -185,6 +190,19 @@ export default function MemoryGameStage({ onGameWon, onAdvance, user, initialGam
           setCards(newCards);
           setFlippedCards([]);
           setIsChecking(false);
+          if (newMatchedPairs === numPairs) {
+            const timeTaken = GAME_DURATION - timeLeft;
+            setFinalStats({ time: timeTaken, moves: newMoves });
+            setGameState('won');
+            if (timerRef.current) clearInterval(timerRef.current);
+      
+            if (bestTime === null || timeTaken < bestTime) {
+              setBestTime(timeTaken);
+              localStorage.setItem(BEST_TIME_KEY, timeTaken.toString());
+            }
+            setLosses(0);
+            setNumPairs(TOTAL_PAIRS);
+          }
         }, 500);
       } else {
         setTimeout(() => {
@@ -197,22 +215,7 @@ export default function MemoryGameStage({ onGameWon, onAdvance, user, initialGam
         }, 1200);
       }
     }
-  }, [flippedCards, cards]);
-
-  useEffect(() => {
-    if (matchedPairs === numPairs && gameState !== 'won' && numPairs > 0) {
-      setGameState('won');
-      if (timerRef.current) clearInterval(timerRef.current);
-      const timeTaken = GAME_DURATION - timeLeft;
-
-      if (bestTime === null || timeTaken < bestTime) {
-        setBestTime(timeTaken);
-        localStorage.setItem(BEST_TIME_KEY, timeTaken.toString());
-      }
-      setLosses(0);
-      setNumPairs(TOTAL_PAIRS);
-    }
-  }, [matchedPairs, gameState, numPairs, timeLeft, bestTime, moves]);
+  }, [flippedCards, cards, moves, matchedPairs, numPairs, timeLeft, bestTime]);
 
   useEffect(() => {
     if (gameState === 'won' && initialGameState !== 'won') {
@@ -241,18 +244,17 @@ export default function MemoryGameStage({ onGameWon, onAdvance, user, initialGam
 
   const GameOverlay = ({ status }: { status: 'won' | 'lost' }) => {
     const isWon = status === 'won';
-    const timeTaken = GAME_DURATION - timeLeft;
-    const title = isWon ? "¡Victoria!" : "¡Se acabó el tiempo!";
     const description = isWon 
-        ? `Completado en ${timeTaken}s con ${moves} movimientos.` 
+        ? `Completado en ${finalStats.time}s con ${finalStats.moves} movimientos.` 
         : losses >= 1 ? "No te preocupes, ahora será más fácil. ¡Inténtalo de nuevo!" : "No te preocupes, ¡inténtalo de nuevo!";
+    const title = isWon ? "¡Victoria!" : "¡Se acabó el tiempo!";
     const icon = isWon ? 'auto_awesome' : 'replay';
 
     return (
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex flex-col items-center justify-center text-center p-4 z-10 animate-fade-in">
         <div className="bg-card p-8 rounded-2xl shadow-2xl max-w-sm w-full">
             <div className={cn("h-16 w-16 mx-auto mb-4 rounded-full flex items-center justify-center", isWon ? "bg-green-100 dark:bg-green-900/30" : "bg-primary/10")}>
-                <span className={cn("material-symbols-outlined text-4xl", isWon ? "text-green-500" : "text-primary")}>{icon}</span>
+                <span className={cn("material-symbols-rounded text-4xl", isWon ? "text-green-500" : "text-primary")}>{icon}</span>
             </div>
             <h3 className="text-2xl font-bold text-foreground mb-2">{title}</h3>
             <p className="text-muted-foreground mb-6">{description}</p>

@@ -45,6 +45,10 @@ export default function GameStage({ onGameWon, onAdvance, user, initialGameState
   const [isKeywordModalOpen, setKeywordModalOpen] = useState(false);
   const [isInstructionsModalOpen, setInstructionsModalOpen] = useState(false);
 
+  const [time, setTime] = useState(0);
+  const [finalTime, setFinalTime] = useState(0);
+  const timerIdRef = useRef<NodeJS.Timeout>();
+
   const isDevMode = user === 'manuel';
   const initialTargetScore = useMemo(() => 15, []);
   const [targetScore, setTargetScore] = useState(initialTargetScore);
@@ -103,6 +107,7 @@ export default function GameStage({ onGameWon, onAdvance, user, initialGameState
     };
     directionRef.current = { x: 0, y: -1 };
     setScore(0);
+    setTime(0);
     setGameState("idle");
   }, []);
 
@@ -115,6 +120,29 @@ export default function GameStage({ onGameWon, onAdvance, user, initialGameState
   const openInstructions = () => {
     setInstructionsModalOpen(true);
   };
+  
+  useEffect(() => {
+    if (gameState === 'playing') {
+        timerIdRef.current = setInterval(() => {
+            setTime(t => t + 1);
+        }, 1000);
+    } else if (timerIdRef.current) {
+        clearInterval(timerIdRef.current);
+    }
+
+    return () => {
+        if (timerIdRef.current) clearInterval(timerIdRef.current);
+    };
+  }, [gameState]);
+
+  useEffect(() => {
+    if (gameState === 'won') {
+        setFinalTime(time);
+        if (initialGameState !== 'won') {
+            onGameWon();
+        }
+    }
+  }, [gameState, time, onGameWon, initialGameState]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -154,9 +182,6 @@ export default function GameStage({ onGameWon, onAdvance, user, initialGameState
         if (newScore >= targetScore) {
           setGameState("won");
           if (newScore > highScore) setHighScore(newScore);
-          if (initialGameState !== 'won') {
-            onGameWon();
-          }
           return;
         }
 
@@ -275,7 +300,7 @@ export default function GameStage({ onGameWon, onAdvance, user, initialGameState
       }
       window.clearTimeout(gameLoopRef.current);
     };
-  }, [gameState, score, highScore, targetScore, isDevMode, onGameWon, initialGameState]);
+  }, [gameState, score, highScore, targetScore, isDevMode]);
 
   const handleOpenKeywordModal = useCallback(() => {
     setMapModalOpen(false);
@@ -360,7 +385,7 @@ export default function GameStage({ onGameWon, onAdvance, user, initialGameState
                   </h3>
                   <p className="text-muted-foreground mt-2 mb-6">
                     {gameState === "won"
-                      ? "Has recolectado todos los corazones."
+                      ? `Has recolectado todos los corazones en ${finalTime} segundos.`
                       : `No te preocupes, ¡inténtalo de nuevo! La nueva meta es ${targetScore} corazones.`}
                   </p>
                   <div className="flex flex-col sm:flex-row items-center gap-4">
