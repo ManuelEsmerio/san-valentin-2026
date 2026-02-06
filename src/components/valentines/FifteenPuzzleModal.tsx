@@ -229,7 +229,7 @@ export default function FifteenPuzzleModal({ isOpen, onAdvance, onGameWon, user,
               </p>
           </div>
           <div className="bg-pink-50 dark:bg-zinc-800/50 p-3 rounded-2xl max-w-sm mx-auto shadow-inner">
-            <div className="grid grid-cols-4 gap-2 aspect-square">
+            <div className="grid grid-cols-4 gap-2 aspect-square touch-none">
                 {tiles.map((tileValue, index) => {
                     const isEmpty = tileValue === EMPTY_TILE;
                     return (
@@ -237,7 +237,7 @@ export default function FifteenPuzzleModal({ isOpen, onAdvance, onGameWon, user,
                             key={index}
                             onPointerDown={() => handleTileClick(index)}
                             style={{ transform: 'translateZ(0)' }}
-                            className={cn("flex items-center justify-center rounded-lg md:rounded-xl text-xl font-bold transition-colors duration-200 ease-in-out select-none touch-manipulation", !isEmpty ? "bg-primary text-white shadow-md cursor-pointer" : "empty bg-white/50 dark:bg-zinc-700/50 border-2 border-dashed border-primary/20 cursor-default")}>
+                            className={cn("flex items-center justify-center rounded-lg md:rounded-xl text-xl font-bold transition-colors duration-200 ease-in-out select-none", !isEmpty ? "bg-primary text-white shadow-md cursor-pointer" : "empty bg-white/50 dark:bg-zinc-700/50 border-2 border-dashed border-primary/20 cursor-default")}>
                             {!isEmpty ? tileValue + 1 : ''}
                         </div>
                     );

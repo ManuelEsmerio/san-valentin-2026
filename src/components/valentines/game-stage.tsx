@@ -344,7 +344,7 @@ export default function GameStage({ onGameWon, onAdvance, user, initialGameState
                   width={CANVAS_SIZE}
                   height={CANVAS_SIZE}
                   className={cn(
-                    "rounded-lg bg-pink-100/20 dark:bg-pink-900/10 transition-opacity duration-500",
+                    "rounded-lg bg-pink-100/20 dark:bg-pink-900/10 transition-opacity duration-500 touch-none",
                     (gameState === "lost" || gameState === "won") && "opacity-10",
                     "w-full h-auto aspect-square"
                   )}
