@@ -65,8 +65,6 @@ export default function RootLayout({
         <main className="flex-1 flex flex-col items-center justify-center p-4 relative overflow-hidden z-10">
           {children}
         </main>
-        <footer className="py-6 text-center text-muted-foreground text-sm font-light z-10 relative">
-        </footer>
         <Toaster />
         <MusicPlayer />
       </body>
