@@ -22,10 +22,9 @@ const CountdownUnit = ({ value, label }: { value: string; label: string }) => (
     </div>
 );
 
-const ThemeToggle = ({ onSkip }: { onSkip: () => void }) => {
+const ThemeToggle = () => {
     const [theme, setTheme] = useState('light');
     const [isMounted, setIsMounted] = useState(false);
-    const longPressTimer = useRef<NodeJS.Timeout>();
 
     useEffect(() => {
         setIsMounted(true);
@@ -37,8 +36,10 @@ const ThemeToggle = ({ onSkip }: { onSkip: () => void }) => {
         if(isMounted) {
             if (theme === 'dark') {
                 document.documentElement.classList.add('dark');
+                document.documentElement.classList.remove('light');
             } else {
                 document.documentElement.classList.remove('dark');
+                document.documentElement.classList.add('light');
             }
             localStorage.setItem('theme', theme);
         }
@@ -47,19 +48,6 @@ const ThemeToggle = ({ onSkip }: { onSkip: () => void }) => {
     const toggleTheme = () => {
         setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
     };
-    
-    const handlePressStart = () => {
-        longPressTimer.current = setTimeout(() => {
-            onSkip();
-        }, 3000); // 3 seconds
-    };
-
-    const handlePressEnd = () => {
-        if (longPressTimer.current) {
-            clearTimeout(longPressTimer.current);
-        }
-    };
-
 
     if (!isMounted) return <div className="w-10 h-10" />;
 
@@ -67,10 +55,6 @@ const ThemeToggle = ({ onSkip }: { onSkip: () => void }) => {
         <button 
           className="glass p-2 rounded-full text-slate-600 dark:text-slate-300 hover:text-primary transition-colors" 
           onClick={toggleTheme}
-          onMouseDown={handlePressStart}
-          onMouseUp={handlePressEnd}
-          onTouchStart={handlePressStart}
-          onTouchEnd={handlePressEnd}
         >
             <span className="material-symbols-rounded">{theme === 'dark' ? 'light_mode' : 'dark_mode'}</span>
         </button>
@@ -205,11 +189,11 @@ export default function CountdownStage({ onComplete }: { onComplete: () => void;
 
       <footer className="absolute bottom-6 left-0 right-0 text-center px-4">
           <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium">
-              Tip: Mantén presionado el ícono de sol/luna por 3 segundos o presiona Alt + E para una sorpresa.
+              Tip: Presiona Alt + E para una sorpresa.
           </p>
       </footer>
       <div className="absolute bottom-6 left-6 flex gap-2">
-          <ThemeToggle onSkip={onComplete} />
+          <ThemeToggle />
       </div>
     </div>
   );
