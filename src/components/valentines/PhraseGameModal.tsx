@@ -106,6 +106,7 @@ export default function PhraseGameModal({ isOpen, onClose }: PhraseGameModalProp
           setAvailableWords(shuffleArray([...phrases[nextIndex].scrambled]));
           setBuiltPhrase([]);
           setRevealUsed(false);
+          setHelpTokens(3);
         }, 800);
       } else {
         setTimeout(() => setGameState('finished'), 800);
@@ -139,9 +140,9 @@ export default function PhraseGameModal({ isOpen, onClose }: PhraseGameModalProp
     const finalBuilt: string[] = [];
 
     for (const word of firstTwo) {
-        const indexInAvailable = currentAvailable.findIndex(w => w === word);
+        const indexInAvailable = currentAvailable.findIndex(w => normalizeString(w) === normalizeString(word));
         if (indexInAvailable > -1) {
-            finalBuilt.push(word);
+            finalBuilt.push(currentAvailable[indexInAvailable]);
             currentAvailable.splice(indexInAvailable, 1);
         }
     }
@@ -217,7 +218,7 @@ export default function PhraseGameModal({ isOpen, onClose }: PhraseGameModalProp
                   variant="outline" 
                   className={cn(
                     "text-base h-10 px-3 cursor-pointer bg-card transition-all duration-300",
-                    nextWordHint === word && "border-accent ring-2 ring-accent animate-pulse"
+                    normalizeString(nextWordHint || '') === normalizeString(word) && "border-accent ring-2 ring-accent animate-pulse"
                   )} 
                   onClick={() => handleWordClick(word, 'available', i)}
                 >
