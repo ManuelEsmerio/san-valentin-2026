@@ -84,7 +84,7 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
 
   { id: 16, type: 'multiple-choice', question: '¿Quién es más probable que se pierda usando un mapa?', options: ['Yo','Tú','Ambos','El GPS nos odia'], correctAnswer: 'Yo', hint: 'A veces la orientación falla 🗺️😂' },
 
-  { id: 17, type: 'multiple-choice', question: '¿Quién elige siempre la película?', options: ['Yo','Tú','Lo decidimos juntos','Netflix decide'], correctAnswer: 'Lo decidimos juntos', hint: 'El control remoto manda 📺' },
+  { id: 17, type: 'multiple-choice', question: '¿Quién elige siempre la película?', options: ['Lo decidimos juntos','Tú','Yo','Netflix decide'], correctAnswer: 'Lo decidimos juntos', hint: 'El control remoto manda 📺' },
 
   { id: 18, type: 'multiple-choice', question: '¿Quién se come los postres del otro?', options: ['Yo','Tú','Ambos','Nunca pasa'], correctAnswer: 'Yo', hint: 'El misterio del postre 🍰' },
 
@@ -188,9 +188,9 @@ const IntroScreen = memo(({ onStart, onSkip, user }: { onStart: () => void; onSk
         Ahora, una trivia para ver qué tanto nos conocemos. ¿Lista?
       </p>
       <div className="flex flex-col sm:flex-row items-center gap-4 mt-4">
-        <Button onClick={onStart} className="h-12 px-8 text-lg font-bold shadow-lg shadow-primary/20" size="lg">Empezar Desafío</Button>
+        <Button onClick={onStart} className="w-full sm:w-auto h-12 px-8 text-lg font-bold shadow-lg shadow-primary/20" size="lg">Empezar Desafío</Button>
         {user === 'manuel' && (
-            <Button onClick={onSkip} variant="outline" className="h-12">
+            <Button onClick={onSkip} variant="outline" className="w-full sm:w-auto h-12">
                 Saltar Desafío (Dev)
             </Button>
         )}

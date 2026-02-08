@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useRef, useState, useCallback, useMemo } from "react";
@@ -367,7 +368,7 @@ export default function GameStage({ onGameWon, onAdvance, user, initialGameState
                   <div className="flex flex-col sm:flex-row items-center gap-4 mt-4">
                     <Button
                       onClick={openInstructions}
-                      className="h-12 px-8 rounded-lg text-base font-bold tracking-wider shadow-lg shadow-primary/20"
+                      className="w-full sm:w-auto h-12 px-8 rounded-lg text-base font-bold tracking-wider shadow-lg shadow-primary/20"
                       size="lg"
                     >
                       Empezar Desafío
@@ -376,7 +377,7 @@ export default function GameStage({ onGameWon, onAdvance, user, initialGameState
                         <Button
                         onClick={onGameWon}
                         variant="outline"
-                        className="h-12"
+                        className="w-full sm:w-auto h-12"
                         >
                         Saltar Desafío (Dev)
                         </Button>
@@ -413,7 +414,7 @@ export default function GameStage({ onGameWon, onAdvance, user, initialGameState
                   <div className="flex flex-col sm:flex-row items-center gap-4">
                     <Button
                       onClick={gameState === 'won' ? () => setMapModalOpen(true) : startGame}
-                      className="min-w-[200px] h-12 px-6 text-base font-bold tracking-wider"
+                      className="w-full h-12 px-6 text-base font-bold tracking-wider"
                     >
                       {gameState === 'won' ? 'Ver Pista' : 'Reintentar'}
                     </Button>

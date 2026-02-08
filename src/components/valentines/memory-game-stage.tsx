@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect, useCallback, useRef, memo } from 'react';
@@ -309,11 +310,11 @@ export default function MemoryGameStage({ onGameWon, onAdvance, user, initialGam
                   <h3 className="text-2xl font-bold text-foreground pt-4">Memoria de Recuerdos</h3>
                   <p className="max-w-xs text-muted-foreground">Para seguir avanzando, debes de completar este desafío.</p>
                   <div className="flex flex-col sm:flex-row items-center gap-4 mt-4">
-                    <Button onClick={() => setInstructionsOpen(true)} className="h-12 px-8 rounded-lg text-base font-bold tracking-wider shadow-lg shadow-primary/20" size="lg">
+                    <Button onClick={() => setInstructionsOpen(true)} className="w-full sm:w-auto h-12 px-8 rounded-lg text-base font-bold tracking-wider shadow-lg shadow-primary/20" size="lg">
                       Empezar Desafío
                     </Button>
                     {user === 'manuel' && (
-                        <Button onClick={onGameWon} variant="outline" className="h-12">
+                        <Button onClick={onGameWon} variant="outline" className="w-full sm:w-auto h-12">
                             Saltar Desafío (Dev)
                         </Button>
                     )}
