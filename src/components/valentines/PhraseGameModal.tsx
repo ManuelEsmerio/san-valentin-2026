@@ -45,6 +45,7 @@ export default function PhraseGameModal({ isOpen, onClose }: PhraseGameModalProp
   const [showHint, setShowHint] = useState(false);
   const [helpTokens, setHelpTokens] = useState(3);
   const [nextWordHint, setNextWordHint] = useState<string | null>(null);
+  const [revealUsed, setRevealUsed] = useState(false);
   const { toast } = useToast();
 
   const initializeGame = useCallback(() => {
@@ -59,6 +60,7 @@ export default function PhraseGameModal({ isOpen, onClose }: PhraseGameModalProp
     setHelpTokens(3);
     setErrorCount(0);
     setShowHint(false);
+    setRevealUsed(false);
   }, []);
 
   useEffect(() => {
@@ -103,6 +105,7 @@ export default function PhraseGameModal({ isOpen, onClose }: PhraseGameModalProp
           setCurrentPhraseIndex(nextIndex);
           setAvailableWords(shuffleArray([...phrases[nextIndex].scrambled]));
           setBuiltPhrase([]);
+          setRevealUsed(false);
         }, 800);
       } else {
         setTimeout(() => setGameState('finished'), 800);
@@ -125,8 +128,9 @@ export default function PhraseGameModal({ isOpen, onClose }: PhraseGameModalProp
   };
 
   const handleRevealStart = () => {
-    if (helpTokens <= 0) return;
+    if (helpTokens <= 0 || revealUsed) return;
     setHelpTokens(prev => prev - 1);
+    setRevealUsed(true);
 
     const correctWords = currentPhrase.correct.split(' ');
     const firstTwo = correctWords.slice(0, 2);
@@ -229,7 +233,7 @@ export default function PhraseGameModal({ isOpen, onClose }: PhraseGameModalProp
                   <p className="text-sm font-bold text-blue-600 dark:text-blue-300">Ayudas restantes: {helpTokens}</p>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm" onClick={handleRevealStart} disabled={helpTokens <= 0}>Revelar Inicio</Button>
+                  <Button variant="outline" size="sm" onClick={handleRevealStart} disabled={helpTokens <= 0 || revealUsed}>Revelar Inicio</Button>
                   <Button variant="outline" size="sm" onClick={handleNextWordHint} disabled={helpTokens <= 0 || builtPhrase.length >= currentPhrase.scrambled.length - 1}>Pista</Button>
                 </div>
               </div>
