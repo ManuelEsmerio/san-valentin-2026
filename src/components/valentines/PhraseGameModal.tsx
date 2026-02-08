@@ -15,6 +15,7 @@ type PhraseGameModalProps = {
   isOpen: boolean;
   onClose: () => void;
   onAllPhrasesCompleted: () => void;
+  user: string | null;
 };
 
 const shuffleArray = (array: any[]) => {
@@ -36,7 +37,7 @@ const normalizeString = (str: string) => {
       .replace(/[.,/#!$%^&*;:{}=\-_`~()?¿¡✨❤️💘]/g, "");
 };
 
-export default function PhraseGameModal({ isOpen, onClose, onAllPhrasesCompleted }: PhraseGameModalProps) {
+export default function PhraseGameModal({ isOpen, onClose, onAllPhrasesCompleted, user }: PhraseGameModalProps) {
   const [isMounted, setIsMounted] = useState(false);
   const [gameState, setGameState] = useState<GameState>('intro');
   const [phrases, setPhrases] = useState<Phrase[]>([]);
@@ -102,6 +103,9 @@ export default function PhraseGameModal({ isOpen, onClose, onAllPhrasesCompleted
       
       setErrorCount(0);
       setShowHint(false);
+      setNextWordHint(null);
+      setRevealUsed(false);
+      setHelpTokens(3);
 
       if (currentPhraseIndex < phrases.length - 1) {
         const nextIndex = currentPhraseIndex + 1;
@@ -109,9 +113,6 @@ export default function PhraseGameModal({ isOpen, onClose, onAllPhrasesCompleted
           setCurrentPhraseIndex(nextIndex);
           setAvailableWords(shuffleArray([...phrases[nextIndex].scrambled]));
           setBuiltPhrase([]);
-          setRevealUsed(false);
-          setHelpTokens(3);
-          setNextWordHint(null);
         }, 800);
       } else {
         setTimeout(() => {
@@ -190,7 +191,14 @@ export default function PhraseGameModal({ isOpen, onClose, onAllPhrasesCompleted
             <DialogDescription className="text-base text-muted-foreground">
               ¡Felicidades por llegar hasta aquí! Como regalo adicional, te propongo un último juego. Ordena las palabras para formar frases románticas. Si las completas todas, habrá una sorpresa final para ti.
             </DialogDescription>
-            <Button onClick={() => setGameState('playing')} className="mt-4 w-full max-w-xs h-12 text-lg font-bold">Empezar a Jugar</Button>
+            <div className="mt-4 flex flex-col items-center gap-2 w-full max-w-xs">
+              <Button onClick={() => setGameState('playing')} className="w-full h-12 text-lg font-bold">Empezar a Jugar</Button>
+              {user === 'manuel' && (
+                  <Button onClick={onAllPhrasesCompleted} variant="outline" className="w-full">
+                      Saltar (Dev)
+                  </Button>
+              )}
+            </div>
           </div>
         )}
 

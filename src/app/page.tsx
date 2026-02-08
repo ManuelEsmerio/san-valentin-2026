@@ -139,9 +139,9 @@ export default function Home() {
       
       // Challenge 1
       case 'game_before':
-        return <GameStage key="game_before" onGameWon={() => setStageAndSave('game_after')} user={loggedInUser} />;
+        return <GameStage key="game_before" onGameWon={() => setStageAndSave('game_after')} onAdvance={() => {}} user={loggedInUser} />;
       case 'game_after':
-        return <GameStage key="game_after" initialGameState="won" onAdvance={() => setStageAndSave('catch-hearts_before')} user={loggedInUser} />;
+        return <GameStage key="game_after" initialGameState="won" onAdvance={() => setStageAndSave('catch-hearts_before')} onGameWon={() => {}} user={loggedInUser} />;
       
       // Challenge 2
       case 'catch-hearts_before':
@@ -151,9 +151,9 @@ export default function Home() {
 
       // Challenge 3
       case 'trivia_before':
-        return <TriviaStage key="trivia_before" onGameWon={() => setStageAndSave('trivia_after')} user={loggedInUser} />;
+        return <TriviaStage key="trivia_before" onGameWon={() => setStageAndSave('trivia_after')} onAdvance={() => {}} user={loggedInUser} />;
       case 'trivia_after':
-        return <TriviaStage key="trivia_after" initialGameState="finished" onAdvance={() => setStageAndSave('memory-game_before')} user={loggedInUser} />;
+        return <TriviaStage key="trivia_after" initialGameState="finished" onAdvance={() => setStageAndSave('memory-game_before')} onGameWon={() => {}} user={loggedInUser} />;
       
       // Challenge 4
       case 'memory-game_before':
@@ -168,7 +168,7 @@ export default function Home() {
           return <PuzzleStage key="puzzle_after" initialGameState="solved" onGameWon={() => {}} onAdvance={() => setStageAndSave('revelation')} user={loggedInUser} />;
 
       case 'revelation':
-        return <RevelationStage key="revelation" />;
+        return <RevelationStage key="revelation" user={loggedInUser} />;
       default:
         return <LoginStage key="login" onSuccess={handleLoginSuccess} />;
     }

@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import PhraseGameModal from "./PhraseGameModal";
 import RewardModal from "./RewardModal";
 
-export default function RevelationStage() {
+export default function RevelationStage({ user }: { user: string | null }) {
   const collage_img1 = PlaceHolderImages.find((img) => img.id === "letter-1-img-1");
   const collage_img2 = PlaceHolderImages.find((img) => img.id === "letter-2-img-1");
   const collage_img3 = PlaceHolderImages.find((img) => img.id === "letter-4-img-1");
@@ -125,6 +125,7 @@ export default function RevelationStage() {
         isOpen={isPhraseGameOpen} 
         onClose={() => setPhraseGameOpen(false)}
         onAllPhrasesCompleted={handleAllPhrasesCompleted}
+        user={user}
       />
       <RewardModal 
         isOpen={isRewardModalOpen}
