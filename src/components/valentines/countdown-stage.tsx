@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import FloatingHearts from './FloatingHearts';
+import ThemeToggle from '@/components/valentines/theme-toggle';
 
 type TimeLeft = {
   days: number;
@@ -21,45 +22,6 @@ const CountdownUnit = ({ value, label }: { value: string; label: string }) => (
         <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest opacity-60">{label}</span>
     </div>
 );
-
-const ThemeToggle = () => {
-    const [theme, setTheme] = useState('light');
-    const [isMounted, setIsMounted] = useState(false);
-
-    useEffect(() => {
-        setIsMounted(true);
-        const storedTheme = typeof window !== 'undefined' ? localStorage.getItem('theme') || 'light' : 'light';
-        setTheme(storedTheme);
-    }, []);
-
-    useEffect(() => {
-        if(isMounted) {
-            if (theme === 'dark') {
-                document.documentElement.classList.add('dark');
-                document.documentElement.classList.remove('light');
-            } else {
-                document.documentElement.classList.remove('dark');
-                document.documentElement.classList.add('light');
-            }
-            localStorage.setItem('theme', theme);
-        }
-    }, [theme, isMounted]);
-
-    const toggleTheme = () => {
-        setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
-    };
-
-    if (!isMounted) return <div className="w-10 h-10" />;
-
-    return (
-        <button 
-          className="glass p-2 rounded-full text-slate-600 dark:text-slate-300 hover:text-primary transition-colors" 
-          onClick={toggleTheme}
-        >
-            <span className="material-symbols-rounded">{theme === 'dark' ? 'light_mode' : 'dark_mode'}</span>
-        </button>
-    );
-};
 
 export default function CountdownStage({ onComplete }: { onComplete: () => void; }) {
   const { toast } = useToast();
