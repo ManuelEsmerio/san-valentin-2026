@@ -25,6 +25,14 @@ const shuffleArray = (array: any[]) => {
   return array;
 };
 
+const normalizeString = (str: string) => {
+    return str
+      .toLowerCase()
+      .trim()
+      .replace(/[.,/#!$%^&*;:{}=\-_`~()?¿¡✨❤️💘]/g, "");
+};
+
+
 export default function PhraseGameModal({ isOpen, onClose }: PhraseGameModalProps) {
   const [isMounted, setIsMounted] = useState(false);
   const [gameState, setGameState] = useState<GameState>('intro');
@@ -79,7 +87,7 @@ export default function PhraseGameModal({ isOpen, onClose }: PhraseGameModalProp
 
   const checkAnswer = () => {
     const userAnswer = builtPhrase.join(' ');
-    if (userAnswer === currentPhrase.correct) {
+    if (normalizeString(userAnswer) === normalizeString(currentPhrase.correct)) {
       toast({
         title: '¡Correcto! ✨',
         description: '¡Qué bien nos conocemos!',
