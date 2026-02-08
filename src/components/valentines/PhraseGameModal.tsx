@@ -110,6 +110,7 @@ export default function PhraseGameModal({ isOpen, onClose, onAllPhrasesCompleted
           setBuiltPhrase([]);
           setRevealUsed(false);
           setHelpTokens(3);
+          setNextWordHint(null);
         }, 800);
       } else {
         setTimeout(() => {
