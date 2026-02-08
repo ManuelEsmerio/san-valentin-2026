@@ -64,6 +64,7 @@ export default function PhraseGameModal({ isOpen, onClose, onAllPhrasesCompleted
     setErrorCount(0);
     setShowHint(false);
     setRevealUsed(false);
+    setNextWordHint(null);
   }, []);
 
   useEffect(() => {
