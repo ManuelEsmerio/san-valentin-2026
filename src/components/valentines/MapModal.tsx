@@ -1,8 +1,9 @@
+
 'use client';
 
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Map, MapPin } from 'lucide-react';
+import { Map, MapPin, X } from 'lucide-react';
 import { ReactNode, useEffect, useState } from 'react';
 
 type MapModalProps = {
@@ -53,7 +54,6 @@ export default function MapModal({
         'fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity duration-300',
         isOpen ? 'opacity-100' : 'opacity-0'
       )}
-      onClick={onClose}
     >
       <div
         className={cn(
@@ -62,6 +62,15 @@ export default function MapModal({
         )}
         onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
       >
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onClose}
+          className="absolute top-2 right-2 h-9 w-9 rounded-full z-10"
+          aria-label="Cerrar"
+        >
+          <X className="h-5 w-5 text-muted-foreground" />
+        </Button>
         <div className="p-6 sm:p-8 text-center">
             <div className="flex justify-center items-center gap-2 mb-4">
                 <MapPin className="text-primary h-8 w-8" />

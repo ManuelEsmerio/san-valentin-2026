@@ -18,7 +18,7 @@ export default function RewardModal({ isOpen, onClose }: RewardModalProps) {
   const rewardImage = PlaceHolderImages.find((img) => img.id === 'adventure-modal-img');
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen}>
       <DialogContent className="max-w-lg w-full p-0 border-primary/20 bg-card overflow-hidden">
         <div className="p-8 text-center flex flex-col items-center gap-4">
           {rewardImage && (

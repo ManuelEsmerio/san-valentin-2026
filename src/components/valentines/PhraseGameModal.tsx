@@ -13,7 +13,6 @@ type GameState = 'intro' | 'playing';
 
 type PhraseGameModalProps = {
   isOpen: boolean;
-  onClose: () => void;
   onAllPhrasesCompleted: () => void;
   user: string | null;
 };
@@ -37,7 +36,7 @@ const normalizeString = (str: string) => {
       .replace(/[.,/#!$%^&*;:{}=\-_`~()?¿¡✨❤️💘]/g, "");
 };
 
-export default function PhraseGameModal({ isOpen, onClose, onAllPhrasesCompleted, user }: PhraseGameModalProps) {
+export default function PhraseGameModal({ isOpen, onAllPhrasesCompleted, user }: PhraseGameModalProps) {
   const [isMounted, setIsMounted] = useState(false);
   const [gameState, setGameState] = useState<GameState>('intro');
   const [phrases, setPhrases] = useState<Phrase[]>([]);
@@ -182,7 +181,7 @@ export default function PhraseGameModal({ isOpen, onClose, onAllPhrasesCompleted
   if (!isMounted) return null;
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen}>
       <DialogContent className="max-w-2xl w-full p-0 border-primary/20 bg-card">
         {gameState === 'intro' && (
           <div className="p-8 text-center flex flex-col items-center gap-4">

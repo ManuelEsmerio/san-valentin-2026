@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -39,7 +40,6 @@ export default function RomanticLetterModal({ isOpen, letter, onClose }: Romanti
         'fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity duration-300',
         isOpen ? 'opacity-100' : 'opacity-0'
       )}
-      onClick={onClose}
     >
       <div
         className={cn(

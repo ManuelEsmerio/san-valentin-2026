@@ -16,6 +16,7 @@ export default function RevelationStage({ user }: { user: string | null }) {
 
   const [isPhraseGameOpen, setPhraseGameOpen] = useState(false);
   const [isRewardModalOpen, setRewardModalOpen] = useState(false);
+  const [rewardAccepted, setRewardAccepted] = useState(false);
 
   const handleReplay = useCallback(() => {
     localStorage.removeItem('valentines-app-stage');
@@ -25,6 +26,11 @@ export default function RevelationStage({ user }: { user: string | null }) {
   const handleAllPhrasesCompleted = () => {
     setPhraseGameOpen(false);
     setRewardModalOpen(true);
+  };
+  
+  const handleAcceptReward = () => {
+    setRewardModalOpen(false);
+    setRewardAccepted(true);
   };
 
   return (
@@ -114,6 +120,7 @@ export default function RevelationStage({ user }: { user: string | null }) {
             </Button>
              <Button
                 onClick={() => setPhraseGameOpen(true)}
+                disabled={rewardAccepted}
                 className="group flex items-center gap-2 px-8 py-3 rounded-full bg-accent text-accent-foreground font-semibold hover:bg-accent/90 transition-all duration-300 shadow-lg hover:shadow-xl active:scale-95 h-auto text-base"
             >
                 <span className="material-symbols-rounded group-hover:animate-ping">redeem</span>
@@ -122,14 +129,13 @@ export default function RevelationStage({ user }: { user: string | null }) {
         </div>
       </main>
       <PhraseGameModal 
-        isOpen={isPhraseGameOpen} 
-        onClose={() => setPhraseGameOpen(false)}
+        isOpen={isPhraseGameOpen}
         onAllPhrasesCompleted={handleAllPhrasesCompleted}
         user={user}
       />
       <RewardModal 
         isOpen={isRewardModalOpen}
-        onClose={() => setRewardModalOpen(false)}
+        onClose={handleAcceptReward}
       />
     </>
   );
