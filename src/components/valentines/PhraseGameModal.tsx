@@ -33,6 +33,10 @@ export default function PhraseGameModal({ isOpen, onClose }: PhraseGameModalProp
   const [availableWords, setAvailableWords] = useState<string[]>([]);
   const [builtPhrase, setBuiltPhrase] = useState<string[]>([]);
   const [isIncorrect, setIsIncorrect] = useState(false);
+  const [errorCount, setErrorCount] = useState(0);
+  const [showHint, setShowHint] = useState(false);
+  const [helpTokens, setHelpTokens] = useState(3);
+  const [nextWordHint, setNextWordHint] = useState<string | null>(null);
   const { toast } = useToast();
 
   const initializeGame = useCallback(() => {
@@ -44,6 +48,9 @@ export default function PhraseGameModal({ isOpen, onClose }: PhraseGameModalProp
     if (shuffledPhrases.length > 0) {
       setAvailableWords(shuffleArray([...shuffledPhrases[0].scrambled]));
     }
+    setHelpTokens(3);
+    setErrorCount(0);
+    setShowHint(false);
   }, []);
 
   useEffect(() => {
@@ -67,6 +74,7 @@ export default function PhraseGameModal({ isOpen, onClose }: PhraseGameModalProp
       setAvailableWords(prev => [...prev, word]);
     }
     setIsIncorrect(false);
+    setShowHint(false);
   };
 
   const checkAnswer = () => {
@@ -77,6 +85,9 @@ export default function PhraseGameModal({ isOpen, onClose }: PhraseGameModalProp
         description: '¡Qué bien nos conocemos!',
         className: 'bg-green-100 dark:bg-green-900/30 border-green-500',
       });
+      
+      setErrorCount(0);
+      setShowHint(false);
 
       if (currentPhraseIndex < phrases.length - 1) {
         const nextIndex = currentPhraseIndex + 1;
@@ -96,7 +107,53 @@ export default function PhraseGameModal({ isOpen, onClose }: PhraseGameModalProp
         title: 'Casi... 😅',
         description: 'Intenta ordenar las palabras de nuevo.',
       });
+
+      const newErrorCount = errorCount + 1;
+      setErrorCount(newErrorCount);
+      if (newErrorCount >= 2) {
+        setShowHint(true);
+      }
     }
+  };
+
+  const handleRevealStart = () => {
+    if (helpTokens <= 0) return;
+    setHelpTokens(prev => prev - 1);
+
+    const correctWords = currentPhrase.correct.split(' ');
+    const firstTwo = correctWords.slice(0, 2);
+    
+    let currentAvailable = [...availableWords, ...builtPhrase];
+    const finalBuilt: string[] = [];
+
+    for (const word of firstTwo) {
+        const indexInAvailable = currentAvailable.findIndex(w => w === word);
+        if (indexInAvailable > -1) {
+            finalBuilt.push(word);
+            currentAvailable.splice(indexInAvailable, 1);
+        }
+    }
+
+    setBuiltPhrase(finalBuilt);
+    setAvailableWords(shuffleArray(currentAvailable));
+    setShowHint(false);
+    setErrorCount(0);
+  };
+
+  const handleNextWordHint = () => {
+    if (helpTokens <= 0) return;
+    setHelpTokens(prev => prev - 1);
+
+    const correctWords = currentPhrase.correct.split(' ');
+    const nextWord = correctWords[builtPhrase.length];
+
+    if (nextWord) {
+        setNextWordHint(nextWord);
+        setTimeout(() => {
+            setNextWordHint(null);
+        }, 2000);
+    }
+    setShowHint(false);
   };
 
   const progress = useMemo(() => (currentPhraseIndex / phrases.length) * 100, [currentPhraseIndex, phrases.length]);
@@ -133,12 +190,41 @@ export default function PhraseGameModal({ isOpen, onClose }: PhraseGameModalProp
               ))}
             </div>
 
+            {showHint && currentPhrase.hint && (
+              <div className="my-4 p-3 bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-500/50 rounded-lg text-center animate-fade-in">
+                <p className="font-medium text-yellow-800 dark:text-yellow-200">
+                  <span className="font-bold">Pista:</span> {currentPhrase.hint}
+                </p>
+              </div>
+            )}
+
             <div className="min-h-[120px] bg-muted/30 rounded-lg p-4 flex flex-wrap items-center justify-center gap-2 mb-6">
               {availableWords.map((word, i) => (
-                <Button key={i} variant="outline" className="text-base h-10 px-3 cursor-pointer bg-card" onClick={() => handleWordClick(word, 'available', i)}>
+                <Button 
+                  key={i} 
+                  variant="outline" 
+                  className={cn(
+                    "text-base h-10 px-3 cursor-pointer bg-card transition-all duration-300",
+                    nextWordHint === word && "border-accent ring-2 ring-accent animate-pulse"
+                  )} 
+                  onClick={() => handleWordClick(word, 'available', i)}
+                >
                   {word}
                 </Button>
               ))}
+            </div>
+
+            <div className="mt-6 mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="material-symbols-rounded text-blue-500">help</span>
+                  <p className="text-sm font-bold text-blue-600 dark:text-blue-300">Ayudas restantes: {helpTokens}</p>
+                </div>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" onClick={handleRevealStart} disabled={helpTokens <= 0}>Revelar Inicio</Button>
+                  <Button variant="outline" size="sm" onClick={handleNextWordHint} disabled={helpTokens <= 0 || builtPhrase.length >= currentPhrase.scrambled.length - 1}>Pista</Button>
+                </div>
+              </div>
             </div>
             
             <Button onClick={checkAnswer} disabled={builtPhrase.length === 0} className="w-full h-12 text-lg font-bold">
