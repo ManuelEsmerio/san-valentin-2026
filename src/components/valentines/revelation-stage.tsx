@@ -5,11 +5,14 @@ import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { cn } from "@/lib/utils";
 import { useEffect, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
+import PhraseGameModal from "./PhraseGameModal";
 
 export default function RevelationStage() {
   const collage_img1 = PlaceHolderImages.find((img) => img.id === "letter-1-img-1");
   const collage_img2 = PlaceHolderImages.find((img) => img.id === "letter-2-img-1");
   const collage_img3 = PlaceHolderImages.find((img) => img.id === "letter-4-img-1");
+
+  const [isPhraseGameOpen, setPhraseGameOpen] = useState(false);
 
   const handleReplay = useCallback(() => {
     localStorage.removeItem('valentines-app-stage');
@@ -92,17 +95,25 @@ export default function RevelationStage() {
             </div>
         </article>
 
-        <div className="flex justify-center">
+        <div className="flex flex-col items-center gap-4">
             <Button
                 onClick={handleReplay}
                 variant="outline"
-                className="group flex items-center gap-2 px-8 py-3 rounded-full border-2 border-primary text-primary font-semibold hover:bg-primary hover:text-white transition-all duration-300 shadow-md hover:shadow-xl active:scale-95 h-auto text-base"
+                className="group flex items-center gap-2 px-8 py-3 rounded-full border-2 border-primary/20 text-primary/80 font-semibold hover:bg-primary hover:text-white transition-all duration-300 shadow-md hover:shadow-xl active:scale-95 h-auto text-base"
             >
                 <span className="material-symbols-rounded group-hover:rotate-180 transition-transform duration-500">restart_alt</span>
                 Volver a vivir la experiencia
             </Button>
+             <Button
+                onClick={() => setPhraseGameOpen(true)}
+                className="group flex items-center gap-2 px-8 py-3 rounded-full bg-accent text-accent-foreground font-semibold hover:bg-accent/90 transition-all duration-300 shadow-lg hover:shadow-xl active:scale-95 h-auto text-base"
+            >
+                <span className="material-symbols-rounded group-hover:animate-ping">redeem</span>
+                Participar por un nuevo regalo adicional...
+            </Button>
         </div>
       </main>
+      <PhraseGameModal isOpen={isPhraseGameOpen} onClose={() => setPhraseGameOpen(false)} />
     </>
   );
 }
