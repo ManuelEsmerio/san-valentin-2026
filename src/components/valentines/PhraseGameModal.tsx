@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
@@ -8,11 +9,12 @@ import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { romanticPhrases, Phrase } from '@/lib/phrases';
 
-type GameState = 'intro' | 'playing' | 'finished';
+type GameState = 'intro' | 'playing';
 
 type PhraseGameModalProps = {
   isOpen: boolean;
   onClose: () => void;
+  onAllPhrasesCompleted: () => void;
 };
 
 const shuffleArray = (array: any[]) => {
@@ -29,11 +31,12 @@ const normalizeString = (str: string) => {
     return str
       .toLowerCase()
       .trim()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
       .replace(/[.,/#!$%^&*;:{}=\-_`~()?¿¡✨❤️💘]/g, "");
 };
 
-
-export default function PhraseGameModal({ isOpen, onClose }: PhraseGameModalProps) {
+export default function PhraseGameModal({ isOpen, onClose, onAllPhrasesCompleted }: PhraseGameModalProps) {
   const [isMounted, setIsMounted] = useState(false);
   const [gameState, setGameState] = useState<GameState>('intro');
   const [phrases, setPhrases] = useState<Phrase[]>([]);
@@ -49,13 +52,13 @@ export default function PhraseGameModal({ isOpen, onClose }: PhraseGameModalProp
   const { toast } = useToast();
 
   const initializeGame = useCallback(() => {
-    const shuffledPhrases = shuffleArray([...romanticPhrases]);
-    setPhrases(shuffledPhrases);
+    const phrasesForGame = shuffleArray([...romanticPhrases]).slice(0, 15);
+    setPhrases(phrasesForGame);
     setCurrentPhraseIndex(0);
     setGameState('intro');
     setBuiltPhrase([]);
-    if (shuffledPhrases.length > 0) {
-      setAvailableWords(shuffleArray([...shuffledPhrases[0].scrambled]));
+    if (phrasesForGame.length > 0) {
+      setAvailableWords(shuffleArray([...phrasesForGame[0].scrambled]));
     }
     setHelpTokens(3);
     setErrorCount(0);
@@ -109,7 +112,9 @@ export default function PhraseGameModal({ isOpen, onClose }: PhraseGameModalProp
           setHelpTokens(3);
         }, 800);
       } else {
-        setTimeout(() => setGameState('finished'), 800);
+        setTimeout(() => {
+          onAllPhrasesCompleted();
+        }, 800);
       }
     } else {
       setIsIncorrect(true);
@@ -243,17 +248,6 @@ export default function PhraseGameModal({ isOpen, onClose }: PhraseGameModalProp
             <Button onClick={checkAnswer} disabled={builtPhrase.length === 0} className="w-full h-12 text-lg font-bold">
               Comprobar Frase
             </Button>
-          </div>
-        )}
-        
-        {gameState === 'finished' && (
-          <div className="p-8 text-center flex flex-col items-center gap-4 animate-fade-in">
-             <span className="material-symbols-rounded text-green-500 text-6xl" style={{ fontVariationSettings: "'FILL' 1" }}>workspace_premium</span>
-            <DialogTitle className="text-2xl font-bold text-green-600 dark:text-green-400">¡Reto Adicional Completado!</DialogTitle>
-            <DialogDescription className="text-base text-muted-foreground">
-             Gracias por jugar. Eres increíble en esto, como en todo. Como premio, tienes derecho a pedir lo que sea para nuestra próxima cita... ¡lo que sea! 😉💘
-            </DialogDescription>
-            <Button onClick={onClose} className="mt-4 w-full max-w-xs h-12 text-lg font-bold">Cerrar</Button>
           </div>
         )}
       </DialogContent>

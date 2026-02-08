@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from "next/image";
@@ -6,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { useEffect, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import PhraseGameModal from "./PhraseGameModal";
+import RewardModal from "./RewardModal";
 
 export default function RevelationStage() {
   const collage_img1 = PlaceHolderImages.find((img) => img.id === "letter-1-img-1");
@@ -13,11 +15,17 @@ export default function RevelationStage() {
   const collage_img3 = PlaceHolderImages.find((img) => img.id === "letter-4-img-1");
 
   const [isPhraseGameOpen, setPhraseGameOpen] = useState(false);
+  const [isRewardModalOpen, setRewardModalOpen] = useState(false);
 
   const handleReplay = useCallback(() => {
     localStorage.removeItem('valentines-app-stage');
     window.location.reload();
   }, []);
+
+  const handleAllPhrasesCompleted = () => {
+    setPhraseGameOpen(false);
+    setRewardModalOpen(true);
+  };
 
   return (
     <>
@@ -113,7 +121,15 @@ export default function RevelationStage() {
             </Button>
         </div>
       </main>
-      <PhraseGameModal isOpen={isPhraseGameOpen} onClose={() => setPhraseGameOpen(false)} />
+      <PhraseGameModal 
+        isOpen={isPhraseGameOpen} 
+        onClose={() => setPhraseGameOpen(false)}
+        onAllPhrasesCompleted={handleAllPhrasesCompleted}
+      />
+      <RewardModal 
+        isOpen={isRewardModalOpen}
+        onClose={() => setRewardModalOpen(false)}
+      />
     </>
   );
 }
