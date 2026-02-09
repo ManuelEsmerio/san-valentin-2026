@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import FloatingHearts from './FloatingHearts';
-import ThemeToggle from '@/components/valentines/theme-toggle';
 
 type TimeLeft = {
   days: number;
@@ -153,8 +152,11 @@ export default function CountdownStage({ onComplete }: { onComplete: () => void;
                 <div className="flex flex-col md:flex-row items-center justify-center gap-4 pt-4">
                     <Button
                         onClick={handleOpenSurprise}
-                        disabled={!isTimeUp}
-                        className="group relative px-8 py-3 bg-primary text-white font-bold rounded-full overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-xl shadow-primary/30 flex items-center gap-2 h-auto text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                        aria-disabled={!isTimeUp}
+                        className={cn(
+                            "group relative px-8 py-3 bg-primary text-white font-bold rounded-full overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-xl shadow-primary/30 flex items-center gap-2 h-auto text-base",
+                            !isTimeUp && "opacity-50 cursor-not-allowed"
+                        )}
                     >
                         <span className="material-symbols-rounded text-lg">favorite</span>
                         <span>Abrir Sorpresa</span>
@@ -162,9 +164,12 @@ export default function CountdownStage({ onComplete }: { onComplete: () => void;
                     </Button>
                     <Button 
                         onClick={handleDisabledClick} 
-                        disabled={!isTimeUp}
+                        aria-disabled={!isTimeUp}
                         variant="outline"
-                        className="px-8 py-3 border-2 border-primary/30 dark:border-primary/50 text-primary dark:text-primary font-bold rounded-full transition-all hover:bg-primary/10 active:scale-95 h-auto text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                        className={cn(
+                            "px-8 py-3 border-2 border-primary/30 dark:border-primary/50 text-primary dark:text-primary font-bold rounded-full transition-all hover:bg-primary/10 active:scale-95 h-auto text-base",
+                             !isTimeUp && "opacity-50 cursor-not-allowed"
+                        )}
                     >
                         Nuestra Galería
                     </Button>
