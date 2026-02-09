@@ -19,6 +19,7 @@ import CircularProgress from "./CircularProgress";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import MapModal from "./MapModal";
 import KeywordModal from "./KeywordModal";
+import { saveOpenEndedAnswer } from "@/app/actions";
 
 type GameStage = "intro" | "playing" | "failed" | "finished";
 
@@ -368,7 +369,7 @@ export default function TriviaStage({ onGameWon, onAdvance, user, initialGameSta
   }, [answerStatus, currentQuestionIndex, goToNextQuestion, questions, score, showLetter, shownLetters]);
 
 
-  const handleNext = useCallback(() => {
+  const handleNext = useCallback(async () => {
     const currentQuestion = questions[currentQuestionIndex];
     if (!currentQuestion || currentQuestion.type !== 'open-ended') return;
 
@@ -380,6 +381,26 @@ export default function TriviaStage({ onGameWon, onAdvance, user, initialGameSta
           toast({ title: "Un momento...", description: "Por favor, comparte tus pensamientos antes de continuar." });
           return;
       }
+      
+      try {
+        await saveOpenEndedAnswer({
+          questionId: currentQuestion.id,
+          question: currentQuestion.question,
+          answer: currentAnswer,
+        });
+        toast({
+          title: 'Respuesta guardada',
+          description: 'Gracias por compartir tus pensamientos. ❤️',
+          className: 'bg-blue-100 dark:bg-blue-900/30 border-blue-500',
+        });
+      } catch (error) {
+        toast({
+          variant: 'destructive',
+          title: 'Error al guardar',
+          description: 'No se pudo guardar tu respuesta. ¡Pero la leí! 😉',
+        });
+      }
+
       setFlippedQuestions(prev => ({ ...prev, [currentQuestion.id]: true }));
     }
   }, [answers, currentQuestionIndex, flippedQuestions, goToNextQuestion, questions, toast]);
