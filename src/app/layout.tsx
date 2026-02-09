@@ -51,7 +51,7 @@ export default function RootLayout({
       </head>
       <body className={cn("font-sans antialiased bg-background text-foreground", inter.variable, playfairDisplay.variable, caveat.variable, greatVibes.variable)}>
         <FloatingHearts />
-        <header className="flex items-center justify-between px-4 sm:px-10 py-6 w-full z-10 relative">
+        <header className="flex items-center justify-between px-4 sm:px-10 py-6 w-full z-50 relative">
           <div className="flex items-center gap-2">
             <span className="material-symbols-rounded text-primary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>
                 favorite

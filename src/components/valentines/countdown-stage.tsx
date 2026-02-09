@@ -174,7 +174,7 @@ export default function CountdownStage({ onComplete }: { onComplete: () => void;
         </div>
       </main>
 
-      <div className="absolute bottom-6 left-6 flex gap-2">
+      <div className="absolute bottom-6 left-6 flex gap-2 z-50">
           <ThemeToggle />
       </div>
     </div>
