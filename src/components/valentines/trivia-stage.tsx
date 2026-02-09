@@ -83,7 +83,7 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
 
   // 15 se omite
 
-  { id: 16, type: 'multiple-choice', question: '¿Quién es más probable que se pierda usando un mapa?', options: ['Yo','Tú','Ambos','El GPS nos odia'], correctAnswer: 'Yo', hint: 'A veces la orientación falla 🗺️😂' },
+  { id: 16, type: 'multiple-choice', question: '¿Quién es más probable que se pierda usando un mapa?', options: ['Yo','Tú','Ambos','El GPS nos odia'], correctAnswer: ['El GPS nos odia'], hint: 'A veces la orientación falla 🗺️😂' },
 
   { id: 17, type: 'multiple-choice', question: '¿Quién elige siempre la película?', options: ['Lo decidimos juntos','Tú','Yo','Netflix decide'], correctAnswer: 'Lo decidimos juntos', hint: 'El control remoto manda 📺' },
 
@@ -95,13 +95,13 @@ const multipleChoiceQuestions: MultipleChoiceQuestion[] = [
 
   { id: 21, type: 'multiple-choice', question: '¿Quién tarda más en decidir qué vamos a comer?', options: ['Yo','Tú','Ambos','Pedimos lo mismo'], correctAnswer: 'Ambos', hint: 'Elegir comida es un reto 🍕😂' },
 
-  { id: 22, type: 'multiple-choice', question: '¿Quién da los mejores abrazos?', options: ['Yo','Tú','Ambos','Imposible decidir'], correctAnswer: 'Ambos', hint: 'Abrazos que curan 💙' },
+  { id: 22, type: 'multiple-choice', question: '¿Quién da los mejores abrazos?', options: ['Yo','Tú','Ambos','Imposible decidir'], correctAnswer: ['Ambos','Imposible decidir'], hint: 'Abrazos que curan 💙' },
 
-  { id: 23, type: 'multiple-choice', question: '¿Quién propone más planes sorpresa?', options: ['Yo','Tú','Ambos','Ninguno'], correctAnswer: 'Ambos', hint: 'Siempre hay sorpresas 🎁' },
+  { id: 23, type: 'multiple-choice', question: '¿Quién propone más planes sorpresa?', options: ['Yo','Tú','Ambos','Ninguno'], correctAnswer: 'Tú', hint: 'Siempre hay sorpresas 🎁' },
 
   { id: 24, type: 'multiple-choice', question: '¿Quién anima al otro cuando está triste?', options: ['Yo','Tú','Ambos','Siempre nos apoyamos'], correctAnswer: 'Siempre nos apoyamos', hint: 'Equipo para todo 💞' },
 
-  { id: 25, type: 'multiple-choice', question: '¿Quién se queda dormido primero?', options: ['Yo','Tú','Ambos','Depende del día'], correctAnswer: 'Depende del día', hint: 'Buenas noches 😴✨' }
+  { id: 25, type: 'multiple-choice', question: '¿Quién se queda dormido primero?', options: ['Yo','Tú','Ambos','Depende del día'], correctAnswer: ['Depende del día','Yo'], hint: 'Buenas noches 😴✨' }
 ];
 
 

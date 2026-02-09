@@ -1,0 +1,14 @@
+[
+  {
+    "questionId": 27,
+    "question": "¿Qué sientes que nos ha costado más últimamente?",
+    "answer": "Este es un texto de prueba asi que debe de guardarse",
+    "timestamp": "2026-02-09T19:09:14.891Z"
+  },
+  {
+    "questionId": 28,
+    "question": "¿Qué te ayuda hoy a sentirte más tranquila cuando estamos juntos?",
+    "answer": "Esta es la segunda respuesta para guardar",
+    "timestamp": "2026-02-09T19:09:34.047Z"
+  }
+]
