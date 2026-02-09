@@ -114,7 +114,6 @@ export default function CountdownStage({ onComplete }: { onComplete: () => void;
   return (
     <div 
       className="fixed inset-0 z-50 flex items-center justify-center bg-background text-slate-800 dark:text-slate-100 font-sans p-4 text-center"
-      onContextMenu={(e) => e.preventDefault()}
     >
       <div
         className="absolute top-0 left-0 h-24 w-24 z-50"
@@ -173,10 +172,6 @@ export default function CountdownStage({ onComplete }: { onComplete: () => void;
             </div>
         </div>
       </main>
-
-      <div className="absolute bottom-6 left-6 flex gap-2 z-50">
-          <ThemeToggle />
-      </div>
     </div>
   );
 }
