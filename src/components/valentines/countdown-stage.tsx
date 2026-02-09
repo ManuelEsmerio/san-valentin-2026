@@ -174,11 +174,6 @@ export default function CountdownStage({ onComplete }: { onComplete: () => void;
         </div>
       </main>
 
-      <footer className="absolute bottom-6 left-0 right-0 text-center px-4">
-          <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium">
-            Tip: Toca rápidamente una esquina (x6) o presiona Alt + E para una sorpresa.
-          </p>
-      </footer>
       <div className="absolute bottom-6 left-6 flex gap-2">
           <ThemeToggle />
       </div>
