@@ -498,32 +498,41 @@ export default function TriviaStage({ onGameWon, onAdvance, user, initialGameSta
                         </RadioGroup>
                       )}
                       {currentQuestion.type === 'open-ended' && (
-                        <div className="relative [perspective:1000px]" style={{ minHeight: '160px' }}>
-                          <div
-                              className={cn(
-                                  "relative w-full h-full [transform-style:preserve-3d] transition-transform duration-1000",
-                                  "min-h-[160px]",
-                                  flippedQuestions[currentQuestion.id] && "[transform:rotateY(180deg)]"
-                              )}
-                          >
-                              {/* Front face with textarea */}
-                              <div className="absolute w-full h-full [backface-visibility:hidden]">
-                                  <Textarea
-                                      placeholder="Escribe tu respuesta aquí, mi chula..."
-                                      className="h-full text-base min-h-[160px]"
-                                      value={answers[currentQuestion.id] || ""}
-                                      onChange={(e) => setAnswers(prev => ({ ...prev, [currentQuestion.id]: e.target.value }))}
-                                      disabled={!!flippedQuestions[currentQuestion.id]}
-                                  />
-                              </div>
+                        <div className="flex flex-col gap-4">
+                          <div className="relative [perspective:1000px]" style={{ minHeight: '160px' }}>
+                            <div
+                                className={cn(
+                                    "relative w-full h-full [transform-style:preserve-3d] transition-transform duration-1000",
+                                    "min-h-[160px]",
+                                    flippedQuestions[currentQuestion.id] && "[transform:rotateY(180deg)]"
+                                )}
+                            >
+                                {/* Front face with textarea */}
+                                <div className="absolute w-full h-full [backface-visibility:hidden]">
+                                    <Textarea
+                                        placeholder="Escribe tu respuesta aquí, mi chula..."
+                                        className="h-full text-base min-h-[160px]"
+                                        value={answers[currentQuestion.id] || ""}
+                                        onChange={(e) => setAnswers(prev => ({ ...prev, [currentQuestion.id]: e.target.value }))}
+                                        disabled={!!flippedQuestions[currentQuestion.id]}
+                                    />
+                                </div>
 
-                              {/* Back face with creator's answer */}
-                              <div className="absolute w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] bg-primary/10 p-4 sm:p-6 rounded-lg flex flex-col text-center overflow-y-auto">
-                                <p className="text-foreground/80 italic text-base sm:text-lg whitespace-pre-wrap my-auto">
-                                  &ldquo;{currentQuestion.creatorAnswer}&rdquo;
-                                </p>
-                              </div>
+                                {/* Back face with creator's answer */}
+                                <div className="absolute w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] bg-primary/10 p-4 sm:p-6 rounded-lg flex flex-col text-center overflow-y-auto">
+                                  <p className="text-foreground/80 italic text-base sm:text-lg whitespace-pre-wrap my-auto">
+                                    &ldquo;{currentQuestion.creatorAnswer}&rdquo;
+                                  </p>
+                                </div>
+                            </div>
                           </div>
+                          <Button 
+                              onClick={handleNext} 
+                              className="w-full h-12 text-lg font-bold"
+                              disabled={!answers[currentQuestion.id] && !flippedQuestions[currentQuestion.id]}
+                          >
+                            {flippedQuestions[currentQuestion.id] ? 'Continuar' : 'Revelar mi respuesta'}
+                          </Button>
                         </div>
                       )}
                     </div>
@@ -590,7 +599,7 @@ export default function TriviaStage({ onGameWon, onAdvance, user, initialGameSta
 
                 {/* Action Button/Feedback */}
                  <div className="pt-4 min-h-[6rem]">
-                    {currentQuestion.type === 'multiple-choice' ? (
+                    {currentQuestion.type === 'multiple-choice' && (
                         <>
                             {answerStatus !== 'unanswered' && (
                                 <div className={cn(
@@ -605,14 +614,6 @@ export default function TriviaStage({ onGameWon, onAdvance, user, initialGameSta
                                 </div>
                             )}
                         </>
-                    ) : (
-                        <Button 
-                            onClick={handleNext} 
-                            className="w-full h-12 text-lg font-bold"
-                            disabled={!answers[currentQuestion.id] && !flippedQuestions[currentQuestion.id]}
-                        >
-                          {flippedQuestions[currentQuestion.id] ? 'Continuar' : 'Revelar mi respuesta'}
-                        </Button>
                     )}
                  </div>
 
