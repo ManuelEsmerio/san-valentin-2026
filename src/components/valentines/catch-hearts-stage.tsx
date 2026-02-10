@@ -405,7 +405,7 @@ export default function CatchHeartsStage({ onGameWon, onAdvance, user, initialGa
                     "font-bold transition-colors",
                     gameState === 'won' ? "text-green-600 dark:text-green-400" : "text-foreground"
                   )}>
-                    {gameState === 'won' ? 'Pista 2: Desbloqueada' : 'Pista 2: Bloqueada'}
+                    {gameState === 'won' ? 'Pista Desbloqueada' : 'Pista Bloqueada'}
                   </h3>
                 </div>
                 <p className="text-sm text-muted-foreground italic pl-11 mb-4">
@@ -469,9 +469,14 @@ export default function CatchHeartsStage({ onGameWon, onAdvance, user, initialGa
         title="¡Segunda Pista Desbloqueada!"
         description={
           <>
-            <p>¡Felicidades! Ya superaste el segundo desafío y es hora de tomar algo para recargar energía.</p>
-            <p>¿Qué te parece un chocomilk y una buena palabra para poder continuar? 🥛💕</p>
-            <p className="mt-2">La pista la encontrarás en la lonchería con mi madrina. Ve a recoger un pedido a nombre de Mariana. 😘</p>
+            <p>¡Felicidades! 🎉💖<br/>Has superado el segundo desafío… y eso merece una pausa para recargar energía. ✨</p>
+            <p>¿Qué te parece un delicioso chocomilk y una palabra especial para continuar? 🥛💕<br/>Te prometo que te va a encantar. 😘</p>
+            <div className="text-left text-sm border-t border-border pt-4 mt-4">
+                <p className="mt-4">La siguiente pista te espera en la lonchería de mi madrina.<br/>Ve a recoger un pedido a nombre de:</p>
+                <p className="font-bold text-center text-base sm:text-lg text-primary bg-primary/10 py-3 px-4 rounded-lg mt-2">Mariana Rangel 💝</p>
+                <p className="mt-4">Y si te preguntan, también puedes decir que vas por el pedido de:</p>
+                <p className="font-bold text-center text-base sm:text-lg text-foreground bg-muted/50 py-3 px-4 rounded-lg mt-2">“Güero” 😏❤️</p>
+            </div>
           </>
         }
       />
@@ -487,3 +492,5 @@ export default function CatchHeartsStage({ onGameWon, onAdvance, user, initialGa
     </>
   );
 }
+
+    
