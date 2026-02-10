@@ -20,7 +20,7 @@ export default function WelcomeStage({ onSuccess }: WelcomeStageProps) {
           Antes de empezar… 💌
         </h2>
         <div className="text-muted-foreground text-center mb-8 max-w-sm space-y-4">
-            <p>Llevo semanas trabajando en esto para ti. Hubo momentos en los que pensé que no lo iba a terminar… pero aquí está, hecho con todo el corazón. ❤️</p>
+            <p>Llevo semanas trabajando en esto para ti. Hubo momentos en los que pensé que no lo iba a terminar… pero aquí está, hecho con todo el cariño. ❤️</p>
         </div>
         
         <div className="bg-primary/5 border border-primary/10 rounded-lg p-4 text-sm text-primary/80 mb-8 max-w-sm w-full text-left space-y-2">

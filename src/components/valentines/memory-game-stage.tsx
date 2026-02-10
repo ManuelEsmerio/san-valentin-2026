@@ -440,9 +440,22 @@ export default function MemoryGameStage({ onGameWon, onAdvance, user, initialGam
         title="¡Cuarta Pista Desbloqueada!"
         description={
           <>
-            <p>¡Ya casi terminas! Así que es tiempo de un merecido descanso y desayuno.</p>
-            <p>Mmm... ¿qué sería bueno? ¡Ya sé! ¿Qué te parece un desayuno especial? Ve al <strong>Hotel Manadia</strong> donde tienen un pedido a tu nombre. Así que a descansar y a desayunar.</p>
-            <p className="font-bold text-primary mt-2">¡Provechito! 🍽️</p>
+            <div className="space-y-3 mb-4">
+              <p>¡Ya casi terminas! 💖<br/>Es momento de tomar un merecido descanso… y disfrutar un buen desayuno. ☀️🍽️</p>
+              <p>Mmm… ¿qué se te antoja? ¡Ya sé! 😏<br/>¿Qué te parece un desayuno especial preparado solo para ti?</p>
+              <p>Ve al <strong>Hotel Manadia</strong>, donde hay un pedido a tu nombre. Relájate, disfruta el momento… y recarga energías. 💕</p>
+              <p className="font-bold">¡Provechito! 😋</p>
+            </div>
+            <div className="text-left text-sm border-t border-border pt-4 mt-4">
+                <h4 className="font-bold text-primary mb-2 text-base">📍 Indicaciones</h4>
+                <div className="space-y-2">
+                    <p>Al llegar al hotel, verás una entrada tipo cochera. Entra sin miedo.</p>
+                    <p>A tu izquierda encontrarás el lobby. Ahí puedes preguntar por el restaurante; te indicarán que se encuentra en el cuarto piso.</p>
+                    <p>Sube en el elevador y ten un poco de paciencia, ya que el servicio puede tardar unos minutos. ⏳✨</p>
+                    <p className="mt-3">Una vez en el restaurante, dirígete a la caja y pregunta por:</p>
+                    <p className="font-bold text-center text-base sm:text-lg text-primary bg-primary/10 py-3 px-4 rounded-lg mt-2">Un pedido a nombre de Mariana Rangel. 💝</p>
+                </div>
+            </div>
           </>
         }
       />
