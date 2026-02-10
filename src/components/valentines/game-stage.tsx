@@ -522,6 +522,7 @@ export default function GameStage({ onGameWon, onAdvance, user, initialGameState
         coordinates={coordinates}
         googleMapsUrl={googleMapsUrl}
         iframeUrl={iframeUrl}
+        title="¡Primera Pista Desbloqueada!"
         description={
           <>
             <p>Este camino apenas comienza, así que ponte ropa cómoda, porque tendrás que caminar para poder encontrar tu regalo.</p>

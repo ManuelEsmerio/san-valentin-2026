@@ -466,7 +466,7 @@ export default function CatchHeartsStage({ onGameWon, onAdvance, user, initialGa
         coordinates={coordinates}
         googleMapsUrl={googleMapsUrl}
         iframeUrl={iframeUrl}
-        title="¡Pista 2 Desbloqueada!"
+        title="¡Segunda Pista Desbloqueada!"
         description={
           <>
             <p>¡Felicidades! Ya superaste el segundo desafío y es hora de tomar algo para recargar energía.</p>
