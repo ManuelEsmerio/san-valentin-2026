@@ -470,7 +470,7 @@ export default function GameStage({ onGameWon, onAdvance, user, initialGameState
                   "font-bold transition-colors",
                   gameState === 'won' ? "text-green-600 dark:text-green-400" : "text-foreground"
                 )}>
-                  {gameState === 'won' ? 'Pista 1: Desbloqueada' : 'Pista 1: Bloqueada'}
+                  {gameState === 'won' ? 'Pista Desbloqueada' : 'Pista Bloqueada'}
                 </h3>
               </div>
               <p className="text-sm text-muted-foreground italic pl-11 mb-4">
@@ -536,7 +536,7 @@ export default function GameStage({ onGameWon, onAdvance, user, initialGameState
         isOpen={isKeywordModalOpen}
         onSuccess={handleKeywordSuccess}
         onBack={handleReturnToMap}
-        correctKeyword="Sola"
+        correctKeyword="Temo"
         title="Primera Palabra Clave"
         description="Ingresa la palabra clave que encontraste en la ubicación de la pista para continuar."
       />
