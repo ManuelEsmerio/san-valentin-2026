@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -12,20 +13,22 @@ export default function WelcomeStage({ onSuccess }: WelcomeStageProps) {
       <div className="px-4 sm:px-8 py-10 text-center flex flex-col items-center">
         <div className="mb-6 h-20 w-20 rounded-full bg-white dark:bg-stone-800/50 flex items-center justify-center shadow-md">
           <span className="material-symbols-rounded text-primary text-5xl animate-heart-beat" style={{ fontVariationSettings: "'FILL' 1" }}>
-            favorite
+            mail
           </span>
         </div>
         <h2 className="text-foreground text-3xl font-bold leading-tight tracking-[-0.015em] mb-4 text-center">
-          Bienvenida. <span role="img" aria-label="sparkling heart">💖</span>
+          Antes de empezar… 💌
         </h2>
         <div className="text-muted-foreground text-center mb-8 max-w-sm space-y-4">
-            <p>Tengo un reto para ti...</p>
-            <p>Supera cada juego, descubre cada pista, y llega hasta el final.</p>
-            <p>Prometo que valdrá la pena 😏❤️.</p>
+            <p>Llevo semanas trabajando en esto para ti. Hubo momentos en los que pensé que no lo iba a terminar… pero aquí está, hecho con todo el corazón. ❤️</p>
         </div>
         
-        <div className="bg-primary/5 border border-primary/10 rounded-lg p-3 text-sm text-primary/80 mb-8 max-w-sm font-medium">
-          <span className="font-bold">Un dato importante:</span> cada pista que obtengas es una palabra. Al final, deberás ordenarlas para revelar una frase secreta.
+        <div className="bg-primary/5 border border-primary/10 rounded-lg p-4 text-sm text-primary/80 mb-8 max-w-sm w-full text-left space-y-2">
+          <h3 className="font-bold text-center text-primary mb-3">Observaciones importantes:</h3>
+          <p>• Necesitarás datos móviles, ya que usarás Google Maps.</p>
+          <p>• Ponte ropa y calzado cómodos, vas a caminar un poco.</p>
+          <p>• El reto está diseñado para completarse sin prisas.</p>
+          <p>• Disfruta cada paso, todo tiene un porqué. ✨</p>
         </div>
 
         <Button
@@ -36,11 +39,8 @@ export default function WelcomeStage({ onSuccess }: WelcomeStageProps) {
           <span className="material-symbols-rounded mr-2">
             play_circle
           </span>
-          Vamos!
+          ¡Comenzar Aventura!
         </Button>
-        <p className="text-primary/70 text-sm mt-6">
-          Premio especial desbloqueable.
-        </p>
       </div>
     </div>
   );
