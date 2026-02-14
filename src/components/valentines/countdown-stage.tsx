@@ -49,13 +49,8 @@ export default function CountdownStage({ onComplete }: { onComplete: () => void;
   }, [onComplete]);
 
   useEffect(() => {
-    const now = new Date();
-    let targetYear = now.getFullYear();
-    let targetDate = new Date(targetYear, 1, 14, 0, 0, 0);
-
-    if (now.getTime() > targetDate.getTime()) {
-      targetDate.setFullYear(targetYear + 1);
-    }
+    // Set target date to a fixed date in the past to ensure the countdown is always finished.
+    const targetDate = new Date("2024-02-14T00:00:00");
     
     let timer: NodeJS.Timeout;
 
